@@ -1,0 +1,95 @@
+{
+ "traction": {
+  "fichier": "https://upload.wikimedia.org/wikipedia/commons/1/15/Pull-ups_-_exercise_demonstration_video.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "source": "Wikimedia Commons",
+  "auteur": "FitnessScape",
+  "url": "https://commons.wikimedia.org/wiki/File:Pull-ups_-_exercise_demonstration_video.webm",
+  "licence": "CC BY 3.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by/3.0/deed.fr",
+  "debut": 2.73,
+  "duree": 3.2,
+  "crop": "573:430:310:0",
+  "variante": "sans lest, même geste"
+ },
+ "incline": {
+  "fichier": "https://wger.de/media/exercise-video/537/b9c937e9-daeb-42a9-be8e-7a77e368478c.MOV",
+  "url": "https://wger.de/exercise/537/view/",
+  "licence": "CC BY-SA 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+  "source": "wger",
+  "auteur": "Goulart",
+  "debut": 18.67,
+  "duree": 3.42,
+  "crop": "1440:1080:120:0"
+ },
+ "latDB": {
+  "fichier": "https://wger.de/media/exercise-video/348/de69928a-8a35-4096-821c-1f46de5e0e03.MOV",
+  "url": "https://wger.de/exercise/348/view/",
+  "licence": "CC BY-SA 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+  "source": "wger",
+  "auteur": "Goulart",
+  "debut": 4,
+  "duree": 3.42,
+  "crop": "1440:1080:200:0"
+ },
+ "oiseau": {
+  "fichier": "https://wger.de/media/exercise-video/82/28b53647-27e7-47cf-8852-2ee666c8b628.MOV",
+  "url": "https://wger.de/exercise/82/view/",
+  "licence": "CC BY-SA 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+  "source": "wger",
+  "auteur": "Goulart",
+  "debut": 2.83,
+  "duree": 3.5,
+  "crop": "1440:1080:240:0",
+  "variante": "assis aux haltères, ta version se fait aux câbles"
+ },
+ "curlInc": {
+  "fichier": "https://wger.de/media/exercise-video/92/8bfb917c-3d0d-49b9-8073-5d7e01c1b894.MOV",
+  "url": "https://wger.de/exercise/92/view/",
+  "licence": "CC BY-SA 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+  "source": "wger",
+  "auteur": "Goulart",
+  "debut": 3.67,
+  "duree": 4.08,
+  "crop": "1200:900:440:60",
+  "variante": "debout, ta version se fait sur banc incliné"
+ },
+ "tricepsOH": {
+  "fichier": "https://wger.de/media/exercise-video/211/85f6eb25-a76c-409e-9af9-497794ac0dfb.MOV",
+  "url": "https://wger.de/exercise/211/view/",
+  "licence": "CC BY-SA 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+  "source": "wger",
+  "auteur": "Goulart",
+  "debut": 3.5,
+  "duree": 2.5,
+  "crop": "1440:1080:240:0",
+  "variante": "avec un haltère, ta version se fait à la poulie",
+  "filtre": "eq=gamma=1.45:saturation=1.05"
+ },
+ "rowPoulie": {
+  "fichier": "https://wger.de/media/exercise-video/512/fff4c294-93f0-4926-b3a2-bf59ad4afaa5.MOV",
+  "url": "https://wger.de/exercise/512/view/",
+  "licence": "CC BY-SA 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+  "source": "wger",
+  "auteur": "Goulart",
+  "debut": 3,
+  "duree": 2.5,
+  "crop": "1100:825:470:128"
+ },
+ "facepull": {
+  "fichier": "https://wger.de/media/exercise-video/222/245a824b-cd39-45f2-b251-2c0b7efead0d.MOV",
+  "url": "https://wger.de/exercise/222/view/",
+  "licence": "CC BY-SA 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+  "source": "wger",
+  "auteur": "Goulart",
+  "debut": 3.5,
+  "duree": 4.75,
+  "crop": "1440:1080:0:0"
+ }
+}
