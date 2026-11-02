@@ -1,7 +1,7 @@
 /* Camp — service worker : tout est mis en cache au premier lancement,
    l'appli s'ouvre ensuite sans réseau. Les mises à jour se téléchargent
    en arrière-plan et s'appliquent au lancement suivant. */
-const CACHE='camp-40777e5f1e';
+const CACHE='camp-cacdea8dee';
 const FICHIERS=['./','./index.html','./manifest.webmanifest','./clips.js','./icon-180.png','./icon-192.png','./icon-512.png','./icon-maskable-512.png','./favicon-64.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FICHIERS)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('camp-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
