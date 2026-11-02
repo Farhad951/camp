@@ -29,6 +29,7 @@ body{color:var(--craie);font-family:var(--f);font-size:var(--t-m);line-height:1.
   padding-bottom:calc(var(--tabs) + env(safe-area-inset-bottom,0px) + 28px)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--nuit)}
 button,input,textarea,select{font:inherit;color:inherit}
+html{touch-action:manipulation}
 button{cursor:pointer;border:0;background:none;padding:0;touch-action:manipulation;-webkit-user-select:none;user-select:none}
 :focus-visible{outline:2px solid var(--or);outline-offset:2px;border-radius:8px}
 h1,h2,h3{margin:0;text-wrap:balance}
@@ -55,7 +56,7 @@ ul,ol{margin:0;padding:0}
 .sync i{width:7px;height:7px;border-radius:50%;background:var(--vert)}
 
 /* ---------- boutons : le retour au toucher est instantané ---------- */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 20px;border-radius:var(--r-m);font-weight:600;letter-spacing:-.01em;
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;text-decoration:none;padding:0 20px;border-radius:var(--r-m);font-weight:600;letter-spacing:-.01em;
   transition:transform .22s var(--press),opacity .22s var(--press)}
 .btn svg{width:19px;height:19px;flex:none}
 .btn-or{background:var(--or);color:var(--encre-or)}
@@ -177,7 +178,7 @@ ul,ol{margin:0;padding:0}
 .couche-in{max-width:560px;margin:0 auto;padding-left:max(var(--gout),env(safe-area-inset-left,0px));padding-right:max(var(--gout),env(safe-area-inset-right,0px));
   padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
 .s-top{position:sticky;top:0;z-index:5;margin-inline:calc(var(--gout) * -1);padding:calc(env(safe-area-inset-top,0px) + 6px) var(--gout) 8px;margin-bottom:14px;
-  background:var(--matiere);-webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);box-shadow:0 .5px 0 var(--trait)}
+  background:var(--toile);box-shadow:0 .5px 0 var(--trait)}
 .s-row{display:flex;align-items:center;gap:10px}
 .s-titre{flex:1;min-width:0;text-align:center}
 .s-titre b{display:block;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -186,8 +187,8 @@ ul,ol{margin:0;padding:0}
 .chrono-s b{font-weight:500;font-variant-numeric:tabular-nums}
 .chrono-s>span{display:none}
 .s-prog{display:flex;align-items:center;gap:10px;margin-top:6px}
-.s-prog .jauge{flex:1}
-.s-prog span{font-size:var(--t-xs);color:var(--gris);white-space:nowrap;font-variant-numeric:tabular-nums}
+.s-prog .jauge{flex:1;height:6px;border-radius:3px;background:var(--toile-3)}
+.s-prog span{font-size:var(--t-s);font-weight:500;color:var(--craie-2);white-space:nowrap;font-variant-numeric:tabular-nums}
 .segment{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--remplir);border-radius:9px;padding:2px;margin-bottom:16px}
 .segment .seg-ind{position:absolute;top:2px;bottom:2px;left:2px;border-radius:7px;background:#636366;box-shadow:0 2px 6px rgba(0,0,0,.25);pointer-events:none}
 .segment button{position:relative;z-index:1;min-height:40px;padding:0 6px;font-size:.875rem;font-weight:500;white-space:nowrap;transition:opacity .2s}
@@ -204,6 +205,8 @@ ul,ol{margin:0;padding:0}
 .coche.on span{color:var(--gris)}
 
 .ex{margin-bottom:14px;overflow:hidden;transition:box-shadow .24s ease}
+/* à l'ouverture, seules les cartes visibles sont calculées ; les autres suivent une par une au repos (voir detendre) */
+.ex.differe{content-visibility:auto;contain-intrinsic-size:auto 1000px}
 .ex.fini{box-shadow:inset 0 0 0 1.5px var(--or)}
 .bloc-oa.fini{box-shadow:inset 0 0 0 1.5px var(--bleu)}
 .scene .phase{padding:0 18px 2px;display:flex;flex-direction:column;gap:8px}
@@ -219,38 +222,39 @@ ul,ol{margin:0;padding:0}
 .ex.fini .tag{color:var(--or)}
 .pause-b{position:absolute;z-index:2;top:2px;right:6px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--gris);transition:transform .22s var(--press),opacity .22s var(--press)}
 .pause-b svg{width:18px;height:18px}
-.ex-c{padding:14px 18px 16px;display:flex;flex-direction:column;gap:12px}
+.ex-c{padding:14px 14px 16px;display:flex;flex-direction:column;gap:12px}
 .ex-c h3,.bloc-oa h3{font-size:var(--t-t3);font-weight:700;line-height:1.2;letter-spacing:-.017em}
 .ex-c .sous{font-size:.875rem;color:var(--gris);margin-top:2px}
 .cibles{list-style:none;display:flex;flex-wrap:wrap;font-size:.9375rem;color:var(--craie-2);font-variant-numeric:tabular-nums}
 .cibles li:not(:last-child)::after{content:"·";margin:0 7px;color:var(--gris-sombre)}
-.cibles li b{font-weight:600;color:var(--craie)}
+.cibles{align-items:baseline}
+.cibles li b{font-size:var(--t-t3);font-weight:700;letter-spacing:-.01em;color:var(--craie)}
 .conseil{display:flex;gap:10px;align-items:flex-start;font-size:.875rem;line-height:1.38;padding:10px 12px;border-radius:var(--r-s);background:var(--remplir-2);color:var(--craie-2)}
 .conseil svg{width:18px;height:18px;flex:none;margin-top:1px;color:var(--gris)}
 .conseil.up{background:var(--or-voile);color:var(--craie)}
 .conseil.up svg{color:var(--or)}
-.series{display:flex;flex-direction:column;gap:6px}
-.s-head,.serie{display:grid;grid-template-columns:30px minmax(0,1fr) 70px 58px 48px;gap:6px;align-items:center}
-.s-head.r2,.serie.r2{grid-template-columns:30px minmax(0,1fr) 92px 48px}
+.series{display:flex;flex-direction:column;gap:8px}
+.s-head,.serie{display:grid;grid-template-columns:1.6rem minmax(0,1fr) 4.4rem 3.7rem 3.4rem;gap:6px;align-items:center}
+.s-head.r2,.serie.r2{grid-template-columns:1.6rem minmax(0,1fr) 5.4rem 3.4rem}
 .s-head span{font-size:var(--t-xs);color:var(--gris);text-align:center}
 .s-head span:nth-child(2){text-align:left}
 .serie .n{font-size:.9375rem;font-weight:500;color:var(--gris);text-align:center;font-variant-numeric:tabular-nums;transition:color .14s ease}
-.serie .prec{font-size:.875rem;color:var(--gris);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.serie input{width:100%;height:44px;border-radius:var(--r-s);border:0;background:var(--remplir);text-align:center;font-size:1.0625rem;font-weight:500;font-variant-numeric:tabular-nums;padding:0 2px;transition:background .14s ease,box-shadow .14s ease}
+.serie .prec{font-size:.875rem;color:var(--craie-2);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.serie input{width:100%;height:3.25rem;border-radius:var(--r-s);border:0;background:var(--toile-2);box-shadow:inset 0 0 0 1px var(--gris-sombre);text-align:center;font-size:1.25rem;font-weight:600;font-variant-numeric:tabular-nums;padding:0 2px;transition:background .14s ease,box-shadow .14s ease}
 .serie input::placeholder{color:var(--gris);font-weight:400}
 .serie input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--or)}
-.ok-b{height:44px;border-radius:var(--r-s);display:grid;place-items:center;background:var(--remplir);color:var(--gris);transition:background .14s ease,color .14s ease,transform .22s var(--press),opacity .22s var(--press)}
-.ok-b svg{width:22px;height:22px;stroke-width:2.4}
+.ok-b{height:3.25rem;border-radius:var(--r-s);display:grid;place-items:center;background:var(--toile-2);box-shadow:inset 0 0 0 1px var(--gris-sombre);color:var(--craie);transition:background .14s ease,color .14s ease,transform .22s var(--press),opacity .22s var(--press)}
+.ok-b svg{width:26px;height:26px;stroke-width:2.6}
 .ok-b path{stroke-dasharray:1}
-.serie.ok .ok-b{background:var(--or);color:var(--encre-or)}
-.serie.ok input{background:var(--or-voile)}
+.serie.ok .ok-b{background:var(--or);color:var(--encre-or);box-shadow:none}
+.serie.ok input{background:var(--or-voile);box-shadow:none}
 .serie.ok .n{color:var(--or)}
 .serie.pr .n::after{content:"★";display:block;font-size:.6875rem;line-height:1;color:var(--or)}
 .plus-moins{display:flex;gap:16px}
 .plus-moins button{min-height:44px;font-size:.9375rem;font-weight:500;color:var(--or);transition:transform .22s var(--press),opacity .22s var(--press)}
 .tech{border-top:.5px solid var(--trait);padding-top:2px}
 .onglets{position:relative;display:flex;margin-bottom:10px;box-shadow:inset 0 -.5px 0 var(--trait)}
-.onglets .ong-ind{position:absolute;bottom:0;left:0;height:2px;border-radius:1px;background:var(--craie);pointer-events:none}
+.onglets .ong-ind{position:absolute;bottom:0;left:0;width:25%;height:2px;border-radius:1px;background:var(--craie);pointer-events:none}
 .onglets button{flex:1;min-height:44px;font-size:.875rem;font-weight:500;color:var(--gris);transition:color .14s ease,opacity .2s}
 .onglets button.on{color:var(--craie)}
 .panneau{font-size:.9375rem;line-height:1.42;color:var(--craie-2)}
@@ -284,22 +288,19 @@ ul,ol{margin:0;padding:0}
 
 /* ---------- minuteur de repos ---------- */
 .repos{position:fixed;left:0;right:0;margin:0 auto;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:80;width:min(528px,calc(100% - 20px));
-  background:rgba(44,44,46,.82);-webkit-backdrop-filter:blur(28px) saturate(1.8);backdrop-filter:blur(28px) saturate(1.8);
-  border-radius:20px;box-shadow:0 10px 34px rgba(0,0,0,.5);padding:8px 10px;display:flex;align-items:center;gap:10px;
+  background:var(--toile-2);overflow:hidden;
+  border-radius:20px;box-shadow:0 10px 34px rgba(0,0,0,.5);padding:10px 8px 14px 14px;display:flex;align-items:center;gap:10px;
   visibility:hidden;transform:translateY(calc(100% + 24px));transition:background .2s ease,color .2s ease}
 .repos.on{visibility:visible;transform:none}
 .repos.fin{background:var(--or);color:var(--encre-or)}
-.repos.fin .txt b,.repos.fin .txt span,.repos.fin .anneau>span{color:var(--encre-or)}
+.repos.fin .txt b,.repos.fin .txt span,.repos.fin .t-g{color:var(--encre-or)}
 .repos.fin .cmd button{background:rgba(0,0,0,.14);color:var(--encre-or)}
-.anneau{width:54px;height:54px;flex:none;position:relative}
-.anneau svg{width:100%;height:100%;transform:rotate(-90deg)}
-.anneau .fond{stroke:rgba(255,255,255,.14)}
-.anneau .arc{stroke:var(--bleu-clair);transition:stroke-dashoffset .25s linear}
-.repos.fin .anneau .fond,.repos.fin .anneau .arc{stroke:transparent}
-.anneau>span{position:absolute;inset:0;display:grid;place-items:center;font-size:.9375rem;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.repos.fin .cmd button[data-a="repos-moins"],.repos.fin .cmd button[data-a="repos-plus"],.repos.fin .r-barre{display:none}
+.repos .t-g{flex:none;font-size:2.375rem;font-weight:700;line-height:1;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.repos .r-barre{position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--bleu-clair);transform-origin:left;transition:transform .25s linear}
 .repos .txt{flex:1;min-width:0}
-.repos .txt b{display:block;font-size:.8125rem;font-weight:600;color:var(--bleu-clair)}
-.repos .txt span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.8125rem;line-height:1.22;color:var(--craie-2)}
+.repos .txt b{display:block;font-size:.875rem;font-weight:600;color:var(--bleu-clair)}
+.repos .txt span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.875rem;line-height:1.22;color:var(--craie)}
 .repos .cmd{display:flex;gap:4px}
 .repos .cmd button{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.1);font-size:.875rem;font-weight:500;font-variant-numeric:tabular-nums;display:grid;place-items:center;transition:transform .22s var(--press),opacity .22s var(--press)}
 .repos .cmd button svg{width:16px;height:16px}
@@ -459,10 +460,11 @@ ul,ol{margin:0;padding:0}
 @media (prefers-reduced-transparency:reduce){.nav,.s-top,.tabs{background:var(--toile);-webkit-backdrop-filter:none;backdrop-filter:none}.repos,.toast{background:var(--toile-2);-webkit-backdrop-filter:none;backdrop-filter:none}}
 @media (prefers-contrast:more){:root{--gris:rgba(235,235,245,.85);--gris-sombre:rgba(235,235,245,.6);--trait:rgba(235,235,245,.4);--remplir:rgba(118,118,128,.42)}}
 .scene-v video{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--toile)}
-.scene-v .tag,.scene-v .pause-b{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
-.scene-vide{min-height:100px;display:flex;align-items:flex-end}
-.vide-lien{display:flex;align-items:center;gap:12px;width:100%;min-height:44px;padding:42px 18px 14px;color:var(--or);text-decoration:none;font-weight:500}
-.vide-lien svg{width:20px;height:20px;flex:none}.vide-lien span{display:flex;flex-direction:column;gap:2px}.vide-lien small{font-size:.8125rem;font-weight:400;color:var(--gris)}
+.hero .scene-v video{aspect-ratio:auto;height:min(28vh,290px)}
+.scene-v .tag{top:10px;left:10px;padding:4px 10px;border-radius:14px;background:rgba(0,0,0,.66);color:#fff}
+.scene-v .pause-b{top:4px;right:4px;color:#fff;background:radial-gradient(circle at center,rgba(0,0,0,.66) 17px,transparent 17.5px)}
+@media (max-width:340px){.s-head,.serie{grid-template-columns:1.6rem 4.4rem 3.7rem minmax(3rem,1fr)}.s-head.r2,.serie.r2{grid-template-columns:1.6rem 5.4rem minmax(3rem,1fr)}.s-head span:nth-child(2),.serie .prec{display:none}}
+.scene-vide{min-height:44px}
 .hero-c.hero-seul{padding-top:18px}
 .credit{margin-top:6px;font-size:.75rem;color:var(--gris)}.credit a{color:inherit}
 .variante{margin-top:6px;font-size:.8125rem;color:var(--or)}
@@ -485,7 +487,7 @@ ul,ol{margin:0;padding:0}
 <div class="couche" id="seance" aria-hidden="true" role="dialog" aria-label="Séance en cours"><div class="couche-in" id="seance-in"></div></div>
 
 <div class="repos" id="repos" role="timer" aria-label="Minuteur de repos">
-  <div class="anneau"><svg viewBox="0 0 60 60" aria-hidden="true"><circle class="fond" cx="30" cy="30" r="25" fill="none" stroke-width="4"/><circle class="arc" id="repos-arc" cx="30" cy="30" r="25" fill="none" stroke-width="4" stroke-linecap="round" stroke-dasharray="157.08" stroke-dashoffset="0"/></svg><span id="repos-t">0:00</span></div>
+  <span class="t-g" id="repos-t">0:00</span><i class="r-barre" id="repos-arc"></i>
   <div class="txt"><b id="repos-lbl">Repos</b><span id="repos-txt"></span></div>
   <div class="cmd"><button data-a="repos-moins" aria-label="Retirer 15 secondes">−15</button><button data-a="repos-plus" aria-label="Ajouter 15 secondes">+15</button><button data-a="repos-stop" aria-label="Arrêter le repos"><svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
 </div>
@@ -535,56 +537,56 @@ traction:{nom:'Tractions lestées',sous:'Prise pronation, mains un peu plus larg
   placement:['Pars bras tendus, épaules « rangées » : tire les omoplates vers le bas avant de plier les coudes.','Pense « coudes dans les poches arrière », pas « menton à la barre ».','Poitrine vers la barre, jambes croisées et gainées : le lest ne bouge pas.'],
   erreurs:['Les demi-reps : si tu ne repars pas bras tendus, la rep ne compte pas.','Le balancier (kipping) pour gratter des reps.','Tendre le cou vers la barre pour les derniers centimètres.'],
   pourquoi:'Ton grand dorsal est correct mais c’est lui qui fait la largeur du V. Lestées en 5–8 reps, tu gagnes de la force relative sans prendre de poids inutile pour ta catégorie.',
-  alt:'Moins de 5 reps au poids du corps : tirage vertical prise large 4 × 8–10 ou tractions avec élastique.',yt:'tractions lestées technique'},
+  alt:'Moins de 5 reps au poids du corps : tirage vertical prise large 4 × 8–10 ou tractions avec élastique.'},
 rowAppuye:{nom:'Rowing haltères buste appuyé',sous:'Poitrine sur un banc incliné à 30–45°',muscles:'Milieu du dos, rhomboïdes, arrière d’épaule',
   series:3,reps:[8,12],repos:120,cible:'RIR 1',champs:['kg','r'],inc:2,x:1,anim:'rowAppuye',
   tempo:'Tirage 1 s, 1 s serré en haut, descente 2 s',
   placement:['Poitrine collée au banc du début à la fin, menton rentré.','Tire les coudes vers l’arrière et vers les hanches, serre les omoplates.','Bras complètement tendus en bas : laisse les omoplates s’écarter.'],
   erreurs:['Décoller la poitrine du banc pour tricher avec le dos.','Tirer avec les biceps, poignets cassés.','Hausser les épaules vers les oreilles en fin de tirage.'],
   pourquoi:'Sur la vidéo, ton dos est large mais lisse au milieu. Cet exercice l’épaissit sans charger les lombaires, le lendemain du sparring.',
-  alt:'Banc pris : rowing T-bar poitrine appuyée ou rowing machine assis.',yt:'rowing haltères poitrine appuyée banc incliné'},
+  alt:'Banc pris : rowing T-bar poitrine appuyée ou rowing machine assis.'},
 incline:{nom:'Développé incliné haltères',sous:'Banc à 30°',muscles:'Haut des pecs, avant d’épaule, triceps',
   series:3,reps:[6,10],repos:120,cible:'RIR 2',champs:['kg','r'],inc:2,anim:'incline',
   tempo:'Descente 3 s, arrêt 0,5 s, poussée 1 s',
   placement:['Omoplates serrées et basses, pieds bien ancrés.','Descends les haltères au niveau du haut des pecs, coudes à ~45° du buste.','Pousse en rapprochant légèrement les haltères au-dessus des épaules.'],
   erreurs:['Banc trop incliné (plus de 35°) : l’épaule prend tout.','Coudes à 90° du buste : stress inutile sur l’épaule avant de boxer.','Rebondir en bas.'],
   pourquoi:'Tes pecs sont ton point fort. Ici on les entretient : 3 séries suffisent. Le volume va au dos et aux épaules.',
-  alt:'Développé incliné machine ou Smith, même tempo.',yt:'développé incliné haltères technique'},
+  alt:'Développé incliné machine ou Smith, même tempo.'},
 latDB:{nom:'Élévations latérales haltères',sous:'Debout, buste très légèrement penché',muscles:'Deltoïde moyen : la largeur des épaules',
   series:6,reps:[12,20],repos:60,cible:'RIR 0–1',champs:['kg','r'],inc:1,x:1,anim:'latDB',
   tempo:'Montée 1 s, pause 0,5 s, descente 2 s. Dernière série : + 5 partielles en bas',
   placement:['Monte « vers les murs », pas vers le plafond : les coudes mènent, mains juste sous les coudes.','Arrête-toi à hauteur d’épaules.','Épaules basses, cou long.'],
   erreurs:['Hausser les trapèzes pour lancer la charge.','Balancer avec les jambes et le dos.','Prendre trop lourd : 8–10 kg propres valent mieux que 16 kg trichés.'],
   pourquoi:'Priorité n°1. De face, l’épaule ne déborde pas encore assez du bras. C’est elle qui élargit le haut et affine la taille par contraste.',
-  alt:'Machine à élévations latérales ou poulie basse.',yt:'élévations latérales haltères technique'},
+  alt:'Machine à élévations latérales ou poulie basse.'},
 oiseau:{nom:'Oiseau à la poulie',sous:'Câbles croisés, poulies à hauteur d’épaules',muscles:'Arrière d’épaule, trapèzes moyens',
   series:3,reps:[15,20],repos:60,cible:'RIR 1',champs:['kg','r'],inc:1,anim:'oiseau',
   tempo:'Ouverture 1 s, bras en T 1 s, retour 2 s',
   placement:['Main droite sur la poulie gauche et inversement, bras presque tendus.','Ouvre en grand arc jusqu’à former un T.','Bras à hauteur d’épaules, poitrine haute.'],
   erreurs:['Plier les coudes : ça devient un rowing.','Lancer avec le buste.','Charge trop lourde : l’arrière d’épaule est un petit muscle.'],
   pourquoi:'La boxe enroule les épaules vers l’avant. L’arrière d’épaule redresse ta posture et donne des épaules pleines vues de profil.',
-  alt:'Reverse pec deck (papillon inversé).',yt:'oiseau poulie câbles croisés arrière d épaule'},
+  alt:'Reverse pec deck (papillon inversé).'},
 curlInc:{nom:'Curl incliné haltères',sous:'Banc à 45–60°, bras pendants',muscles:'Biceps (longue portion)',
   series:2,reps:[8,12],repos:45,cible:'RIR 1',champs:['kg','r'],inc:1,anim:'curlInc',
   tempo:'Montée 1 s, contraction 0,5 s, descente 3 s',
   placement:['Dos et tête collés au banc, bras verticaux.','Le coude ne bouge pas, seul l’avant-bras monte.','Pouces vers l’extérieur en haut.'],
   erreurs:['Ramener les coudes vers l’avant pour finir la rep.','Décoller les épaules du banc.','Couper l’amplitude en bas : c’est l’étirement qui travaille.'],
   pourquoi:'Tes bras sont bons : 2 séries suffisent. L’inclinaison étire le biceps et donne plus de pic sans volume superflu.',
-  alt:'Curl pupitre ou curl à la poulie dos à la machine.',yt:'curl incliné haltères technique'},
+  alt:'Curl pupitre ou curl à la poulie dos à la machine.'},
 tricepsOH:{nom:'Extension triceps au-dessus de la tête',sous:'Poulie, corde, dos à la machine',muscles:'Triceps (longue portion)',
   series:2,reps:[10,15],repos:90,cible:'RIR 1',champs:['kg','r'],inc:2.5,anim:'tricepsOH',
   tempo:'Extension 1 s, tenue 0,5 s, retour 3 s',
   placement:['Fente avant, buste incliné, coudes serrés près de la tête.','Laisse les mains descendre derrière la nuque pour bien étirer.','Tends complètement en écartant un peu la corde.'],
   erreurs:['Coudes qui s’ouvrent.','Cambrer le bas du dos.','Bouger les épaules : seuls les avant-bras bougent.'],
   pourquoi:'La longue portion fait l’essentiel du volume du bras, et elle grossit plus vite en position étirée.',
-  alt:'Extension nuque à un haltère, assis.',yt:'extension triceps poulie au dessus de la tête corde'},
+  alt:'Extension nuque à un haltère, assis.'},
 crunchPoulie:{nom:'Crunch à la poulie haute',sous:'À genoux, corde derrière la tête',muscles:'Grands droits : les abdos visibles',
   series:3,reps:[10,15],repos:60,cible:'RIR 1',champs:['kg','r'],inc:2.5,x:1,anim:'crunchPoulie',
   tempo:'Enroulement 1 s, 1 s contracté, remontée 2 s',
   placement:['Hanches fixes : elles ne reculent pas et ne descendent pas.','Enroule la colonne : côtes vers le bassin, coudes vers les cuisses.','Souffle tout l’air en bas.'],
   erreurs:['S’asseoir sur les talons.','Tirer avec les bras.','Aller vite : c’est un muscle, il se charge comme les autres.'],
   pourquoi:'Tu es déjà sec. Pour que les abdos ressortent sans contracter, il faut les épaissir avec de la charge, pas faire 200 crunchs.',
-  alt:'Relevés de jambes suspendu ou crunch machine.',yt:'crunch poulie haute à genoux technique'},
+  alt:'Relevés de jambes suspendu ou crunch machine.'},
 nordic:{nom:'Nordic curl',sous:'À genoux, chevilles bloquées',muscles:'Ischio-jambiers, contre les claquages au foot',
   series:2,reps:[4,6],repos:90,cible:'Descente la plus lente possible',champs:['r'],pdc:1,anim:'nordic',
   debut:{seances:3,reps:[3,3],cible:'Prise en main : 3 séances à 2 × 3'},
@@ -592,7 +594,7 @@ nordic:{nom:'Nordic curl',sous:'À genoux, chevilles bloquées',muscles:'Ischio-
   placement:['Corps aligné des genoux à la tête, hanches tendues.','Freine la chute avec l’arrière des cuisses le plus longtemps possible.','Rattrape-toi avec les mains, pousse pour remonter.'],
   erreurs:['Casser les hanches (fesses en arrière).','Se laisser tomber dès le début.','En faire trop au début : l’appli reste à 2 × 3 pendant tes 3 premières séances, car les courbatures sont fortes.'],
   pourquoi:'L’exercice le plus prouvé contre les claquages des ischios au foot. Placé dimanche, tu as 48 h avant de courir mardi. On démarre à 2 × 3 pour ne pas arriver courbaturé aux sauts du lundi.',
-  alt:'Pas d’ancrage : leg curl allongé 3 × 8 avec descente de 4 s.',yt:'nordic hamstring curl débutant'},
+  alt:'Pas d’ancrage : leg curl allongé 3 × 8 avec descente de 4 s.'},
 
 boxjump:{nom:'Sauts sur box',sous:'Hauteur moyenne, réception silencieuse',muscles:'Puissance des jambes',
   series:3,reps:[3,3],repos:90,cible:'100 % d’intention',champs:['r'],x:1,puissance:1,anim:'boxjump',
@@ -600,78 +602,87 @@ boxjump:{nom:'Sauts sur box',sous:'Hauteur moyenne, réception silencieuse',musc
   placement:['Bras lancés en arrière puis vers le haut au moment du saut.','Atterris pieds à plat, genoux dans l’axe, sans bruit.','Redescends en marchant, jamais en sautant.'],
   erreurs:['Box trop haute : si tu atterris en squat profond, tu mesures ta souplesse, pas ta détente.','Enchaîner sans récupérer : on cherche la vitesse, pas le cardio.','Genoux qui rentrent à la réception.'],
   pourquoi:'Veille de boxe : on réveille le système nerveux (vitesse, détente) sans fatiguer le muscle. Ça se transfère au foot et à tes appuis sur le ring.',
-  alt:'Pas de box : sauts en longueur sans élan, 3 × 3.',yt:'box jump technique réception'},
+  alt:'Pas de box : sauts en longueur sans élan, 3 × 3.'},
 sautsLat:{nom:'Sauts latéraux',sous:'D’une jambe à l’autre, réception tenue',muscles:'Puissance latérale : tes appuis sur le ring',
   series:2,reps:[3,3],repos:60,cible:'Par côté, 100 % d’intention',champs:['r'],puissance:1,
   tempo:'Explosif. Saute loin sur le côté, tiens 1 s à la réception',
   placement:['Debout sur une jambe, genou fléchi, buste légèrement penché.','Pousse fort sur le côté et lance les bras dans la même direction.','Reçois-toi sur l’autre pied, genou dans l’axe, et tiens 1 s avant de repartir.'],
   erreurs:['Genou qui rentre vers l’intérieur à la réception.','Enchaîner sans tenir : la réception fait partie de l’exercice.','Chercher la distance au détriment du contrôle.'],
   pourquoi:'Ta seule puissance latérale de la semaine à la salle. Pousser de côté et freiner sur une jambe, c’est ce que font tes appuis quand tu sors de l’axe. Court et sans fatigue.',
-  alt:'Pas de place : pas chassés explosifs, 2 × 5 par côté.',yt:'lateral bound technique saut latéral'},
+  alt:'Pas de place : pas chassés explosifs, 2 × 5 par côté.'},
 medball:{nom:'Lancer rotatif médecine-ball',sous:'De profil au mur, ballon de 3–5 kg',muscles:'Chaîne de rotation : la puissance de frappe',
   series:4,reps:[4,4],repos:90,cible:'Par côté, 100 % d’intention',champs:['kg','r'],inc:1,x:1,puissance:1,anim:'medball',
   tempo:'Explosif. Charge la hanche arrière puis tout part des pieds',
   placement:['De profil au mur, à 1 m, genoux fléchis.','Charge le ballon sur la hanche arrière, pivote le pied arrière comme sur un direct.','Hanches d’abord, épaules ensuite, bras en dernier.'],
   erreurs:['Lancer avec les bras seulement.','Ballon trop lourd : il doit partir vite.','Pied arrière qui ne pivote pas.'],
   pourquoi:'Même chaîne qu’un crochet ou un direct : pieds → hanches → épaules → poing. Geste rapide et léger, il n’épaissit pas la taille.',
-  alt:'Pas de mur : woodchop explosif à la poulie, 4 × 5 par côté.',yt:'lancer rotatif medecine ball mur boxe'},
+  alt:'Pas de mur : woodchop explosif à la poulie, 4 × 5 par côté.'},
 trapbar:{nom:'Soulevé de terre trap bar',sous:'Poignées hautes si possible',muscles:'Fessiers, ischios, quadriceps, dos',
   series:3,reps:[3,5],repos:150,cible:'RPE 7, 3 reps en réserve',champs:['kg','r'],inc:5,x:1,puissance:1,anim:'trapbar',
   tempo:'Montée explosive, descente 2 s, repose la barre',
   placement:['Au centre de la barre, pieds largeur de hanches.','Hanches en arrière, dos plat, poitrine fière, bras tendus comme des câbles.','Pousse le sol : hanches et épaules montent ensemble.'],
   erreurs:['Arrondir le bas du dos au départ.','Aller à l’échec : la veille de la boxe, on garde du jus.','Se cambrer en haut : finis grand, fessiers serrés.'],
   pourquoi:'De la force générale sans courbatures : la trap bar travaille surtout en montée, tu arrives frais mardi. 3 × 3–5 à RPE 7, c’est de la force, pas de la masse sur les jambes.',
-  alt:'Pas de trap bar : soulevé de terre roumain haltères 3 × 6.',yt:'soulevé de terre trap bar technique'},
+  alt:'Pas de trap bar : soulevé de terre roumain haltères 3 × 6.'},
 landmine:{nom:'Développé landmine « punch press »',sous:'Un bras, en fente, explosif',muscles:'Épaule, triceps, dentelé',
   series:3,reps:[5,5],repos:90,cible:'Par côté, explosif',champs:['kg','r'],inc:2.5,puissance:1,anim:'landmine',
   tempo:'Poussée explosive comme un coup, retour 1,5 s',
   placement:['Fente, pied arrière sur la pointe, barre à hauteur d’épaule.','Pousse en tournant un peu le buste, comme un direct vers le haut.','L’autre main reste en garde.'],
   erreurs:['Pousser avec le bras seul, buste figé.','Cambrer le dos.','Ralentir au milieu : chaque rep doit claquer.'],
   pourquoi:'De la poussée dans l’axe du coup, sans le stress d’un développé militaire lourd la veille de la boxe.',
-  alt:'Pompes claquées 3 × 5.',yt:'landmine punch press'},
+  alt:'Pompes claquées 3 × 5.'},
 rowPoulie:{nom:'Rowing assis poulie, prise neutre',sous:'Poignée triangle',muscles:'Dos, deuxième séance de la semaine',
   series:2,reps:[10,12],repos:90,cible:'RIR 2',champs:['kg','r'],inc:2.5,anim:'rowPoulie',
   tempo:'Tirage 1 s, 1 s serré, retour 2 s',
   placement:['Buste droit, poitrine haute, genoux légèrement fléchis.','Laisse les épaules partir vers l’avant, puis tire les coudes près du corps.','Poignée au nombril, omoplates serrées 1 s.'],
   erreurs:['Se balancer d’avant en arrière.','Finir en haussant les épaules.','Raccourcir l’étirement.'],
   pourquoi:'Le dos est ton point faible n°1 : il lui faut deux séances par semaine. Ici sans échec, pour ne pas entamer la boxe.',
-  alt:'Rowing machine convergente.',yt:'rowing assis poulie prise neutre technique'},
+  alt:'Rowing machine convergente.'},
 latCable:{nom:'Élévation latérale à la poulie',sous:'Un bras, poulie basse, câble devant toi',muscles:'Deltoïde moyen, deuxième séance',
   series:3,reps:[15,20],repos:30,cible:'Par côté, RIR 1',champs:['kg','r'],inc:1,anim:'latCable',
   tempo:'Montée 1 s, pause 0,5 s, descente 2 s',
   placement:['Tiens-toi au montant, buste légèrement penché vers lui.','Le câble passe devant toi : la tension est maximale en bas.','Monte jusqu’à l’horizontale, coude un peu fléchi.'],
   erreurs:['Tourner le buste pour lancer.','Monter au-dessus de l’horizontale.','Trop lourd.'],
   pourquoi:'Deux doses par semaine, c’est ce qui fait pousser le deltoïde moyen. Léger et sans fatigue : parfait la veille de la boxe.',
-  alt:'Élévations latérales haltères 3 × 15.',yt:'élévation latérale poulie basse unilatérale'},
+  alt:'Élévations latérales haltères 3 × 15.'},
 facepull:{nom:'Face pull',sous:'Corde, poulie à hauteur du front',muscles:'Arrière d’épaule, coiffe des rotateurs',
   series:2,reps:[15,20],repos:60,cible:'RIR 2',champs:['kg','r'],inc:2.5,anim:'facepull',
   tempo:'Tirage 1 s, 1 s en position finale, retour 2 s',
   placement:['Prise pouces vers l’arrière.','Tire la corde vers ton front en écartant les mains.','Finis en « double biceps » : coudes hauts, mains à côté des oreilles.'],
   erreurs:['Coudes trop bas : ça devient un rowing.','Se pencher en arrière.','Trop lourd : on travaille la rotation, pas la force.'],
   pourquoi:'Santé des épaules pour un boxeur qui frappe devant lui toute la semaine. Une posture plus ouverte te fait aussi paraître plus large.',
-  alt:'Oiseau à l’élastique.',yt:'face pull technique corde'},
+  alt:'Oiseau à l’élastique.'},
 pallof:{nom:'Pallof press',sous:'Poulie à hauteur de poitrine, de profil',muscles:'Gainage anti-rotation, obliques',
   series:2,reps:[10,10],repos:30,cible:'Par côté, tenue 2 s',champs:['kg','r'],inc:2.5,anim:'pallof',
   tempo:'Poussée 1 s, tenue 2 s, retour 1 s',
   placement:['De profil à la poulie, pieds largeur d’épaules, genoux souples.','Mains au sternum, pousse droit devant et tiens 2 s.','Le buste ne tourne pas vers la machine.'],
   erreurs:['Se laisser tourner.','Bloquer la respiration : expire en poussant.','Trop lourd : tu dois rester immobile.'],
   pourquoi:'Un buste qui ne tourne pas quand on te frappe transmet mieux la puissance. Et ça n’épaissit pas la taille.',
-  alt:'Pallof press à l’élastique.',yt:'pallof press technique'},
+  alt:'Pallof press à l’élastique.'},
 copenhague:{nom:'Planche de Copenhague',sous:'Pied du dessus sur un banc',muscles:'Adducteurs, contre la pubalgie',
   series:2,reps:[20,30],repos:60,cible:'Secondes par côté',champs:['s'],anim:'copenhague',
   tempo:'Monte les hanches, tiens, redescends doucement',
   placement:['Avant-bras sous l’épaule, pied du dessus sur le banc.','Monte les hanches jusqu’à aligner chevilles, hanches et épaules.','Version facile : genou sur le banc au lieu du pied.'],
   erreurs:['Hanches qui tombent ou qui reculent.','Épaule qui s’écrase : pousse le sol.','Commencer trop long : 15 s en version genou, c’est bien.'],
   pourquoi:'Après les ischios, l’aine est la blessure n°1 du foot. Ici une dose d’entretien, une semaine sur deux en alternance avec le cou, pour alléger le lundi.',
-  alt:'Adducteurs machine 2 × 15.',yt:'copenhagen plank progression'},
+  alt:'Adducteurs machine 2 × 15.'},
 cou:{nom:'Flexion du cou allongé',sous:'Tête dans le vide, disque léger sur une serviette',muscles:'Cou : mieux encaisser les coups',
   series:2,reps:[15,20],repos:60,cible:'RIR 3',champs:['kg','r'],inc:1.25,anim:'cou',
   tempo:'Montée 1,5 s, descente 2 s, jamais d’à-coup',
   placement:['Allongé sur le dos, épaules au bord du banc.','Rentre le menton puis amène-le vers la poitrine.','Termine par 1 série sur le ventre (extension), même charge.'],
   erreurs:['Aller vite ou donner des à-coups.','Commencer lourd : 2,5 kg suffisent.','Douleur dans la nuque : arrête et passe aux isométries à la main.'],
   pourquoi:'Un cou plus fort encaisse mieux les coups à la tête. Volume léger, une semaine sur deux en alternance avec la Copenhague : il se renforce sans s’épaissir.',
-  alt:'Isométries à la main : 4 directions × 10 s.',yt:'renforcement cou boxe banc disque'}
+  alt:'Isométries à la main : 4 directions × 10 s.'}
 };
+
+/* « Voir le geste » : la vidéo choisie pour chaque exercice, et la seconde où commence la démonstration. */
+const GESTES={
+ traction:['pVFSX3Pgxks',35],rowAppuye:['HVjdVv6FYD4',0],incline:['652TTSxCwkM',0],latDB:['QfvKTUbHIKU',0],oiseau:['SiDDgsbjN1M',0],
+ curlInc:['blkM14XWTKY',0],tricepsOH:['mkT-xT-HOAM',0],crunchPoulie:['0KEP6A1deBE',39],nordic:['3-4pKUhkzoQ',0],
+ boxjump:['6-6zkcMS6Lk',0],sautsLat:['kfiC-w5MvRI',0],medball:['o9BC7lgN1bo',12],trapbar:['kpyCkyVIxjI',0],landmine:['zkq-nRq48vk',0],
+ rowPoulie:['IgOuUO4ZNRk',0],latCable:['eihMRam0P2Q',0],facepull:['vpqkOZ0FZb4',0],pallof:['SsQWYNxlYsQ',0],copenhague:['5cTh21BfXzI',0],cou:['mb6P_cIINmw',0]
+};
+const lienGeste=id=>{const g=GESTES[id];return'https://www.youtube.com/watch?v='+g[0]+(g[1]?'&t='+g[1]+'s':'');};
 
 const SEANCES={
 dim:{id:'dim',jour:'Dimanche',titre:'V-Taper',sous:'Dos, épaules, bras et abdos',duree:'75 min',express:'45 min',hero:'latDB',
@@ -973,7 +984,7 @@ const Demos={list:new Set(),raf:0,io:null,
   add(d){this.list.add(d);if(this.io)this.io.observe(d.cv);else d.vis=true;this.loop();},
   remove(d){this.list.delete(d);if(this.io)this.io.unobserve(d.cv);},
   clear(root){[...this.list].forEach(d=>{if(!root||root.contains(d.cv)||!document.body.contains(d.cv))this.remove(d);});},
-  loop(){if(this.raf)return;const f=now=>{this.raf=0;this.list.forEach(d=>{if(!document.body.contains(d.cv)){this.remove(d);return;}if(d.vis&&!d.paused)d.frame(now);});
+  loop(){if(this.raf)return;const f=now=>{this.raf=0;this.list.forEach(d=>{if(!document.body.contains(d.cv)){this.remove(d);return;}if(d.vis&&!d.paused&&!(UI.s&&!d.cv.closest('#seance')))d.frame(now);});
     if(this.list.size)this.raf=requestAnimationFrame(f);};this.raf=requestAnimationFrame(f);}
 };
 if('IntersectionObserver' in window){Demos.io=new IntersectionObserver(es=>es.forEach(e=>{const d=e.target.__demo;if(d){d.vis=e.isIntersecting;if(d.vis&&!d.drawn)d.frame(performance.now());}}),{rootMargin:'60px'});}
@@ -986,11 +997,10 @@ class Demo{
     this.cv=cv;this.A=ANIMS[id];this.id=id;this.opts=opts||{};cv.__demo=this;
     this.tl=buildTimeline(this.A);this.t0=performance.now();this.vis=false;this.paused=false;this.effL=null;
     this.ctx=cv.getContext('2d');trierMuscles(this.A);
-    
     if(MOINS_ANIM){const tl=this.tl,s=tl.segs.find(x=>x.ph==='p2')||tl.segs.find(x=>x.ph==='c')||tl.segs.reduce((a,b)=>b.eff>a.eff?b:a);this.pt=s.t0+s.d*.98;this.paused=true;}
-    this.resize();Demos.add(this);
+    Demos.add(this);
   }
-  resize(){const dpr=Math.min(window.devicePixelRatio||1,3);
+  resize(){const dpr=Math.min(window.devicePixelRatio||1,2);
     this.w=Math.max(10,this.cv.offsetWidth);this.h=Math.max(10,this.cv.offsetHeight);this.cv.width=Math.round(this.w*dpr);this.cv.height=Math.round(this.h*dpr);this.dpr=dpr;this.grad=null;}
   toggle(){this.paused=!this.paused;if(!this.paused){this.t0=performance.now()-this.pt*1000;}return this.paused;}
   poseAt(t){
@@ -1493,9 +1503,12 @@ function fermerFeuille(v){const f=$('#feuille'),s=$('#voile');if(!f.classList.co
 const CLIPS=window.CLIPS||{},VIDEOS=new Set(Object.keys(CLIPS));
 const Clips={io:null,
   monter(root){$$('video[data-clip]',root).forEach(v=>{if(v.__ok)return;v.__ok=1;v.muted=true;v.__pause=RM;
+    v.addEventListener('play',()=>Clips.icone(v,false));v.addEventListener('pause',()=>Clips.icone(v,true));
     v.addEventListener('error',()=>{const sc=v.closest('.scene');if(sc.closest('.hero')){sc.remove();return;}const t=$('.tag',sc),p=sc.parentNode;sc.outerHTML=sceneRepli(v.dataset.clip,t?t.outerHTML:'');monterDemos(p);},{once:true});
-    if(!this.io)this.io=new IntersectionObserver(es=>es.forEach(e=>{const x=e.target;if(!x.isConnected){this.io.unobserve(x);return;}if(e.isIntersecting&&!x.__pause)x.play().catch(()=>{});else x.pause();}),{threshold:.4});
+    if(!this.io)this.io=new IntersectionObserver(es=>es.forEach(e=>{const x=e.target;if(!x.isConnected){this.io.unobserve(x);return;}clearTimeout(x.__t);if(!e.isIntersecting){x.pause();return;}x.__t=setTimeout(()=>{if(x.isConnected&&!x.__pause&&!(UI.s&&x.closest('.app')))x.play().catch(()=>Clips.icone(x,true));},140);}),{threshold:.4});
     this.io.observe(v);});},
+  icone(v,arret){const sc=v.closest('.scene'),b=sc&&$('.pause-b',sc);if(!b||!v.isConnected)return;b.innerHTML=arret?IC.play:IC.pause;b.setAttribute('aria-label',arret?'Lancer la démonstration':'Mettre la démonstration en pause');},
+  basculer(v){if(v.paused){v.__pause=false;v.play().catch(()=>{});}else{v.__pause=true;v.pause();}},
   /* tout est téléchargé au calme une fois l'appli ouverte : reprend au lancement suivant si le réseau coupe */
   async precharger(){if(!window.caches||!navigator.serviceWorker||(navigator.connection&&navigator.connection.saveData))return;
     try{const c=await caches.open('videos-1'),voulus=new Set();
@@ -1503,13 +1516,12 @@ const Clips={io:null,
       /* clips remplacés ou retirés : on libère la place */
       for(const r of await c.keys())if(!voulus.has(r.url))await c.delete(r);}catch(e){}}
 };
-const lienDemo=id=>'https://www.youtube.com/results?search_query='+encodeURIComponent(EX[id].yt);
-function sceneVide(id,extra){return'<div class="scene scene-vide">'+(extra||'')+'<a class="vide-lien" href="'+lienDemo(id)+'" target="_blank" rel="noopener">'+IC.play+'<span>Voir une démonstration<small>Sur YouTube, avec du réseau</small></span></a></div>';}
+function sceneVide(id,extra){return'<div class="scene scene-vide">'+(extra||'')+'</div>';}
 function creditClip(id){const c=CLIPS[id];return c&&c.auteur?'<p class="credit">Vidéo : '+(c.url?'<a href="'+esc(c.url)+'" target="_blank" rel="noopener">'+esc(c.auteur)+'</a>':esc(c.auteur))+(c.source?' sur '+esc(c.source):'')+(c.licence?', <a href="'+esc(c.licenceUrl||'#')+'" target="_blank" rel="noopener">'+esc(c.licence)+'</a>, extrait recadré':'')+'</p>':'';}
 const noteVariante=id=>CLIPS[id]&&CLIPS[id].variante?'<p class="variante">Vidéo : '+esc(CLIPS[id].variante)+'</p>':'';
 const boutonPause=()=>'<button class="pause-b" data-a="pause" aria-label="'+(RM?'Lancer la démonstration':'Mettre la démonstration en pause')+'">'+(RM?IC.play:IC.pause)+'</button>';
 function sceneRepli(id,tag){const a=EX[id].anim;return a&&ANIMS[a]?scene(a,tag+boutonPause(),{apres:'<div class="phase"><span class="ph" aria-live="off"></span>'+barreTempo(a)+'</div>'}):sceneVide(id,tag);}
-function sceneVideo(id,extra){const f=CLIPS[id].f;return'<div class="scene scene-v">'+(extra||'')+'<video data-clip="'+id+'" src="videos/'+f+'.mp4" poster="videos/'+f+'.jpg" muted loop playsinline preload="metadata" disableremoteplayback aria-hidden="true"></video></div>';}
+function sceneVideo(id,extra){const f=CLIPS[id].f;return'<div class="scene scene-v">'+(extra||'')+'<video data-clip="'+id+'" src="videos/'+f+'.mp4" poster="videos/'+f+'.jpg" muted loop playsinline preload="none" disableremoteplayback aria-hidden="true"></video></div>';}
 function monterDemos(root){
   Clips.monter(root);
   $$('canvas[data-anim]',root).forEach(cv=>{if(cv.__demo||!ANIMS[cv.dataset.anim])return;
@@ -1528,7 +1540,6 @@ function jaugeH(v,id){v=Math.max(0,Math.min(1,v));return'<div class="jauge"><i'+
 function segmentH(act,opts,cur){return'<div class="segment" role="group"><span class="seg-ind"></span>'+opts.map(o=>'<button data-a="'+act+'" data-v="'+o[0]+'" class="'+(String(o[0])===String(cur)?'on':'')+'" aria-pressed="'+(String(o[0])===String(cur))+'">'+o[1]+' <small>'+o[2]+'</small></button>').join('')+'</div>';}
 function placerIndics(root,instant){
   $$('.segment',root).forEach(s=>FX.indic($('.seg-ind',s),$('button.on',s),instant));
-  $$('.onglets',root).forEach(s=>FX.indic($('.ong-ind',s),$('button.on',s),instant));
   }
 const plur=(n,s,p)=>n+' '+(n>1?(p||s+'s'):s);
 
@@ -1674,15 +1685,17 @@ function selJour(k){
    ===================================================================== */
 let chronoIv=0;
 function ouvrirCouche(oa){const c=$('#seance');c.classList.toggle('oa',!!oa);c.setAttribute('aria-hidden','false');c.scrollTop=0;document.body.style.overflow='hidden';eveil(true);
-  FX.monte(c);FX.recul(true);placerIndics(c,true);clearInterval(chronoIv);chronoIv=setInterval(majChrono,1000);majChrono();}
+  FX.monte(c);$$('.app video').forEach(v=>v.pause());placerIndics(c,true);clearInterval(chronoIv);chronoIv=setInterval(majChrono,1000);majChrono();}
 function fermerCouche(){const c=$('#seance');c.setAttribute('aria-hidden','true');document.body.style.overflow='';UI.s=null;clearInterval(chronoIv);
-  Repos.stop();FX.recul(false);FX.descend(c,()=>{if(!UI.s){Demos.clear($('#seance-in'));$('#seance-in').innerHTML='';}});if(!besoinEveil())eveil(false);rendre();}
+  Repos.stop();FX.descend(c,()=>{if(!UI.s){Demos.clear($('#seance-in'));$('#seance-in').innerHTML='';}});if(!besoinEveil())eveil(false);rendre();}
 function majChrono(){const el=$('#s-chrono');if(!el||!UI.s)return;const r=jour(UI.s.k),o=UI.s.kind==='salle'?r.gym:r.onair;if(!o||!o.debut)return;
   const fin=o.done&&o.fin?o.fin:Date.now(),s=Math.max(0,(fin-o.debut)/1000);Odo.set(el,s>=3600?Math.floor(s/3600)+'h'+pad(Math.floor(s%3600/60)):mmss(s));}
 
 function ouvrirSalle(k){const S=SEANCES[PLAN[fromISO(k).getDay()].sid],r=jour(k);
   if(!r.gym){r.gym={sid:S.id,debut:Date.now(),ex:{},echauf:{},express:0};toucher(k);}
-  UI.s={k,kind:'salle',sid:S.id};renderSalle();ouvrirCouche();}
+  UI.s={k,kind:'salle',sid:S.id};renderSalle();ouvrirCouche();
+  /* séance reprise : on revient là où on en était */
+  if(nbOk(r.gym)>0&&!r.gym.done){const it=itemsSeance(S,r.gym.express,k,r.gym).find(o=>((r.gym.ex&&r.gym.ex[o.id])||[]).filter(x=>x&&x.ok).length<nbSeries(r.gym,o.id));voirCarte(it?it.id:null,true);}}
 
 function renderSalle(){
   const k=UI.s.k,S=SEANCES[UI.s.sid],g=jour(k).gym,items=itemsSeance(S,g.express,k,g),d=fromISO(k),tot=totalSeries(S,g,k);
@@ -1693,15 +1706,17 @@ function renderSalle(){
   if(g.express)h+='<p class="note bleu" style="margin:0 0 18px">Version express : les exercices qui font l’essentiel du résultat, avec les mêmes charges et les mêmes repos.</p>';
   items.forEach(o=>{h+=carteEx(o,k,g);});
   h+='<button class="btn btn-or btn-plein" data-a="finir">'+(g.done?IC.courbe+'Voir le bilan':IC.ok+'Terminer la séance')+'</button>';
-  Demos.clear($('#seance-in'));$('#seance-in').innerHTML=h;monterDemos($('#seance-in'));majProg(true);
+  Demos.clear($('#seance-in'));$('#seance-in').innerHTML=h;monterDemos($('#seance-in'));majProg(true);detendre();
 }
+let tDet=0;
+function detendre(){clearTimeout(tDet);const pas=()=>{const e=$('#seance-in .ex.differe');if(!e)return;e.classList.remove('differe');tDet=setTimeout(pas,60);};tDet=setTimeout(pas,700);}
 
 function carteEx(o,k,g){
   const E=prescrit(o.id,k),sets=(g.ex&&g.ex[o.id])||[],n=nbSeries(g,o.id),prev=precedent(o.id,k),cs=conseil(E,prev);
   const r2=E.champs.indexOf('kg')<0,sec=E.champs[0]==='s',fini=sets.filter(s=>s&&s.ok).length>=n;
   const tag='<span class="tag">'+(o.ss?o.tag+'<em>en superset</em>':'Exercice '+o.tag)+'</span>';
   const clip=VIDEOS.has(o.id);
-  let h='<article class="ex carte'+(fini?' fini':'')+'" id="ex-'+o.id+'">'+(clip?sceneVideo(o.id,tag+boutonPause()):sceneRepli(o.id,tag))+'<div class="ex-c"><div><h3>'+esc(E.nom)+'</h3><p class="sous">'+esc(E.muscles)+'. '+esc(E.sous)+'</p>'+noteVariante(o.id)+'</div>';
+  let h='<article class="ex carte differe'+(fini?' fini':'')+'" id="ex-'+o.id+'">'+(clip?sceneVideo(o.id,tag+boutonPause()):sceneRepli(o.id,tag))+'<div class="ex-c"><a class="btn btn-or btn-plein" href="'+lienGeste(o.id)+'" target="_blank" rel="noopener" data-geste="'+o.id+'" aria-label="Voir le geste : '+esc(E.nom)+', vidéo YouTube">'+IC.play+'Voir le geste</a><div><h3>'+esc(E.nom)+'</h3><p class="sous">'+esc(E.muscles)+'. '+esc(E.sous)+'</p>'+noteVariante(o.id)+'</div>';
   h+='<ul class="cibles"><li><b>'+E.series+' × '+(E.reps[0]===E.reps[1]?E.reps[0]:E.reps[0]+'–'+E.reps[1])+(sec?' s':'')+'</b></li><li>repos '+mmss(E.repos)+'</li><li>'+esc(E.cible)+'</li></ul>';
   h+='<div class="conseil'+(cs.up?' up':'')+'">'+(cs.up?IC.up:IC.cible)+'<span>'+esc(cs.txt)+'</span></div>';
   h+='<div class="series"><div class="s-head'+(r2?' r2':'')+'"><span>Série</span><span>Avant</span>'+(r2?'':'<span>'+(E.pdc?'Lest':'Kg')+'</span>')+'<span>'+(sec?'Sec.':'Reps')+'</span><span></span></div>';
@@ -1709,12 +1724,12 @@ function carteEx(o,k,g){
   h+='</div><div class="plus-moins"><button data-a="serie+" data-ex="'+o.id+'">Ajouter une série</button>'+(n>E.series?'<button data-a="serie-" data-ex="'+o.id+'">Retirer</button>':'')+'</div>';
   h+='<div class="tech"><div class="onglets" role="tablist"><span class="ong-ind"></span>'+[['placement','Placement'],['erreurs','Erreurs'],['tempo','Tempo'],['pourquoi','Pourquoi']].map((t,i)=>'<button role="tab" data-a="tech" data-t="'+t[0]+'" data-ex="'+o.id+'" class="'+(i===0?'on':'')+'" aria-selected="'+(i===0)+'">'+t[1]+'</button>').join('')+'</div>'+
     '<div class="panneau" id="tech-'+o.id+'" role="tabpanel">'+panneau(E,'placement')+'</div>'+
-    '<div class="tech-pied">'+(clip||ANIMS[E.anim]?'<a class="lien" href="'+lienDemo(o.id)+'" target="_blank" rel="noopener">'+IC.play+(clip?'Autres démonstrations':'Voir une vraie vidéo')+'</a>':'')+'<button class="lien" data-a="histo" data-ex="'+o.id+'">'+IC.courbe+'Ma progression</button></div>'+creditClip(o.id)+'</div>';
+    '<div class="tech-pied"><button class="lien" data-a="histo" data-ex="'+o.id+'">'+IC.courbe+'Ma progression</button></div>'+creditClip(o.id)+'</div>';
   return h+'</div></article>';
 }
 function ligneSerie(E,id,i,s,ps,cs,r2){
   const sec=E.champs[0]==='s';
-  const prec=ps&&ps.ok?(r2?ps.r+(sec?' s':''):fmtKg(ps.kg||0)+' × '+ps.r):'—';
+  const prec=ps&&ps.ok?(r2?ps.r+(sec?' s':''):fmtKg(ps.kg||0)+'\u2009×\u2009'+ps.r):'—';
   const phKg=cs.kg!=null?fmtKg(cs.kg):ps&&ps.ok?fmtKg(ps.kg):E.pdc?'0':'';
   const phR=cs.r!=null?cs.r:ps&&ps.ok?ps.r:E.reps[0];
   return'<div class="serie'+(r2?' r2':'')+(s.ok?' ok':'')+(s.pr?' pr':'')+'" data-ex="'+id+'" data-i="'+i+'"><span class="n">'+(i+1)+'</span><span class="prec">'+prec+'</span>'+
@@ -1746,6 +1761,24 @@ function suivante(id,i){
   for(let q=ix+1;q<items.length;q++)if(!okI(items[q].id,0))return'Ensuite : '+EX[items[q].id].nom;
   return'Dernière série faite. Tu peux terminer la séance.';
 }
+function idSuivant(id,i){
+  const g=jour(UI.s.k).gym,items=itemsSeance(SEANCES[UI.s.sid],g.express,UI.s.k,g),ix=items.findIndex(o=>o.id===id),o=items[ix];
+  const okI=(x,j)=>{const s=g.ex&&g.ex[x]&&g.ex[x][j];return s&&s.ok;};
+  if(o&&o.ss){const grp=items.filter(x=>x.grp===o.grp);
+    for(const x of grp)if(x.id!==id&&!okI(x.id,i)&&i<nbSeries(g,x.id))return x.id;
+    for(let j=0;j<nbSeries(g,grp[0].id);j++)for(const x of grp)if(!okI(x.id,j))return x.id;}
+  else for(let j=0;j<nbSeries(g,id);j++)if(!okI(id,j))return id;
+  /* d'abord ce qui vient après, puis ce qui a été sauté */
+  for(const x of items.slice(ix+1).concat(items.slice(0,ix+1)))if(!okI(x.id,0))return x.id;
+  return null;}
+function voirCarte(id,instant){const c=$('#seance'),t=id?$('#ex-'+id):$('[data-a="finir"]',c),h=$('.s-top',c);if(!t)return;
+  const pos=()=>t.getBoundingClientRect().top-c.getBoundingClientRect().top+c.scrollTop-(h?h.offsetHeight:0)-8,net=instant||RM;
+  c.scrollTo({top:pos(),behavior:net?'auto':'smooth'});
+  /* recalage à l'arrivée, abandonné dès que le doigt reprend la main */
+  let libre=true;const main=()=>{libre=false;};c.addEventListener('touchstart',main,{once:true,passive:true});
+  const recale=()=>{if(libre&&t.isConnected&&Math.abs(pos()-c.scrollTop)>4&&Math.abs(pos()-c.scrollTop)<1500)c.scrollTop=pos();};
+  if(net)requestAnimationFrame(()=>requestAnimationFrame(recale));else{setTimeout(recale,750);setTimeout(recale,1300);}
+  setTimeout(()=>c.removeEventListener('touchstart',main),1400);}
 function valider(row){
   const id=row.dataset.ex,i=+row.dataset.i,E=EX[id],k=UI.s.k,g=jour(k).gym;g.ex=g.ex||{};
   const arr=g.ex[id]||(g.ex[id]=[]);while(arr.length<=i)arr.push({});const s=arr[i]||(arr[i]={});
@@ -1763,6 +1796,7 @@ function valider(row){
   if(s.pr){toast('Nouveau record sur '+E.nom.toLowerCase()+'.',IC.etoile);cloche(1);}
   let nx=row.nextElementSibling;while(nx&&nx.classList.contains('serie')){if(!nx.classList.contains('ok')){const kn=$('input[data-f="kg"]',nx);if(kn&&!kn.value)kn.placeholder=fmtKg(kg);const rn=$('input[data-f="r"]',nx);if(rn&&!rn.value&&!num(rn.placeholder))rn.placeholder=s.r;}nx=nx.nextElementSibling;}
   Repos.start(E.repos,suivante(id,i));
+  const nid=idSuivant(id,i);if(nid!==id&&!row.contains(document.activeElement))voirCarte(nid);
 }
 function secoue(el){FX.a(el,{x:[0,-6,5,-3,0]},{duration:.3,ease:'easeOut'});Haptique.tic();}
 function finirSalle(){
@@ -1819,23 +1853,21 @@ function segsPreset(w,r,n){const s=[{k:'prep',d:10,lab:'En garde',round:'Round 1
 /* =====================================================================
    MINUTEURS
    ===================================================================== */
-const CR=2*Math.PI*25;
 const Repos={fin:0,tot:1,iv:0,actif:false,bp:null,
   start(sec,txt){audio();this.tot=sec;this.fin=Date.now()+sec*1000;this.bp=new Set();const el=$('#repos'),deja=el.classList.contains('on');this.actif=true;
     $('#repos-lbl').textContent='Repos';$('#repos-txt').textContent=txt||'';el.classList.remove('fin');
-    el.__tok=(el.__tok||0)+1;if(!deja)FX.montrer(el,{y:[120,0],opacity:[0,1]},SP);else el.classList.add('on');const arc=$('#repos-arc');arc.style.transition='none';arc.style.strokeDashoffset='0';void arc.getBoundingClientRect();arc.style.transition='';
+    el.__tok=(el.__tok||0)+1;if(!deja)FX.montrer(el,{y:[120,0],opacity:[0,1]},SP);else el.classList.add('on');const arc=$('#repos-arc');arc.style.transition='none';arc.style.transform='scaleX(1)';requestAnimationFrame(()=>requestAnimationFrame(()=>{arc.style.transition='';}));
     clearInterval(this.iv);this.iv=setInterval(()=>this.tick(),250);this.tick();eveil(true);},
   tick(){if(!this.actif)return;const rem=(this.fin-Date.now())/1000;
     if(rem<=0){this.sonne();return;}
     const s=Math.ceil(rem),t=$('#repos-t');Odo.set(t,mmss(s));
-    $('#repos-arc').style.strokeDashoffset=(CR*(1-rem/this.tot)).toFixed(1);
+    $('#repos-arc').style.transform='scaleX('+Math.min(1,rem/this.tot).toFixed(4)+')';
     if(rem<=3.05&&!this.bp.has(s)){this.bp.add(s);beep(660,.09);}},
-  sonne(){clearInterval(this.iv);this.actif=false;Odo.set($('#repos-t'),'0:00');$('#repos-arc').style.strokeDashoffset=CR.toFixed(1);
-    beep(1320,.4);vibre([120,80,120]);const el=$('#repos');el.classList.add('fin');$('#repos-lbl').textContent='C’est reparti';
-        clearTimeout(this.to);this.to=setTimeout(()=>{if(!this.actif)this.cacher();},3200);},
+  sonne(){clearInterval(this.iv);this.actif=false;Odo.set($('#repos-t'),'0:00');
+    beep(1320,.4);vibre([120,80,120]);const el=$('#repos');el.classList.add('fin');$('#repos-lbl').textContent='C’est reparti';},
   add(d){if(!this.actif)return;this.fin+=d*1000;this.tot=Math.max(1,this.tot+d);this.tick();},
   cacher(){const el=$('#repos');FX.cacher(el,{y:120,opacity:0},SP,()=>el.classList.remove('fin'));},
-  stop(){clearInterval(this.iv);clearTimeout(this.to);const was=this.actif||$('#repos').classList.contains('on');this.actif=false;if(was)this.cacher();}
+  stop(){clearInterval(this.iv);const was=this.actif||$('#repos').classList.contains('on');this.actif=false;if(was)this.cacher();}
 };
 const CRG=2*Math.PI*46;
 const Ring={segs:[],i:0,t0:0,iv:0,actif:false,pause:false,pAt:0,warn:false,bp:null,onFin:null,last:-1,
@@ -2036,10 +2068,12 @@ function aller(tab){
 function vagueRpe(b){$$('button',b.parentNode).forEach(x=>{const on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on);});}
 
 document.addEventListener('click',e=>{
+  const vd=e.target.closest('.scene-v video');if(vd){Clips.basculer(vd);return;}
+  const rf=e.target.closest('.repos.fin');if(rf){Repos.stop();return;}
   const tb=e.target.closest('.tabs button');if(tb){aller(tb.dataset.tab);return;}
   const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
     switch(a){
-    case'jour':{const k=b.dataset.d;if(k===UI.jour&&b.classList.contains('chip'))return;selJour(k);if(b.closest('.etape')||b.classList.contains('lien'))window.scrollTo({top:0,behavior:'smooth'});break;}
+    case'jour':{const k=b.dataset.d;if(k===UI.jour&&b.classList.contains('chip'))return;selJour(k);if(b.closest('.etape')||b.classList.contains('lien'))window.scrollTo({top:0,behavior:RM?'auto':'smooth'});break;}
     case'sem':selJour(iso(addD(fromISO(UI.jour),+b.dataset.v)));break;
     case'go-salle':audio();ouvrirSalle(b.dataset.d);break;
     case'go-onair':{audio();const pour=b.dataset.pour||null;let k=b.dataset.d||null;if(!k){const s=UI.jour;k=UI.tab==='jour'&&s<=auj()&&!pour?s:auj();if(pour&&pour>auj())k=auj();}
@@ -2053,23 +2087,23 @@ document.addEventListener('click',e=>{
     case'fermer':flush();fermerCouche();break;
     case'express':{const g=jour(UI.s.k).gym;if(g.express===+b.dataset.v)return;g.express=+b.dataset.v;toucher(UI.s.k);
       $$('button',b.parentNode).forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b);});FX.indic($('.seg-ind',b.parentNode),b);
-      setTimeout(()=>{const y=$('#seance').scrollTop;renderSalle();placerIndics($('#seance'),true);$('#seance').scrollTop=Math.min(y,120);},200);break;}
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{const y=$('#seance').scrollTop;renderSalle();placerIndics($('#seance'),true);$('#seance').scrollTop=Math.min(y,120);}));break;}
     case'echauf':{const g=jour(UI.s.k).gym;g.echauf=g.echauf||{};const i=b.dataset.i;g.echauf[i]=g.echauf[i]?0:1;b.classList.toggle('on',!!g.echauf[i]);b.setAttribute('aria-pressed',!!g.echauf[i]);if(g.echauf[i])FX.trace($('path',b));toucher(UI.s.k);break;}
     case'ok':valider(b.closest('.serie'));break;
     case'serie+':case'serie-':{const id=b.dataset.ex,g=jour(UI.s.k).gym;g.ex=g.ex||{};const arr=g.ex[id]||(g.ex[id]=[]);const n=nbSeries(g,id);
       if(a==='serie+'){while(arr.length<n+1)arr.push({});}else{if(n>EX[id].series){arr.length=n-1;}}
       toucher(UI.s.k);const card=$('#ex-'+id),o=itemsSeance(SEANCES[UI.s.sid],g.express,UI.s.k,g).find(x=>x.id===id);
-      Demos.clear(card);const tmp=document.createElement('div');tmp.innerHTML=carteEx(o,UI.s.k,g);card.replaceWith(tmp.firstChild);const nc=$('#ex-'+id);monterDemos(nc);placerIndics(nc,true);majProg();
+      const tmp=document.createElement('div');tmp.innerHTML=carteEx(o,UI.s.k,g);$('.ex-c',card).replaceWith($('.ex-c',tmp));const nc=card;placerIndics(nc,true);majProg();majCarte(id);
       if(a==='serie+'){const rows=$$('.serie',nc);FX.fondu(rows[rows.length-1]);}break;}
     case'tech':{const id=b.dataset.ex,tabs=b.parentNode,olds=$$('button',tabs);
       olds.forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b);});FX.indic($('.ong-ind',tabs),b);
       const p=$('#tech-'+id);p.innerHTML=panneau(EX[id],b.dataset.t);FX.fondu(p);break;}
-    case'pause':{const v=$('video',b.closest('.scene'));if(v){v.__pause=!v.__pause;if(v.__pause)v.pause();else v.play().catch(()=>{});b.innerHTML=v.__pause?IC.play:IC.pause;b.setAttribute('aria-label',v.__pause?'Relancer la démonstration':'Mettre la démonstration en pause');break;}const cv=$('canvas',b.closest('.scene'));if(cv&&cv.__demo){const p=cv.__demo.toggle();b.innerHTML=p?IC.play:IC.pause;b.setAttribute('aria-label',p?'Relancer la démonstration':'Mettre la démonstration en pause');}break;}
+    case'pause':{const v=$('video',b.closest('.scene'));if(v){Clips.basculer(v);break;}const cv=$('canvas',b.closest('.scene'));if(cv&&cv.__demo){const p=cv.__demo.toggle();b.innerHTML=p?IC.play:IC.pause;b.setAttribute('aria-label',p?'Relancer la démonstration':'Mettre la démonstration en pause');}break;}
     case'histo':feuilleHisto(b.dataset.ex);break;
     case'finir':finirSalle();break;
     case'fin-ok':fermerFeuille();fermerCouche();break;
     case'leger':{const o=jour(UI.s.k).onair;if(o.leger===+b.dataset.v)return;o.leger=+b.dataset.v;toucher(UI.s.k);$$('button',b.parentNode).forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b);});FX.indic($('.seg-ind',b.parentNode),b);
-      setTimeout(()=>{renderOnAir();placerIndics($('#seance'),true);},200);break;}
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{renderOnAir();placerIndics($('#seance'),true);}));break;}
     case'ring-bloc':{const O=ONAIR[UI.s.id],bl=O.blocs[+b.dataset.b],o=jour(UI.s.k).onair,k=UI.s.k;
       Ring.start('On Air '+O.id+', '+bl.nom.toLowerCase(),segsBloc(bl,!!o.leger),()=>{const r=jour(k).onair;if(r){r.blocs=r.blocs||{};r.blocs[bl.id]=1;toucher(k);}
         const sec=$('#bloc-'+bl.id);if(sec){sec.classList.add('fini');const bt=$('[data-a="bloc-ok"]',sec);if(bt){bt.innerHTML=IC.ok+'Fait';bt.setAttribute('aria-pressed','true');}}});break;}
