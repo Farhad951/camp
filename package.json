@@ -1,0 +1,13 @@
+{
+  "name": "camp",
+  "private": true,
+  "description": "Tests de l'appli Camp. L'appli elle-même n'a besoin d'aucune installation.",
+  "scripts": {
+    "test": "node tests/tout.js",
+    "test:youtube": "node tests/youtube.test.js",
+    "test:vitesse": "node tests/vitesse.js"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.16.0"
+  }
+}

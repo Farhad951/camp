@@ -1,3 +1,5 @@
 .env
 outils/candidats.json
 outils/candidats.html
+node_modules/
+tests/sortie/

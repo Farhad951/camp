@@ -16,6 +16,24 @@ Appli d'entraînement personnelle : boxe (mardi, jeudi, samedi) et salle (dimanc
 
 Les séances sont enregistrées sur le téléphone uniquement. Pense à faire Plan → Exporter de temps en temps.
 
+## Tests
+
+Il faut Node et Chrome. L'appli elle-même ne demande aucune installation.
+
+    npm install
+    npm test
+
+`npm test` ouvre l'appli dans Chrome sans interface et rejoue les parcours : thème et contrastes, séance complète, cohérence des textes, lecture hors ligne, préchargement. Il faut du réseau pour le lecteur YouTube. Les captures vont dans `tests/sortie/`.
+
+- `npm run test:youtube` vérifie que les 20 vidéos se lisent dans le lecteur.
+- `npm run test:vitesse` mesure le site publié avec un processeur ralenti et trois réseaux lents.
+
+Ces tests ne remplacent pas un essai sur un vrai iPhone.
+
+## Thème
+
+Les polices Outfit et Fira Code sont dans `polices/`, sous licence [SIL OFL](polices/LICENCE-outfit.txt). `node outils/icones.js` redessine les icônes.
+
 ## Vidéos
 
 Les clips de `videos/` sont décrits dans `outils/selection.json` et produits par `node outils/videos.mjs appliquer`. Ce sont des extraits recadrés, compressés et sans son.
