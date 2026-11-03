@@ -44,7 +44,16 @@ const EXOS={
   facepull:['Face pull','cable face pull'],
   pallof:['Pallof press','pallof press'],
   copenhague:['Planche de Copenhague','copenhagen plank'],
-  cou:['Flexion du cou','neck flexion exercise']
+  cou:['Flexion du cou','neck flexion exercise'],
+  corde:['Corde à sauter','jump rope workout'],
+  shadow:['Shadow boxing','shadow boxing'],
+  sac:['Sac lourd','punching bag boxer'],
+  gainage:['Gainage boxeur','plank exercise'],
+  burpee:['Burpee-sprawl','burpees workout'],
+  pompes:['Pompes','push ups exercise'],
+  swing:['Swing kettlebell','kettlebell swing'],
+  slam:['Slam ball','slam ball workout'],
+  climbers:['Mountain climbers','mountain climbers exercise']
 };
 
 const stop=m=>{console.error(m);process.exit(1);};
@@ -170,6 +179,17 @@ function encoder(entree,dossier,{debut=0,duree=6,crop,filtre}){
   ffmpeg(['-i',mp4,'-frames:v','1','-q:v','5',jpg]);
   return{mp4,jpg};
 }
+/* Faute de vidéo libre : deux photos des positions du geste, en fondu et en boucle. */
+function encoderPhotos(a,b,dossier){
+  const mp4=path.join(dossier,'c.mp4'),jpg=path.join(dossier,'c.jpg'),dim=spawnSync('ffprobe',['-v','error','-select_streams','v','-show_entries','stream=width,height','-of','csv=p=0',a],{encoding:'utf8'}).stdout.trim().split(',').map(Number),
+    /* paysage : plein cadre. Portrait : la personne reste entière, sur le fond de l'appli. */
+    cadre=dim[0]>dim[1]?'scale=544:408:force_original_aspect_ratio=increase,crop=544:408':'scale=544:408:force_original_aspect_ratio=decrease,pad=544:408:-1:-1:color=0x1C1917',
+    fit=i=>'['+i+':v]'+cadre+',setsar=1,fps=24[v'+i+']';
+  const flt=[0,1,2].map(fit).join(';')+';[v0][v1]xfade=transition=fade:duration=0.4:offset=0.9[x];[x][v2]xfade=transition=fade:duration=0.4:offset=2.2[s]';
+  ffmpeg(['-loop','1','-t','1.3','-i',a,'-loop','1','-t','1.7','-i',b,'-loop','1','-t','1.3','-i',a,'-filter_complex',flt,'-map','[s]','-an','-c:v','libx264','-profile:v','main','-pix_fmt','yuv420p','-crf','30','-preset','slow','-movflags','+faststart',mp4]);
+  ffmpeg(['-i',mp4,'-frames:v','1','-q:v','5',jpg]);
+  return{mp4,jpg};
+}
 function publier(id,{mp4,jpg},meta){
   const nom=id+'-'+crypto.createHash('sha256').update(fs.readFileSync(mp4)).digest('hex').slice(0,8);
   fs.mkdirSync(DOSSIER,{recursive:true});
@@ -187,14 +207,17 @@ async function appliquer(ids){
   /* sources volumineuses : gardées hors du dépôt entre deux lancements */
   const cache=path.join(os.tmpdir(),'camp-sources');fs.mkdirSync(cache,{recursive:true});
   for(const id of ids.length?ids:Object.keys(sel)){
-    const s=sel[id],src=path.join(cache,crypto.createHash('sha256').update(s.fichier).digest('hex').slice(0,16));
-    if(!fs.existsSync(src)){
-      const r=await fetch(s.fichier,{headers:{'User-Agent':'CampApp/1.0 (application personnelle ; farhad951.github.io/camp)'}});
-      if(!r.ok)stop(id+' : téléchargement refusé, HTTP '+r.status);
-      fs.writeFileSync(src,Buffer.from(await r.arrayBuffer()));
+    const s=sel[id],srcs=[];
+    for(const u of s.photos||[s.fichier]){
+      const src=path.join(cache,crypto.createHash('sha256').update(u).digest('hex').slice(0,16));srcs.push(src);
+      if(!fs.existsSync(src)){
+        const r=await fetch(u,{headers:{'User-Agent':'CampApp/1.0 (application personnelle ; farhad951.github.io/camp)'}});
+        if(!r.ok)stop(id+' : téléchargement refusé, HTTP '+r.status);
+        fs.writeFileSync(src,Buffer.from(await r.arrayBuffer()));
+      }
     }
     const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'camp-video-'));
-    try{publier(id,encoder(src,tmp,s),{source:s.source,auteur:s.auteur,url:s.url,licence:s.licence,licenceUrl:s.licenceUrl,...(s.variante?{variante:s.variante}:{})});}
+    try{publier(id,s.photos?encoderPhotos(srcs[0],srcs[1],tmp):encoder(srcs[0],tmp,s),{source:s.source,auteur:s.auteur,url:s.url,licence:s.licence,licenceUrl:s.licenceUrl,...(s.variante?{variante:s.variante}:{})});}
     finally{fs.rmSync(tmp,{recursive:true,force:true});}
   }
 }

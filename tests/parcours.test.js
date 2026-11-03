@@ -47,7 +47,7 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  await p.evaluate(()=>{fermerCouche()});await sleep(800);ok('couche fermée',await p.evaluate(()=>!document.querySelector('#seance').classList.contains('on')));
  await shot('13-jour-fait');
  // onglets
- for(const[t,i]of[['onair',14],['chrono',15],['progres',16],['plan',17]]){await clic('[data-tab="'+t+'"]');await sleep(350);await shot(i+'-'+t);await p.screenshot({path:path.join(out,i+'-'+t+'-full.png'),fullPage:true});}
+ for(const[t,i]of[['onair',14],['chrono',15],['progres',16]]){await clic('[data-tab="'+t+'"]');await sleep(350);await shot(i+'-'+t);await p.screenshot({path:path.join(out,i+'-'+t+'-full.png'),fullPage:true});}
  // on air
  await clic('[data-tab="onair"]');await sleep(200);await clic('[data-a="go-onair"][data-id="B"]');await sleep(800);await shot('18-oa-seance');
  await p.evaluate(()=>{document.querySelector('#seance').scrollTop=1500});await sleep(400);await shot('19-oa-stations');
@@ -60,7 +60,7 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  // persistance
  await p.evaluate(()=>flush());await p.reload();await sleep(600);ok('données après rechargement',await p.evaluate(()=>DB.days[auj()].gym.done===1&&!!DB.days[auj()].onair.done));
  // sauvegarde
- await clic('[data-tab="plan"]');await sleep(200);await p.evaluate(()=>document.querySelector('[data-a="import"]').click());await sleep(500);await shot('22-import');await p.evaluate(()=>fermerFeuille());await sleep(500);
+ await clic('[data-tab="progres"]');await sleep(200);await p.evaluate(()=>aller('plan'));await sleep(200);await p.evaluate(()=>document.querySelector('[data-a="import"]').click());await sleep(500);await shot('22-import');await p.evaluate(()=>fermerFeuille());await sleep(500);
  ok('export/import : JSON relu',await p.evaluate(()=>{const avant=Object.keys(DB.days).length;importer(JSON.stringify(DB));return Object.keys(DB.days).length===avant;}));
  ok('clé de stockage inchangée',await p.evaluate(()=>LS==='camp-farhad.v1'&&!!localStorage.getItem(LS)));
  // cibles tactiles sur Jour et séance

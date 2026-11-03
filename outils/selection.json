@@ -91,5 +91,250 @@
   "debut": 3.5,
   "duree": 4.75,
   "crop": "1440:1080:0:0"
+ },
+ "rowAppuye": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Incline_Row/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Dumbbell_Incline_Row/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo"
+ },
+ "crunchPoulie": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crunch/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Cable_Crunch/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo"
+ },
+ "nordic": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Natural_Glute_Ham_Raise/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Natural_Glute_Ham_Raise/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo"
+ },
+ "boxjump": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Box_Jump/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Box_Jump/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo"
+ },
+ "sautsLat": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lateral_Bound/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lateral_Bound/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo"
+ },
+ "medball": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Medicine_Ball_Full_Twist/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Medicine_Ball_Full_Twist/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo, rotation en passe à un partenaire, ta version se lance contre un mur"
+ },
+ "trapbar": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Trap_Bar_Deadlift/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Trap_Bar_Deadlift/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo"
+ },
+ "landmine": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Landmine_Linear_Jammer/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Landmine_Linear_Jammer/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo, à deux mains, ta version se fait à un bras"
+ },
+ "latCable": {
+  "fichier": "https://wger.de/media/exercise-video/349/9896d82e-d8b6-48af-bdd5-b8545dc523e9.MOV",
+  "url": "https://wger.de/exercise/349/view/",
+  "licence": "CC BY-SA 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr",
+  "source": "wger",
+  "auteur": "Goulart",
+  "debut": 1,
+  "duree": 4.25,
+  "crop": "1440:1080:240:0"
+ },
+ "pallof": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pallof_Press/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Pallof_Press/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo"
+ },
+ "copenhague": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Bridge/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Side_Bridge/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo, planche latérale simple, ta version a la jambe du dessus posée sur un banc"
+ },
+ "cou": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lying_Face_Up_Plate_Neck_Resistance/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Lying_Face_Up_Plate_Neck_Resistance/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo"
+ },
+ "corde": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Rope_Jumping/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Rope_Jumping/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo"
+ },
+ "climbers": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Mountain_Climbers/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Mountain_Climbers/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo"
+ },
+ "gainage": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Plank/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo, planche classique, un des gainages du bloc"
+ },
+ "slam": {
+  "photos": [
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Overhead_Slam/0.jpg",
+   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Overhead_Slam/1.jpg"
+  ],
+  "url": "https://github.com/yuhonas/free-exercise-db",
+  "source": "free-exercise-db",
+  "auteur": "yuhonas",
+  "licence": "Unlicense",
+  "licenceUrl": "https://unlicense.org/",
+  "variante": "les deux positions en photo"
+ },
+ "pompes": {
+  "fichier": "https://cdn.pixabay.com/video/2017/12/01/13134-245530646_medium.mp4",
+  "source": "Pixabay",
+  "auteur": "tacofleur",
+  "url": "https://pixabay.com/videos/id-13134/",
+  "licence": "Licence Pixabay",
+  "licenceUrl": "https://pixabay.com/service/license-summary/",
+  "debut": 6,
+  "duree": 3,
+  "crop": "720:540:360:180"
+ },
+ "shadow": {
+  "fichier": "https://cdn.pixabay.com/video/2020/10/11/52101-467180032_medium.mp4",
+  "source": "Pixabay",
+  "auteur": "FITAHOLICLIFE",
+  "url": "https://pixabay.com/videos/id-52101/",
+  "licence": "Licence Pixabay",
+  "licenceUrl": "https://pixabay.com/service/license-summary/",
+  "debut": 0,
+  "duree": 4
+ },
+ "swing": {
+  "fichier": "https://upload.wikimedia.org/wikipedia/commons/1/13/Kettlebell_Swing_Hip_Hinge_Style.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "source": "Wikimedia Commons",
+  "auteur": "Taco fleur",
+  "url": "https://commons.wikimedia.org/wiki/File:Kettlebell_Swing_Hip_Hinge_Style.webm",
+  "licence": "CC BY-SA 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+  "debut": 4.5,
+  "duree": 3,
+  "crop": "480:360:80:110"
+ },
+ "burpee": {
+  "fichier": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Burpee_How_To.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "source": "Wikimedia Commons",
+  "auteur": "Gyglim",
+  "url": "https://commons.wikimedia.org/wiki/File:Burpee_How_To.webm",
+  "licence": "CC BY-SA 3.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "debut": 12.4,
+  "duree": 3.6,
+  "crop": "880:660:200:40"
+ },
+ "sac": {
+  "fichier": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Boxing_Heavy_Bag_Analysis.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+  "source": "Wikimedia Commons",
+  "auteur": "UncleSamPatriot",
+  "url": "https://commons.wikimedia.org/wiki/File:Boxing_Heavy_Bag_Analysis.webm",
+  "licence": "CC BY 4.0",
+  "licenceUrl": "https://creativecommons.org/licenses/by/4.0",
+  "debut": 7,
+  "duree": 3,
+  "crop": "1440:1080:240:0"
  }
 }

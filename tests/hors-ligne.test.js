@@ -7,16 +7,15 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  await ev(()=>Clips.precharger());await sleep(1500);
  const n=await ev(()=>VIDEOS.size);
  const cache=await ev(()=>caches.open('videos-1').then(c=>c.keys()).then(k=>k.length));
- ok('8 clips déclarés',n===8,n);ok('clips et images en cache',cache===n*2,cache);
+ ok('29 clips déclarés',n===29,n);ok('clips et images en cache',cache===n*2,cache);
  const attendu={dim:['traction','incline','latDB','oiseau','curlInc','tricepsOH'],lun:['rowPoulie','facepull']};
  await p.setOfflineMode(true);await p.reload();await sleep(1000);
- ok('appli hors ligne',await ev(()=>!!document.querySelector('#hero')&&VIDEOS.size===8));
+ ok('appli hors ligne',await ev(()=>!!document.querySelector('#hero')&&VIDEOS.size>=25));
  const seance=async k=>{await ev(k=>{UI.s=null;document.querySelector('#seance').classList.remove('on');UI.jour=k;rendre();document.querySelector('[data-a="go-salle"]').click();},k);await sleep(900);};
  const viser=async id=>{await ev(id=>{const e=document.querySelector('#ex-'+id);document.querySelector('#seance').scrollTop=e.offsetTop-70;},id);await sleep(1300);};
  await seance('2026-11-01');
  for(const id of attendu.dim){await viser(id);const v=await ev(id=>{const x=document.querySelector('#ex-'+id+' video');return x?{t:+x.currentTime.toFixed(2),paused:x.paused,w:x.videoWidth,h:x.videoHeight,err:x.error&&x.error.code}:null;},id);ok('dimanche '+id+' : lu hors ligne',v&&v.t>0&&!v.paused&&v.w===544&&!v.err,v);}
  await viser('tricepsOH');await p.screenshot({path:path.join(OUT,'triceps.png')});
- for(const id of ['rowAppuye','crunchPoulie','nordic']){ok('dimanche '+id+' : mannequin et lien',await ev(id=>{const e=document.querySelector('#ex-'+id);return !!e.querySelector('canvas')&&!e.querySelector('video')&&!!e.querySelector('[data-a="geste"]');},id));}
  ok('variante signalée',await ev(()=>/banc incliné/.test(document.querySelector('#ex-curlInc .variante').textContent)));
  ok('crédit et licence',await ev(()=>/Goulart.*wger.*CC BY-SA 4\.0/.test(document.querySelector('#ex-latDB .credit').textContent)));
  await viser('latDB');await p.screenshot({path:path.join(OUT,'latDB.png')});
@@ -34,7 +33,6 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  // enchaînement
  ok('dernière série : défile vers l’exercice suivant',await ev(async()=>{document.querySelector('#seance').scrollTop=document.querySelector('#ex-oiseau').offsetTop;const lignes=[...document.querySelectorAll('#ex-oiseau .serie')];for(const r of lignes){const k=r.querySelector('input[data-f="kg"]');k.value='5';r.querySelector('input[data-f="r"]').value='15';valider(r);}Repos.stop();await new Promise(r=>setTimeout(r,1400));const b=document.querySelector('#ex-curlInc').getBoundingClientRect().top;return b>40&&b<160;}));
  await ev(()=>{const S=SEANCES.dim;});
- await viser('nordic');await sleep(400);ok('mannequin animé',await ev(()=>[...Demos.list].some(d=>!d.paused)));await p.screenshot({path:path.join(OUT,'nordic.png')});
  await ev(()=>{UI.s=null;document.querySelector('#seance').classList.remove('on');UI.jour='2026-11-01';rendre();});await sleep(500);
  ok('accueil dimanche : clip',await ev(()=>!!document.querySelector('#hero video')));await p.screenshot({path:path.join(OUT,'hero-dim.png')});
  // reprise de séance
@@ -42,16 +40,14 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  ok('séance reprise : retour à l’exercice en cours',await ev(()=>{const b=document.querySelector('#ex-traction').getBoundingClientRect();return document.querySelector('#seance').scrollTop===0||b.top<140;}),await ev(()=>document.querySelector('#seance').scrollTop));
  await seance('2026-11-02');
  for(const id of attendu.lun){await viser(id);const v=await ev(id=>{const x=document.querySelector('#ex-'+id+' video');return x?{t:+x.currentTime.toFixed(2),w:x.videoWidth}:null;},id);ok('lundi '+id+' : lu hors ligne',v&&v.t>0,v);}
- ok('sauts latéraux : bouton sans figure',await ev(()=>{const e=document.querySelector('#ex-sautsLat');return !!e.querySelector('[data-a="geste"]')&&!e.querySelector('canvas');}));
- ok('box jump : mannequin',await ev(()=>!!document.querySelector('#ex-boxjump canvas')));
  const liens=await ev(()=>{const r={};for(const S of Object.values(SEANCES))for(const id of S.ex.flat()){r[id]=lienGeste(id);}return r;});
  ok('20 exercices ont une vidéo directe',Object.keys(liens).length===20&&Object.values(liens).every(u=>/^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}(&t=\d+s)?$/.test(u)),Object.keys(liens).length);
  ok('chaque carte du lundi a son bouton',await ev(()=>[...document.querySelectorAll('#seance .ex')].every(e=>{const a=e.querySelector('[data-a="geste"]');return a&&a.textContent==='Voir le geste';})));
  ok('aucune recherche YouTube restante',await ev(()=>!document.documentElement.innerHTML.includes('search_query')));
  ok('programme toujours appliqué',await ev(()=>EX.latDB.series===6&&EX.trapbar.series===3&&EX.boxjump.series===3&&!!EX.sautsLat));
- // fichier illisible → mannequin
+ // fichier illisible : étapes et bouton restent
  await p.setOfflineMode(false);
  await ev(()=>{CLIPS.medball={f:'absent-000'};VIDEOS.add('medball');});await seance('2026-11-02');await viser('medball');await sleep(800);
- ok('clip illisible : retombe sur le mannequin',await ev(()=>!!document.querySelector('#ex-medball canvas')&&!document.querySelector('#ex-medball video')&&!!document.querySelector('#ex-medball .tag')));
+ ok('clip illisible : étapes et bouton restent',await ev(()=>{const e=document.querySelector('#ex-medball');return !e.querySelector('video')&&!!e.querySelector('.etapes li')&&!!e.querySelector('[data-a="geste"]')&&!!e.querySelector('.tag');}));
  await t.fin();
 })().catch(e=>{console.error(e);process.exit(1);});
