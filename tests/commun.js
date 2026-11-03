@@ -18,13 +18,15 @@ function serveur(port){return http.createServer(async(q,r)=>{let p=decodeURIComp
   r.writeHead(200,{'Content-Type':TYPES[path.extname(f)]||'application/octet-stream'});r.end(fs.readFileSync(f));}).listen(port);}
 /* un lundi de semaine connue : les parcours ne dépendent pas du jour où on lance les tests */
 const LUNDI='2026-11-02T12:00:00';
-async function preparer(port,nom,args){
+/* l'ouverture dure 3 s : seule la suite du thème l'attend */
+async function preparer(port,nom,args,opts){
   const OUT=path.join(__dirname,'sortie',nom);fs.mkdirSync(OUT,{recursive:true});
   const srv=serveur(port);
   const b=await puppeteer.launch({executablePath:chrome(),headless:'new',args:['--autoplay-policy=no-user-gesture-required',...(args||[])]});
   const p=await b.newPage();await p.setViewport({width:390,height:844,deviceScaleFactor:2,isMobile:true,hasTouch:true});
   await p.evaluateOnNewDocument(t=>{const dec=new Date(t).getTime()-Date.now(),D=Date;
     window.Date=class extends D{constructor(...a){super(...(a.length?a:[D.now()+dec]));}static now(){return D.now()+dec;}};},LUNDI);
+  if(!(opts&&opts.ouverture))await p.evaluateOnNewDocument(()=>{document.addEventListener('DOMContentLoaded',()=>{const s=document.createElement('style');s.textContent='#ouv{display:none!important}.ouverture .app{animation:none!important}';document.head.appendChild(s);});});
   const errs=[];p.on('pageerror',e=>errs.push(e.message));
   p.on('console',m=>{if(m.type()==='error'&&!/Failed to load resource|youtube|ytimg|ERR_|absent-000/.test(m.text()))errs.push(m.text());});
   const t={b,p,srv,OUT,errs,reseau,echecs:0,url:'http://localhost:'+port+'/',

@@ -6,14 +6,15 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  /* faux services d'IA : aucune clé réelle, aucun appel réseau sortant */
  const appels=[];let mode='ok';await p.setRequestInterception(true);
  p.on('request',q=>{const u=q.url();
-  if(/api\.anthropic\.com|generativelanguage\.googleapis\.com/.test(u)){
+  if(/generativelanguage\.googleapis\.com/.test(u)){
    const h={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'*'};
    if(q.method()==='OPTIONS'){q.respond({status:204,headers:h});return;}
+   if(q.method()==='GET'){q.respond({status:200,headers:h,contentType:'application/json',body:'{}'});return;}
    appels.push({u,h:q.headers(),b:JSON.parse(q.postData())});
    if(mode==='401'){q.respond({status:401,headers:h,body:'{}'});return;}
-   if(mode==='refus'){q.respond({status:200,headers:h,contentType:'application/json',body:JSON.stringify({stop_reason:'refusal',content:[]})});return;}
+   if(mode==='refus'){q.respond({status:200,headers:h,contentType:'application/json',body:JSON.stringify({promptFeedback:{blockReason:'SAFETY'}})});return;}
    const txt=JSON.stringify(mode==='vide'?{pas_un_plat:true,aliments:[]}:PLAT);
-   q.respond({status:200,headers:h,contentType:'application/json',body:JSON.stringify(/anthropic/.test(u)?{stop_reason:'end_turn',content:[{type:'thinking',thinking:''},{type:'text',text:txt}]}:{candidates:[{content:{parts:[{text:'```json\n'+txt+'\n```'}]}}]})});return;}
+   q.respond({status:200,headers:h,contentType:'application/json',body:JSON.stringify({candidates:[{content:{parts:[{text:'```json\n'+txt+'\n```'}]}}]})});return;}
   q.continue();});
  p.on('dialog',d=>{t.ok('aucune alerte injectée',false,d.message());d.dismiss();});
  await p.goto(t.url,{waitUntil:'load'});await sleep(1300);
@@ -38,9 +39,9 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  await ev(()=>{Lecteur.ferme();document.querySelector('[data-a="fermer"]').click();});await sleep(500);
 
  /* --- onglets */
- ok('six onglets, Plan rangé sous Progrès',await ev(()=>[...document.querySelectorAll('.tabs button')].map(b=>b.dataset.tab).join()==='jour,onair,chrono,bouffe,visage,progres'));
+ ok('cinq onglets, Plan rangé sous Progrès',await ev(()=>[...document.querySelectorAll('.tabs button')].map(b=>b.dataset.tab).join()==='jour,onair,bouffe,visage,progres'));
  await p.setViewport({width:320,height:640,deviceScaleFactor:2,isMobile:true,hasTouch:true});await sleep(200);
- ok('320 px : six onglets sur une ligne, labels entiers',await ev(()=>{const l=[...document.querySelectorAll('.tabs button')],y=l[0].getBoundingClientRect().top;return l.every(b=>b.getBoundingClientRect().top===y&&b.scrollWidth<=b.clientWidth+1&&b.getBoundingClientRect().width>=44);}));
+ ok('320 px : cinq onglets sur une ligne, labels entiers',await ev(()=>{const l=[...document.querySelectorAll('.tabs button')],y=l[0].getBoundingClientRect().top;return l.every(b=>b.getBoundingClientRect().top===y&&b.scrollWidth<=b.clientWidth+1&&b.getBoundingClientRect().width>=44);}));
  await p.setViewport({width:390,height:844,deviceScaleFactor:2,isMobile:true,hasTouch:true});await sleep(200);
  await ong('progres');await clic('[data-a="aller"][data-v="plan"]');await sleep(200);
  ok('Plan accessible, Progrès reste allumé',await ev(()=>UI.tab==='plan'&&document.querySelector('.tabs button.on').dataset.tab==='progres'&&!!document.querySelector('[data-a="export"]')));
@@ -55,23 +56,24 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  ok('tous les repas types existent dans la base',await ev(()=>REPAS.every(r=>r.i.every(x=>itemAl(x[0])))));
  ok('suggestions pour ce moment',await ev(()=>suggestions(auj()).length>0&&document.querySelectorAll('[data-a="repas-idee"]').length>=3));
  ok('sans clé : invitation à activer',await ev(()=>!!document.querySelector('.b-cle')));
+ const CLE='AQ.cle-de-test-longue-et-valide';
  const photo=path.join(__dirname,'..','icon-512.png');
  const envoyer=async()=>{const i=await p.$('#photo-galerie');await i.uploadFile(photo);};
  /* sans clé : on peut quand même noter à la main */
  await envoyer();await sleep(500);
  ok('photo sans clé : saisie à la main',await ev(()=>UI.r.statut==='sanscle'&&!!document.querySelector('#rech-al')));
  await ev(()=>{const r=document.querySelector('#rech-al');r.value='naan';r.dispatchEvent(new Event('input',{bubbles:true}));});
- ok('recherche sans accent ni casse',await ev(()=>{const r=document.querySelector('#rech-al');r.value='OEUFS';r.dispatchEvent(new Event('input',{bubbles:true}));const a=document.querySelectorAll('#rech-res button').length;r.value='naan';r.dispatchEvent(new Event('input',{bubbles:true}));return document.querySelectorAll('#rech-res button').length===2;}));
+ ok('recherche sans accent ni casse',await ev(()=>{const r=document.querySelector('#rech-al');r.value='OEUFS';r.dispatchEvent(new Event('input',{bubbles:true}));const a=document.querySelectorAll('#rech-res [data-a="al-ajoute"]').length;r.value='naan';r.dispatchEvent(new Event('input',{bubbles:true}));return document.querySelectorAll('#rech-res [data-a="al-ajoute"]').length===2;}));
  await clic('[data-a="fermer-feuille"]');await sleep(400);
  /* clé refusée si le format est inconnu */
  await clic('[data-a="ia-regler"]');await sleep(300);
  await ev(()=>{document.querySelector('#cle-ia').value='nimporte';document.querySelector('[data-a="ia-ok"]').click();});await sleep(100);
  ok('clé inconnue refusée',await ev(()=>!IA.cle()));
  await p.screenshot({path:path.join(OUT,'cle.png')});
- await ev(()=>{document.querySelector('#cle-ia').value='AIza-test';document.querySelector('[data-a="ia-ok"]').click();});await sleep(400);
+ await ev(()=>{document.querySelector('#cle-ia').value='AQ.cle-de-test-longue-et-valide';document.querySelector('[data-a="ia-ok"]').click();});await sleep(500);
  /* Gemini */
  await envoyer();await sleep(1200);
- ok('Gemini : appel direct avec la clé en en-tête',appels.length===1&&/gemini-flash-latest:generateContent$/.test(appels[0].u)&&appels[0].h['x-goog-api-key']==='AIza-test'&&!appels[0].u.includes('AIza'),appels[0]&&appels[0].u);
+ ok('Gemini : appel direct avec la clé en en-tête',appels.length===1&&/gemini-3\.5-flash:generateContent$/.test(appels[0].u)&&appels[0].h['x-goog-api-key']===CLE&&!appels[0].u.includes(CLE),appels[0]&&appels[0].u);
  ok('photo réduite et envoyée en JPEG',!!appels[0].b.contents[0].parts[0].inlineData.data&&appels[0].b.contents[0].parts[0].inlineData.mimeType==='image/jpeg');
  const res=await ev(()=>({st:UI.r.statut,n:UI.r.items.length,nom:UI.r.nom,g:UI.r.items[2].g,neg:UI.r.items[2].m,html:document.querySelector('.als').innerHTML.includes('<img')}));
  ok('résultat lu',res.st==='ok'&&res.n===3&&res.nom==='Poulet karahi et riz',res);
@@ -86,7 +88,7 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  const b=await ev(()=>bilanDu(auj()));
  ok('au journal : proteines justes',Math.round(b.p)===30,b);
  ok('photo non conservée',await ev(()=>{const r=DB.days[auj()].repas[0];return !r.photo&&!JSON.stringify(DB).includes('base64');}));
- ok('la clé n’entre pas dans la sauvegarde',await ev(()=>!JSON.stringify(DB).includes('AIza')));
+ ok('la clé n’entre pas dans la sauvegarde',await ev(c=>!JSON.stringify(DB).includes(c),CLE));
  await p.screenshot({path:path.join(OUT,'bouffe-journal.png'),fullPage:true});
  /* modifier, supprimer */
  await clic('[data-a="repas-voir"]');await sleep(300);
@@ -95,19 +97,13 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  /* erreurs */
  for(const[m,re]of[['401',/refusée/],['vide',/pas de nourriture/]]){mode=m;await envoyer();await sleep(800);const x=await ev(()=>({s:UI.r.statut,t:document.querySelector('#feuille').textContent}));ok('erreur '+m+' : message clair',x.s==='erreur'&&re.test(x.t),x.s);await clic('[data-a="fermer-feuille"]');await sleep(350);}
  mode='ok';
- /* Claude */
- appels.length=0;await ev(()=>IA.poser('sk-ant-test'));await envoyer();await sleep(1000);
- const c=appels[0];
- ok('Claude : modèle, en-têtes, sortie structurée',c&&/api\.anthropic\.com\/v1\/messages$/.test(c.u)&&c.b.model==='claude-opus-5-5'&&c.h['x-api-key']==='sk-ant-test'&&c.h['anthropic-dangerous-direct-browser-access']==='true'&&c.b.output_config.format.type==='json_schema'&&c.b.fallbacks==='default'&&c.h['anthropic-beta']==='server-side-fallback-2026-07-01'&&c.b.messages[0].content[0].source.media_type==='image/jpeg');
- ok('Claude : réponse lue malgré le bloc de réflexion',await ev(()=>UI.r.statut==='ok'&&UI.r.items.length===3));
- await clic('[data-a="fermer-feuille"]');await sleep(350);
  mode='refus';await envoyer();await sleep(800);ok('refus du service : message',await ev(()=>/refusé/.test(document.querySelector('#feuille').textContent)));mode='ok';await clic('[data-a="fermer-feuille"]');await sleep(350);
  await p.setOfflineMode(true);await ev(()=>Object.defineProperty(navigator,'onLine',{value:false,configurable:true}));await envoyer();await sleep(500);ok('hors ligne : saisie à la main',await ev(()=>UI.r.statut==='horsligne'));await clic('[data-a="fermer-feuille"]');await sleep(350);await ev(()=>delete navigator.onLine);await p.setOfflineMode(false);
  /* repas salé repris dans le visage du lendemain */
  await ev(()=>{const k=iso(addD(fromISO(auj()),-1));jour(k).repas=[{nom:'Pizza',h:'20:00',sel:0,items:[itemAl('Pizza')]}];});
 
  /* --- visage */
- await ong('visage');await sleep(300);await p.screenshot({path:path.join(OUT,'visage-depart.png'),fullPage:true});
+ await ev(()=>{UI.visVue='seche';});await ong('visage');await sleep(300);await p.screenshot({path:path.join(OUT,'visage-depart.png'),fullPage:true});
  ok('avant le lancement : le chemin et la date de fin',await ev(()=>/taux de gras/.test(document.querySelector('#v-visage').textContent)&&!!document.querySelector('[data-a="vis-go"]')));
  ok('sel de la veille repris des repas',await ev(()=>visDu(auj()).sel===1));
  await ev(()=>{const a=[66.8,66.6,66.5,66.3,66.1,66,65.9,65.7,65.6,65.5,65.3,65.2,65.1,65];DB.poids.list=a.map((kg,i)=>({d:iso(addD(fromISO(auj()),i-13)),kg}));});
@@ -127,7 +123,7 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  await ev(()=>{[21,14,7,0].forEach(n=>{delete DB.days[iso(addD(fromISO(auj()),-n))].gym;});});
  ok('sans baisse : pas de signal',await ev(()=>!chargesBaissent()));
  /* matins et corrélations */
- await ev(()=>{for(let i=1;i<=10;i++){const k=iso(addD(fromISO(auj()),-i)),s=i%2;jour(k).vis={g:s?4:2,so:7.5,eau:3,sel:s,alc:0,fat:0};}rendre();});await sleep(300);
+ await ev(()=>{for(let i=1;i<=10;i++){const k=iso(addD(fromISO(auj()),-i)),s=i%2;jour(k).vis={g:s?4:2,so:7.5,eau:3,sel:s,fat:0};}rendre();});await sleep(300);
  const E=await ev(()=>effets(checks(90).filter(v=>v.g)));
  ok('repas salé : écart mesuré sur ses matins',E.length===1&&E[0].d===2&&/salé/.test(E[0].nom),E);
  ok('pas de conclusion sans assez de matins',await ev(()=>effets(checks(90).filter(v=>v.g).slice(0,3)).length===0));
@@ -139,6 +135,7 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  ok('froid et fatigue répétés : signal d’arrêt',await ev(()=>signaux().some(s=>s.n==='stop'&&/Froid/.test(s.t))));
  await ev(()=>{for(let i=0;i<4;i++)jour(iso(addD(fromISO(auj()),-i))).vis.fat=0;rendre();});await sleep(200);
  /* photos */
+ await ev(()=>{UI.visVue='peau';rendre();});
  await p.waitForSelector('[data-a="cam-go"]');
  await clic('[data-a="cam-go"]');await p.waitForSelector('#cam video',{timeout:15000}).catch(async e=>{console.log('DIAG',await ev(()=>({toast:document.querySelector('#toast').textContent,flux:!!Cam.flux,md:!!navigator.mediaDevices,hid:document.hidden})));throw e;});await sleep(700);await p.screenshot({path:path.join(OUT,'camera.png')});
  ok('caméra : image reçue',await ev(()=>document.querySelector('#cam video').videoWidth>0));
@@ -156,12 +153,13 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  ok('les photos restent hors des sauvegardes',await ev(()=>!JSON.stringify(DB).includes('blob')));
  ok('photo : Exporter ne contient que les données',await ev(()=>!('photos' in DB)));
  await clic('[data-a="vis-regard"][data-v="fatigue"]');await sleep(300);ok('« plus fatigué » : signal d’arrêt',await ev(()=>signaux().some(s=>/fatigué/.test(s.t))));
+ await ev(()=>{UI.visVue='seche';rendre();});
  await p.waitForSelector('[data-a="vis-fin"]');await clic('[data-a="vis-fin"]');await sleep(300);
  ok('fin de phase : entretien, sans bonus',await ev(()=>nutri().obj==='entretien'&&!nutri().bonus&&!!vP().fin));
  ok('6 semaines d’entretien avant de recommencer',await ev(()=>!document.querySelector('[data-a="vis-go"]')&&/Entretien jusqu/.test(document.querySelector('#v-visage').textContent)));
  await ev(()=>{jour(auj()).vis=null;});await ev(()=>{vP().fin=iso(addD(fromISO(auj()),-42));rendre();});await sleep(200);ok('après 6 semaines : relançable',await ev(()=>!!document.querySelector('[data-a="vis-go"]')));
  /* tout effacer vide aussi les photos */
- await ev(()=>{document.querySelector('[data-tab="progres"]').click();aller('plan');document.querySelector('[data-a="reset"]').click();});await sleep(300);await clic('[data-a="reset-ok"]');await sleep(500);
+ await ev(()=>{aller('plan');document.querySelector('[data-a="reset"]').click();});await sleep(300);await clic('[data-a="reset-ok"]');await sleep(500);
  ok('Tout effacer : photos comprises',await ev(async()=>(await Photos.tout()).length===0));
  await t.fin();
 })().catch(e=>{console.error(e);process.exit(1);});

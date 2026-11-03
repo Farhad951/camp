@@ -6,8 +6,9 @@ Appli d'entraînement personnelle : boxe (mardi, jeudi, samedi) et salle (dimanc
 - Séances de salle : un clip hors ligne et les étapes d'exécution pour chaque exercice, un bouton « Voir le geste » vers une vidéo YouTube détaillée, en français quand il en existe une bonne, le suivi des séries (charge et répétitions), la progression conseillée et un minuteur de repos.
 - Séances de rattrapage On Air quand une séance de boxe saute, avec un clip et une vidéo par bloc et par station.
 - Minuteur de rounds avec cloche.
-- Bouffe : photo d'un plat vers macros, grammes et repères sans balance (paume, poing, poignée), journal du jour, idées de repas selon ce qu'il reste à manger.
-- Visage : phase de sèche avec date de fin, signaux d'arrêt calculés depuis les pesées, les repas et les charges, note du matin qui révèle ce qui fait gonfler, photos de suivi alignées et comparateur.
+- Bouffe : photo ou description d'un plat vers macros, grammes et repères sans balance, recettes générées depuis tes ingrédients ou une photo du frigo, scan de produits français (Open Food Facts), eau, journal du jour, idées de repas selon ce qu'il reste à manger.
+- Visage : routine de peau (adapalène, Cutacnyl, tes produits), journal et photos analysées par l'IA, phase de sèche avec date de fin, signaux d'arrêt calculés, note du matin qui révèle ce qui fait gonfler.
+- Progrès : photos de progression comparées par l'IA, rappel toutes les 3 semaines, mensurations, tonnage, plateaux, records, bilan de la semaine.
 - Fonctionne hors ligne une fois installée.
 
 ## Installer sur iPhone
@@ -16,11 +17,13 @@ Appli d'entraînement personnelle : boxe (mardi, jeudi, samedi) et salle (dimanc
 2. Partager → Sur l'écran d'accueil → Ajouter.
 3. Lance l'appli une première fois avec du réseau. Ensuite, elle marche sans réseau.
 
-Les séances sont enregistrées sur le téléphone uniquement. Pense à faire Progrès → Le plan et les réglages → Exporter de temps en temps. Les photos du visage restent sur le téléphone et ne sont pas dans la sauvegarde.
+Les séances sont enregistrées sur le téléphone uniquement. Pense à faire Progrès → Le plan et les réglages → Exporter de temps en temps. Les photos restent sur le téléphone et ne sont pas dans la sauvegarde.
 
-## Analyse des photos de plats
+## IA
 
-L'appli n'a pas de serveur : elle appelle directement le service d'IA avec ta clé, collée dans Bouffe → Objectif → Analyse des photos. Une clé commençant par `AIza` utilise Gemini (offre gratuite), une clé `sk-ant-` utilise Claude (`claude-opus-5-5`, payant). La clé reste dans le navigateur, hors sauvegarde et hors synchro. L'appel utilise `fetch` plutôt que le SDK parce que l'appli n'a pas d'étape de compilation. Sans clé ni réseau, on note le plat à la main depuis la base intégrée.
+L'appli n'a pas de serveur : elle appelle directement Gemini avec ta clé, à coller une fois dans Bouffe → Objectif → IA. La clé ne doit jamais entrer dans ce dépôt, qui est public : elle reste dans le navigateur, hors sauvegarde et hors synchro, et dans `.env` (ignoré par Git) pour les tests. Seul Gemini est branché, aucun service payant. L'appli essaie plusieurs modèles Flash si l'un est saturé et s'arrête à 60 demandes par jour. Les photos ne partent qu'après ton accord, donné une fois pour le visage et une fois pour le corps. Sans clé ni réseau, tout le reste fonctionne.
+
+Open Food Facts (gratuit, sans clé) fournit les produits français.
 
 ## Tests
 
@@ -31,6 +34,7 @@ Il faut Node et Chrome. L'appli elle-même ne demande aucune installation.
 
 `npm test` ouvre l'appli dans Chrome sans interface et rejoue les parcours : thème et contrastes, séance complète, cohérence des textes, lecture hors ligne, préchargement, Bouffe et Visage (services d'IA simulés, caméra factice). Il faut du réseau pour le lecteur YouTube. Les captures vont dans `tests/sortie/`.
 
+- `npm run test:ia` essaie le vrai Gemini avec la clé de `.env`. Il consomme un peu de quota.
 - `npm run test:youtube` vérifie que les 31 vidéos se lisent dans le lecteur.
 - `npm run test:vitesse` mesure le site publié avec un processeur ralenti et trois réseaux lents.
 

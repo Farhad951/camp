@@ -47,7 +47,7 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  await p.evaluate(()=>{fermerCouche()});await sleep(800);ok('couche fermée',await p.evaluate(()=>!document.querySelector('#seance').classList.contains('on')));
  await shot('13-jour-fait');
  // onglets
- for(const[t,i]of[['onair',14],['chrono',15],['progres',16]]){await clic('[data-tab="'+t+'"]');await sleep(350);await shot(i+'-'+t);await p.screenshot({path:path.join(out,i+'-'+t+'-full.png'),fullPage:true});}
+ for(const[t,i]of[['onair',14],['chrono',15],['progres',16]]){await p.evaluate(t=>aller(t),t);await sleep(350);await shot(i+'-'+t);await p.screenshot({path:path.join(out,i+'-'+t+'-full.png'),fullPage:true});}
  // on air
  await clic('[data-tab="onair"]');await sleep(200);await clic('[data-a="go-onair"][data-id="B"]');await sleep(800);await shot('18-oa-seance');
  await p.evaluate(()=>{document.querySelector('#seance').scrollTop=1500});await sleep(400);await shot('19-oa-stations');

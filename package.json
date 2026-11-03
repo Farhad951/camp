@@ -5,7 +5,8 @@
   "scripts": {
     "test": "node tests/tout.js",
     "test:youtube": "node tests/youtube.test.js",
-    "test:vitesse": "node tests/vitesse.js"
+    "test:vitesse": "node tests/vitesse.js",
+    "test:ia": "node tests/ia-reelle.test.js"
   },
   "devDependencies": {
     "puppeteer-core": "^25.16.0"

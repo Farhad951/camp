@@ -4,17 +4,19 @@ const lin=v=>{v/=255;return v<=.03928?v/12.92:((v+.055)/1.055)**2.4;};
 const lum=h=>{const n=parseInt(h.slice(1),16);return .2126*lin(n>>16)+.7152*lin(n>>8&255)+.0722*lin(n&255);};
 const ratio=(a,b)=>{const x=lum(a),y=lum(b);return +((Math.max(x,y)+.05)/(Math.min(x,y)+.05)).toFixed(2);};
 (async()=>{
- const t=await preparer(8778,'theme');const {p,ev,ok,OUT}=t;
+ const t=await preparer(8778,'theme',[],{ouverture:true});const {p,ev,ok,OUT}=t;
  await p.goto(t.url);await sleep(900);
- /* --- ouverture : moins de 1,2 s, propriétés fluides seulement, jamais de blocage du toucher */
+ /* --- ouverture : environ 3 s, propriétés fluides seulement, un toucher la passe */
  await p.reload({waitUntil:'domcontentloaded'});
  const ouv=await ev(()=>{const l=document.getAnimations().filter(a=>a.animationName&&a.animationName.startsWith('ouv-'));const fx=new Set();l.forEach(a=>a.effect.getKeyframes().forEach(k=>Object.keys(k).forEach(x=>{if(!['offset','computedOffset','easing','composite'].includes(x))fx.add(x);})));return{n:l.length,fin:Math.max(...l.map(a=>{const t=a.effect.getTiming();return t.delay+t.duration;})),fx:[...fx],clic:getComputedStyle(document.querySelector('#ouv')).pointerEvents};});
- ok('ouverture en moins de 1,2 s',ouv.n>0&&ouv.fin<1200,ouv.fin);
+ ok('ouverture d’environ 3 s',ouv.n>0&&ouv.fin>=2800&&ouv.fin<=3200,ouv.fin);
  ok('ouverture : opacity et transform seulement',ouv.fx.every(x=>['opacity','transform','visibility'].includes(x)),ouv.fx);
- ok('ouverture : le toucher passe au travers',ouv.clic==='none');
- await sleep(1300);
+ ok('ouverture : le toucher ne touche pas l’écran caché',ouv.clic!=='none');
+ for(const[n,ms]of[['a',500],['b',1200],['c',1900],['d',2650]]){await sleep(n==='a'?ms:ms-({b:500,c:1200,d:1900}[n]));await p.screenshot({path:require('path').join(OUT,'ouverture-'+n+'.png')});}
  await p.waitForFunction(()=>!document.querySelector('#ouv'),{timeout:3000}).catch(()=>{});
  ok('ouverture : tout est retiré à la fin',await ev(()=>!document.querySelector('#ouv')&&!document.documentElement.classList.contains('ouverture')&&getComputedStyle(document.querySelector('.app')).transform==='none'));
+ await p.reload({waitUntil:'domcontentloaded'});await sleep(300);await p.touchscreen.tap(195,400);await sleep(400);
+ ok('ouverture : un toucher la passe',await ev(()=>!document.querySelector('#ouv')));
  /* --- contrastes : 4,5:1 au moins pour le texte courant */
  const v=await ev(()=>{const c=getComputedStyle(document.documentElement),r={};for(const k of['nuit','toile','bas','craie','gris','or','or-clair','rouge','rouge-clair','bleu','encre-or'])r[k]=c.getPropertyValue('--'+k).trim();return r;});
  for(const[nom,a,b]of[['texte / carte',v.craie,v.toile],['texte secondaire / carte',v.gris,v.toile],['texte secondaire / fond',v.gris,v.nuit],['lien rouge / carte',v['or-clair'],v.toile],['texte boxe / carte',v['rouge-clair'],v.toile],['texte On Air / carte',v.bleu,v.toile],['bouton salle',v['encre-or'],v.or],['bouton boxe',v['encre-or'],v.rouge],['bouton On Air',v.nuit,v.bleu]]){const x=ratio(a,b);ok('contraste '+nom,x>=4.5,x);}
