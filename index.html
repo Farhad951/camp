@@ -1540,8 +1540,11 @@ const Clips={io:null,
   basculer(v){if(v.paused){v.__pause=false;v.play().catch(()=>{});}else{v.__pause=true;v.pause();}},
   /* tout est téléchargé au calme une fois l'appli ouverte : reprend au lancement suivant si le réseau coupe */
   async precharger(){if(!window.caches||!navigator.serviceWorker||(navigator.connection&&navigator.connection.saveData))return;
-    try{const c=await caches.open('videos-1'),voulus=new Set();
-      for(const id of VIDEOS)for(const f of['.mp4','.jpg']){const u=new URL('videos/'+CLIPS[id].f+f,location.href).href;voulus.add(u);if(!await c.match(u))await c.add(u);}
+    try{const c=await caches.open('videos-1'),voulus=new Set(),manque=[];
+      for(const id of VIDEOS)for(const f of['.mp4','.jpg']){const u=new URL('videos/'+CLIPS[id].f+f,location.href).href;voulus.add(u);if(!await c.match(u))manque.push(u);}
+      /* 3 téléchargements à la fois ; un fichier en échec n'arrête pas les autres */
+      const ouvrier=async()=>{for(let u;u=manque.shift();)await c.add(u).catch(()=>{});};
+      await Promise.all([ouvrier(),ouvrier(),ouvrier()]);
       /* clips remplacés ou retirés : on libère la place */
       for(const r of await c.keys())if(!voulus.has(r.url))await c.delete(r);}catch(e){}}
 };
