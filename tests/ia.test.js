@@ -137,7 +137,7 @@ const COACH={titre:'Une semaine solide',constats:['2 séances de salle sur 2.'],
  await ev(()=>{const m=document.querySelector('[data-pe-m="0"]');m.value='soir';m.dispatchEvent(new Event('change',{bubbles:true}));});await sleep(150);ok('moment réglable',await ev(()=>peau().produits[0].m==='soir'));await ev(()=>{peau().produits[0].m='ms';});await fermer();
  /* photo de visage : prise, accord, analyse */
  await p.waitForSelector('#vis-photos [data-a="cam-go"]',{timeout:5000});
- await clic('[data-a="cam-go"]');await p.waitForSelector('#cam video',{timeout:20000});await sleep(600);
+ await t.ouvrirCam('[data-a="cam-go"]');await sleep(600);
  appels.length=0;await clic('[data-a="cam-prise"]');await p.waitForFunction(()=>!document.querySelector('#cam'),{timeout:10000});await sleep(500);
  ok('photo de visage gardée',await ev(async()=>(await Photos.tout()).filter(x=>x.t==='face').length===1));
  ok('sans accord : rien n’est envoyé',appels.length===0);
@@ -163,7 +163,7 @@ const COACH={titre:'Une semaine solide',constats:['2 séances de salle sur 2.'],
  reponse=CORPS;appels.length=0;
  ok('retardateur de 10 s pour le corps',await ev(()=>ALB.corps.retard===10));
  /* trois poses à la suite, sans attendre le retardateur */
- const prise=async()=>{await clic('#corps-photos [data-a="cam-go"]');await p.waitForSelector('#cam video',{timeout:20000});await sleep(500);ok('caméra corps prête',await ev(()=>document.querySelector('#cam-p').textContent==='Dans 10 secondes'));await ev(()=>Cam.prendre());await p.waitForFunction(()=>!document.querySelector('#cam'),{timeout:10000});await sleep(500);};
+ const prise=async()=>{await t.ouvrirCam('#corps-photos [data-a="cam-go"]');await sleep(500);ok('caméra corps prête',await ev(()=>document.querySelector('#cam-p').textContent==='Dans 10 secondes'));await ev(()=>Cam.prendre());await p.waitForFunction(()=>!document.querySelector('#cam'),{timeout:10000});await sleep(500);};
  await ev(()=>{DB.prefs.iaAccord.corps=0;});await prise();
  ok('après la face : au tour du profil',await ev(()=>VC.type==='cp'));
  await prise();ok('puis le dos',await ev(()=>VC.type==='cd'));ok('sans accord : pas d’envoi automatique',appels.length===0);

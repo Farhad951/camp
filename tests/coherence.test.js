@@ -14,12 +14,12 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  ok('rowing : 2 reps',/2 reps en réserve/.test(cons.rowPoulie),cons.rowPoulie);
  ok('tous les conseils sont des phrases',Object.values(cons).every(t=>t&&!/undefined|null/.test(t)));
  // --- regarder ne démarre rien
- await seance(DIM);
- ok('chrono à zéro en regardant',await ev(k=>!DB.days[k].gym.debut&&document.querySelector('#s-chrono').textContent==='0:00',DIM));
+ await seance(LUN);
+ ok('chrono à zéro en regardant',await ev(k=>!DB.days[k].gym.debut&&document.querySelector('#s-chrono').textContent==='0:00',LUN));
  await sleep(1200);ok('chrono toujours à zéro',await ev(()=>document.querySelector('#s-chrono').textContent==='0:00'));
  await ev(()=>document.querySelector('[data-a="echauf"]').click());await sleep(1200);
- ok('premier geste : chrono lancé',await ev(k=>!!DB.days[k].gym.debut,DIM));
- await ferme();
+ ok('premier geste : chrono lancé',await ev(k=>!!DB.days[k].gym.debut,LUN));
+ await ferme();await ev(k=>{delete DB.days[k];},LUN);
  await ev(k=>{UI.jour=k;rendre();},FUT);await sleep(300);
  ok('jour à venir : « Voir la séance »',await ev(()=>/Voir la séance/.test(document.querySelector('#hero').textContent)));
  // --- On Air consulté

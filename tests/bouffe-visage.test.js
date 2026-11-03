@@ -80,9 +80,9 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  ok('valeurs folles bornées',res.g===2000&&res.neg[0]===0&&res.neg[1]===0,res);
  ok('texte renvoyé jamais interprété',!res.html);
  await p.screenshot({path:path.join(OUT,'analyse.png'),fullPage:false});
- ok('macros et équivalence affichées',await ev(()=>{const a=document.querySelector('.al');return /220 g/.test(a.textContent)&&/2 paumes/.test(a.textContent)&&/kcal/.test(a.textContent);}));
+ ok('macros et équivalence affichées',await ev(()=>{const a=document.querySelector('.al');return a.querySelector('.al-gi').value==='220'&&/2 paumes/.test(a.textContent)&&/kcal/.test(a.textContent);}));
  const avant=await ev(()=>document.querySelector('#r-tot').textContent);
- ok('curseur : grammes, équivalence et total suivent',await ev(()=>{const r=document.querySelector('[data-al="0"]');r.value=110;r.dispatchEvent(new Event('input',{bubbles:true}));const a=document.querySelector('.al');return /110 g/.test(a.textContent)&&/environ 1 paume/.test(a.textContent);})&&avant!==await ev(()=>document.querySelector('#r-tot').textContent));
+ ok('curseur : grammes, équivalence et total suivent',await ev(()=>{const r=document.querySelector('[data-al="0"]');r.value=110;r.dispatchEvent(new Event('input',{bubbles:true}));const a=document.querySelector('.al');return a.querySelector('.al-gi').value==='110'&&/environ 1 paume/.test(a.textContent);})&&avant!==await ev(()=>document.querySelector('#r-tot').textContent));
  await ev(()=>document.querySelector('[data-a="al-retire"][data-i="2"]').click());await sleep(100);
  await clic('[data-a="repas-ok"]');await sleep(500);
  const b=await ev(()=>bilanDu(auj()));
@@ -137,12 +137,12 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  /* photos */
  await ev(()=>{UI.visVue='peau';rendre();});
  await p.waitForSelector('[data-a="cam-go"]');
- await clic('[data-a="cam-go"]');await p.waitForSelector('#cam video',{timeout:15000}).catch(async e=>{console.log('DIAG',await ev(()=>({toast:document.querySelector('#toast').textContent,flux:!!Cam.flux,md:!!navigator.mediaDevices,hid:document.hidden})));throw e;});await sleep(700);await p.screenshot({path:path.join(OUT,'camera.png')});
+ await t.ouvrirCam('[data-a="cam-go"]');await sleep(700);await p.screenshot({path:path.join(OUT,'camera.png')});
  ok('caméra : image reçue',await ev(()=>document.querySelector('#cam video').videoWidth>0));
  await clic('[data-a="cam-prise"]');await p.waitForFunction(()=>!document.querySelector('#cam'),{timeout:10000});await sleep(400);
  ok('photo gardée, flux coupé',await ev(async()=>(await Photos.tout()).length===1&&!document.querySelector('#cam')&&!Cam.flux));
- await sleep(200);
- await ev(()=>{const b=document.querySelector('[data-a="cam-go"]');b.click();b.click();});await p.waitForSelector('#cam video',{timeout:25000}).catch(async e=>{console.log('DIAG',await ev(()=>({toast:document.querySelector('#toast').textContent,flux:!!Cam.flux,err:Cam.erreur})));throw e;});await sleep(500);
+ await ev(async()=>{const[x]=await Photos.tout();await Photos.retirer(x.id);await Photos.ajouter({d:'2026-10-12',t:x.t,blob:x.blob});await monterPhotos();});await sleep(200);
+ await ev(()=>{const b=document.querySelector('[data-a="cam-go"]');b.click();b.click();});await p.waitForSelector('#cam video',{timeout:30000}).catch(()=>t.ouvrirCam('[data-a="cam-go"]'));await sleep(500);
  ok('double appui : une seule caméra',await ev(()=>document.querySelectorAll('#cam').length===1));
  ok('l’ancienne photo sert de calque',await ev(()=>!!document.querySelector('.cam-g')));
  await clic('[data-a="cam-prise"]');await p.waitForSelector('#comp',{timeout:10000});

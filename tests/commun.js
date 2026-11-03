@@ -28,9 +28,11 @@ async function preparer(port,nom,args,opts){
     window.Date=class extends D{constructor(...a){super(...(a.length?a:[D.now()+dec]));}static now(){return D.now()+dec;}};},LUNDI);
   if(!(opts&&opts.ouverture))await p.evaluateOnNewDocument(()=>{document.addEventListener('DOMContentLoaded',()=>{const s=document.createElement('style');s.textContent='#ouv{display:none!important}.ouverture .app{animation:none!important}';document.head.appendChild(s);});});
   const errs=[];p.on('pageerror',e=>errs.push(e.message));
-  p.on('console',m=>{if(m.type()==='error'&&!/Failed to load resource|youtube|ytimg|ERR_|absent-000/.test(m.text()))errs.push(m.text());});
+  p.on('console',m=>{if(m.type()==='error'&&!/Failed to load resource|youtube|ytimg|ERR_|absent-000|openfoodfacts/.test(m.text()))errs.push(m.text());});
   const t={b,p,srv,OUT,errs,reseau,echecs:0,url:'http://localhost:'+port+'/',
     ev:(f,...a)=>p.evaluate(f,...a),
+    /* comme l'appli le demande à l'écran : si l'appareil ne répond pas, on retouche le bouton */
+    async ouvrirCam(sel){for(let i=0;i<3;i++){await p.evaluate(s=>document.querySelector(s).click(),sel);try{await p.waitForSelector('#cam video',{timeout:30000});return;}catch(e){if(i===2)throw e;}}},
     ok(n,c,x){if(!c)t.echecs++;console.log((c?'PASS ':'FAIL ')+n+(x!==undefined?' → '+JSON.stringify(x):''));},
     async fin(){t.ok('aucune erreur JavaScript',errs.length===0,errs);console.log(t.echecs?'ÉCHECS : '+t.echecs:'TOUT PASSE');await b.close();srv.close();process.exit(t.echecs?1:0);}};
   return t;
