@@ -293,6 +293,8 @@ ul,ol{margin:0;padding:0}
 .station .mini{width:100%;aspect-ratio:1;border-radius:var(--r-s);overflow:hidden}
 .station .mini canvas{display:block;width:100%;height:100%}
 .station span{font-size:.6875rem;line-height:1.15;color:var(--craie-2)}
+.station small{font-size:.75rem;font-weight:600;color:var(--bleu)}
+.station:active{opacity:.55}
 
 /* ---------- minuteur de repos ---------- */
 .repos{position:fixed;left:0;right:0;margin:0 auto;bottom:calc(10px + env(safe-area-inset-bottom,0px));z-index:80;width:min(528px,calc(100% - 20px));
@@ -704,12 +706,25 @@ cou:{nom:'Flexion du cou allongé',sous:'Tête dans le vide, disque léger sur u
   alt:'Isométries à la main : 4 directions × 10 s.'}
 };
 
-/* « Voir le geste » : la vidéo choisie pour chaque exercice, et la seconde où commence la démonstration. */
+/* « Voir le geste » : la vidéo choisie pour chaque exercice, en français dès qu'il en existe une bonne, et la seconde où commence la démonstration.
+   Le lancer de médecine-ball et le slam ball n'ont pas d'équivalent français correct : ils restent en anglais.
+   On Air : nom et repère sont donnés ici, ces blocs n'ont pas de fiche d'exercice. */
 const GESTES={
- traction:['pVFSX3Pgxks',35],rowAppuye:['HVjdVv6FYD4',0],incline:['652TTSxCwkM',0],latDB:['QfvKTUbHIKU',0],oiseau:['SiDDgsbjN1M',0],
- curlInc:['blkM14XWTKY',0],tricepsOH:['mkT-xT-HOAM',0],crunchPoulie:['0KEP6A1deBE',39],nordic:['3-4pKUhkzoQ',0],
- boxjump:['6-6zkcMS6Lk',0],sautsLat:['kfiC-w5MvRI',0],medball:['o9BC7lgN1bo',12],trapbar:['kpyCkyVIxjI',0],landmine:['zkq-nRq48vk',0],
- rowPoulie:['IgOuUO4ZNRk',0],latCable:['eihMRam0P2Q',0],facepull:['vpqkOZ0FZb4',0],pallof:['SsQWYNxlYsQ',0],copenhague:['5cTh21BfXzI',0],cou:['mb6P_cIINmw',0]
+ traction:['z7CCVwDfn0I',0],rowAppuye:['HVjdVv6FYD4',0],incline:['2pVSWJUuX3g',0],latDB:['QfvKTUbHIKU',0],oiseau:['SiDDgsbjN1M',0],
+ curlInc:['wBvTNeXcbxQ',0],tricepsOH:['3Hxs9xZQm7A',0],crunchPoulie:['VFINAHIeDUQ',0],nordic:['EC8eS5Pbns4',0],
+ boxjump:['twPVDtiv3SI',0],sautsLat:['3ehqtOI9QIA',0],medball:['o9BC7lgN1bo',12],trapbar:['-SNqPk0XBBM',0],landmine:['e9TFMIreK8c',0],
+ rowPoulie:['92kb9OuHKgc',0],latCable:['UImP8Od9yOE',0],facepull:['4FAiPDzKRUw',0],pallof:['I4SKLCM9lyo',0],copenhague:['TYbD4RieNG0',0],cou:['iaEUrzahJ_k',0],
+ corde:['q__0oSpTK14',0,'Corde à sauter','Rebondis sur l’avant des pieds, épaules relâchées, la corde tourne avec les poignets.'],
+ shadow:['TOKxAQo-33E',0,'Shadow boxing','Garde haute, menton rentré, et réponds toujours par 2 coups.'],
+ sac:['fVwpUUfvzz8',0,'Sac lourd','Chaque coup part des jambes, puis ne reste jamais en face du sac.'],
+ gainage:['G5i11cyxSL4',0,'Gainage boxeur','Sur le hollow hold, le bas du dos reste plaqué au sol.'],
+ rafales:['jYFY43p56WQ',0,'Rafales au sac','Des coups courts et rapides, la garde revient après chaque coup.'],
+ sparring:['c-7pvbNmyDg',0,'Sparring imaginaire au sac','Feinte, entre, sors : varie les enchaînements comme face à un adversaire.'],
+ burpee:['pUlEXvanmA4',0,'Burpee-sprawl','Jette les hanches vers le sol, puis remonte vite en garde.'],
+ pompes:['hR6_6IdiYv4',0,'Pompes','Le corps reste gainé, de la tête aux talons.'],
+ swing:['IxgnCZ3oKuE',0,'Swing kettlebell','Le mouvement part des hanches, les bras ne font que suivre.'],
+ slam:['crga-UrqTvg',0,'Slam ball','Monte sur les pointes, puis frappe le sol avec tout le corps.'],
+ climbers:['gXv9T1flQhU',0,'Mountain climbers','Les épaules restent au-dessus des mains, les hanches basses.']
 };
 const lienGeste=id=>{const g=GESTES[id];return'https://www.youtube.com/watch?v='+g[0]+(g[1]?'&t='+g[1]+'s':'');};
 
@@ -1552,13 +1567,13 @@ const Clips={io:null,attente:30000,
       for(const r of await c.keys())if(!voulus.has(r.url))await c.delete(r);}catch(e){}}
 };
 /* « Voir le geste » : la vidéo se lit dans une feuille, sans quitter l'appli. Elle démarre sans le son : iOS bloque sinon le lancement automatique. */
-function ouvrirGeste(id){const E=EX[id],g=GESTES[id];
-  const tete='<div class="poignee"></div><div class="geste-t"><h2>'+esc(E.nom)+'</h2><button class="rond" data-a="fermer-feuille" aria-label="Fermer la vidéo">'+IC.x+'</button></div>';
-  if(navigator.onLine===false){ouvrirFeuille(tete+'<p class="mut">La vidéo a besoin de réseau. '+(VIDEOS.has(id)?'Le clip en haut de la carte reste disponible hors ligne.':'L’animation de la carte et l’onglet Placement restent disponibles hors ligne.')+'</p>');return;}
+function ouvrirGeste(id){const E=EX[id],g=GESTES[id],nom=E?E.nom:g[2],repere=E?E.placement[0]:g[3];
+  const tete='<div class="poignee"></div><div class="geste-t"><h2>'+esc(nom)+'</h2><button class="rond" data-a="fermer-feuille" aria-label="Fermer la vidéo">'+IC.x+'</button></div>';
+  if(navigator.onLine===false){ouvrirFeuille(tete+'<p class="mut">La vidéo a besoin de réseau. '+(VIDEOS.has(id)?'Le clip en haut de la carte reste disponible hors ligne.':E?'L’animation de la carte et l’onglet Placement restent disponibles hors ligne.':'L’animation et les consignes de la carte restent disponibles hors ligne.')+'</p>');return;}
   const src='https://www.youtube-nocookie.com/embed/'+g[0]+'?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1'+(g[1]?'&start='+g[1]:'')+'&origin='+encodeURIComponent(location.origin);
   document.body.classList.add('lecteur-on');Lecteur.ouvre();
-  ouvrirFeuille(tete+'<div class="lecteur" style="background-image:url(https://i.ytimg.com/vi/'+g[0]+'/hqdefault.jpg)"><iframe src="'+src+'" title="Démonstration : '+esc(E.nom)+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'+
-    '<p class="geste-rep"><b>Repère.</b> '+esc(E.placement[0])+'</p><a class="lien" href="'+lienGeste(id)+'" target="_blank" rel="noopener">La vidéo ne se lance pas ? Ouvrir sur YouTube</a>');}
+  ouvrirFeuille(tete+'<div class="lecteur" style="background-image:url(https://i.ytimg.com/vi/'+g[0]+'/hqdefault.jpg)"><iframe src="'+src+'" title="Démonstration : '+esc(nom)+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>'+
+    '<p class="geste-rep"><b>Repère.</b> '+esc(repere)+'</p><a class="lien" href="'+lienGeste(id)+'" target="_blank" rel="noopener">La vidéo ne se lance pas ? Ouvrir sur YouTube</a>');}
 /* pendant la vidéo, ce qui bouge derrière s'arrête */
 const Lecteur={actif:false,
   ouvre(){this.actif=true;$$('#seance video').forEach(v=>{if(!v.paused){v.__reprise=1;v.pause();}});},
@@ -1886,10 +1901,10 @@ function renderOnAir(){
   if(lg)h+='<p class="note bleu" style="margin:0 0 18px">Version légère : moins de rounds, pas de dernier round à fond. Pour la veille du sparring ou un jour de fatigue.</p>';
   O.blocs.forEach((b,bi)=>{const fait=o.blocs&&o.blocs[b.id];let fmt,corps='';
     if(b.stations){const t=lg?b.tl:b.tours;fmt=[plur(t,'tour'),b.stations.length+' stations',b.w+' s d’effort, '+b.r+' s pour changer'];
-      corps='<div class="stations">'+b.stations.map(s=>'<div class="station"><div class="mini"><canvas data-anim="'+s.anim+'" aria-hidden="true"></canvas></div><span>'+esc(s.nom)+'</span></div>').join('')+'</div>';}
+      corps='<div class="stations">'+b.stations.map(s=>'<button class="station" data-a="geste" data-ex="'+s.anim+'" aria-label="Voir le geste : '+esc(s.nom)+'"><div class="mini"><canvas data-anim="'+s.anim+'" aria-hidden="true"></canvas></div><span>'+esc(s.nom)+'</span><small>Voir</small></button>').join('')+'</div>';}
     else{const n=lg?b.nl:b.n;fmt=[plur(n,'round')+' de '+mmss(b.w),'repos '+mmss(b.r)];
       corps='<ol class="rounds">'+b.rounds.map((x,i)=>'<li class="'+(i>=n?'off':'')+'">'+esc(x)+'</li>').join('')+'</ol>';}
-    h+='<section class="bloc-oa carte'+(fait?' fini':'')+'" id="bloc-'+b.id+'">'+(b.stations?'':scene(b.anim,'<span class="tag">Bloc '+(bi+1)+'</span>'))+'<div class="in">'+
+    h+='<section class="bloc-oa carte'+(fait?' fini':'')+'" id="bloc-'+b.id+'">'+(b.stations?'':scene(b.anim,'<span class="tag">Bloc '+(bi+1)+'</span>'))+'<div class="in">'+(b.stations?'':'<button class="btn btn-bleu btn-plein" data-a="geste" data-ex="'+b.id+'" aria-label="Voir le geste : '+esc(b.nom)+'">'+IC.play+'Voir le geste</button>')+
       '<h3>'+esc(b.nom)+'</h3><ul class="cibles">'+fmt.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+(b.note?'<p class="mut" style="font-size:15px">'+esc(b.note)+'</p>':'')+corps+
       '<div class="actions"><button class="btn btn-rouge" data-a="ring-bloc" data-b="'+bi+'">'+IC.cloche+'Lancer le minuteur</button><button class="btn btn-ghost" data-a="bloc-ok" data-b="'+b.id+'" aria-pressed="'+!!fait+'">'+(fait?IC.ok+'Fait':'Marquer fait')+'</button></div></div></section>';});
   h+='<section class="section" style="margin-top:28px"><span class="etiquette" id="rpe-oa-l">Comment tu t’es senti, de 1 à 10 ?</span><div class="rpe" role="group" aria-labelledby="rpe-oa-l" style="margin-bottom:18px">'+[1,2,3,4,5,6,7,8,9,10].map(v=>'<button data-a="rpe-oa" data-v="'+v+'" class="'+(o.rpe===v?'on':'')+'" aria-label="'+v+' sur 10" aria-pressed="'+(o.rpe===v)+'">'+v+'</button>').join('')+'</div>'+

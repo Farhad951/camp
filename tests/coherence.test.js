@@ -55,7 +55,7 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  ok('bouton : pas de lien externe',await ev(()=>{const a=document.querySelector('#ex-boxjump [data-a="geste"]');return a.tagName==='BUTTON';}));
  await ev(()=>{document.querySelector('#ex-facepull [data-a="geste"]').click();});await sleep(5000);
  const lec=await ev(()=>{const f=document.querySelector('#feuille iframe');return f?{src:f.src,w:f.offsetWidth,h:f.offsetHeight,urlPage:location.pathname,ouvert:document.querySelector('#feuille').classList.contains('on')}:null;});
- ok('lecteur dans l’appli',lec&&lec.ouvert&&lec.src.startsWith('https://www.youtube-nocookie.com/embed/vpqkOZ0FZb4')&&lec.w>300&&lec.urlPage==='/',lec);
+ ok('lecteur dans l’appli',lec&&lec.ouvert&&lec.src.startsWith('https://www.youtube-nocookie.com/embed/4FAiPDzKRUw')&&lec.w>300&&lec.urlPage==='/',lec);
  ok('démarre seul',/autoplay=1/.test(lec.src)&&/playsinline=1/.test(lec.src));
  await p.screenshot({path:path.join(OUT,'lecteur.png')});
  const frame=p.frames().find(f=>/youtube-nocookie/.test(f.url()));
@@ -87,5 +87,27 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  await seance(DIM);
  const pris=await ev(async()=>{const c=document.querySelector('#seance');c.scrollTop=0;voirCarte('nordic');await new Promise(z=>setTimeout(z,120));c.dispatchEvent(new Event('touchstart'));const y=c.scrollTop;await new Promise(z=>setTimeout(z,300));return Math.abs(c.scrollTop-y);});
  ok('un toucher arrête le défilement',pris<2,pris);
+ // --- On Air : une vidéo par bloc et par station
+ await ev(()=>{UI.s=null;document.querySelector('#seance').classList.remove('on');UI.jour='2026-11-04';rendre();});await sleep(300);
+ for(const id of['A','B']){
+  await ev(id=>{ouvrirOnAir(id,'2026-11-04');},id);await sleep(900);
+  const r=await ev(()=>[...document.querySelectorAll('#seance-in [data-a="geste"]')].map(b=>b.dataset.ex));
+  ok('On Air '+id+' : chaque bloc a sa vidéo',r.length>=4,r);
+  ok('On Air '+id+' : toutes les vidéos existent',await ev(r=>r.every(x=>GESTES[x]&&GESTES[x][2]&&GESTES[x][3]),r));
+  if(id==='B')ok('On Air B : 5 stations à toucher',await ev(()=>document.querySelectorAll('#seance-in button.station').length===5));
+  await ev(()=>{fermerCouche();});await sleep(700);
+ }
+ await ev(()=>{ouvrirOnAir('B','2026-11-04');});await sleep(900);
+ await ev(()=>document.querySelector('button.station[data-ex="swing"]').click());await sleep(2500);
+ const oa=await ev(()=>{const f=document.querySelector('#feuille iframe');return f?{src:f.src,t:document.querySelector('#feuille h2').textContent,rep:document.querySelector('.geste-rep').textContent}:null;});
+ ok('station : lit la vidéo dans l’appli',oa&&oa.src.includes('embed/IxgnCZ3oKuE')&&oa.t==='Swing kettlebell'&&/hanches/.test(oa.rep),oa);
+ await p.screenshot({path:path.join(OUT,'onair-lecteur.png')});
+ await ev(()=>document.querySelector('#feuille [data-a="fermer-feuille"]').click());await sleep(700);
+ await p.setOfflineMode(true);
+ await ev(()=>document.querySelector('#seance-in [data-a="geste"][data-ex="sparring"]').click());await sleep(500);
+ ok('On Air hors ligne : message sans onglet inexistant',await ev(()=>{const x=document.querySelector('#feuille').textContent;return /besoin de réseau/.test(x)&&!/Placement/.test(x);}));
+ await ev(()=>fermerFeuille());await p.setOfflineMode(false);await sleep(500);
+ await ev(()=>{const c=document.querySelector('#seance');c.scrollTop=document.querySelector('#bloc-circuit').offsetTop-70;});await sleep(800);
+ await p.screenshot({path:path.join(OUT,'onair-stations.png')});
  await t.fin();
 })().catch(e=>{console.error(e);process.exit(1);});

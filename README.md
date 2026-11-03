@@ -3,8 +3,8 @@
 Appli d'entraînement personnelle : boxe (mardi, jeudi, samedi) et salle (dimanche, lundi).
 
 - La semaine en un coup d'œil, avec le statut de chaque jour.
-- Séances de salle avec un bouton « Voir le geste » vers une vidéo YouTube choisie pour chaque exercice, un clip hors ligne quand il existe (voir `outils/videos.mjs`), le suivi des séries (charge et répétitions), la progression conseillée et un minuteur de repos.
-- Séances de rattrapage On Air quand une séance de boxe saute.
+- Séances de salle avec un bouton « Voir le geste » vers une vidéo YouTube choisie pour chaque exercice, en français quand il en existe une bonne, un clip hors ligne quand il existe (voir `outils/videos.mjs`), le suivi des séries (charge et répétitions), la progression conseillée et un minuteur de repos.
+- Séances de rattrapage On Air quand une séance de boxe saute, avec une vidéo par bloc et par station.
 - Minuteur de rounds avec cloche.
 - Fonctionne hors ligne une fois installée.
 

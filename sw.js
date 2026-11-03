@@ -1,7 +1,7 @@
 /* Camp — service worker : tout est mis en cache au premier lancement,
    l'appli s'ouvre ensuite sans réseau. Les mises à jour se téléchargent
    en arrière-plan et s'appliquent au lancement suivant. */
-const CACHE='camp-37c3577716';
+const CACHE='camp-3108b2106e';
 const FICHIERS=['./','./index.html','./manifest.webmanifest','./clips.js','./polices/outfit.woff2','./polices/fira-code.woff2','./icon-180.png','./icon-192.png','./icon-512.png','./icon-maskable-512.png','./favicon-64.png'];
 /* un réseau figé ne doit pas bloquer l'appli : au bout de 30 s, on considère le fichier indisponible */
 const ATTENTE=30000;
