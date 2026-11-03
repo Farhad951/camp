@@ -496,17 +496,16 @@ ul,ol{margin:0;padding:0}
 /* ---------- ouverture : 1,06 s, seulement opacity et transform pour rester fluide pendant le chargement ---------- */
 .ouv{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:var(--nuit);pointer-events:none;animation:ouv-sortie 340ms cubic-bezier(.4,0,.2,1) 720ms both}
 .ouv-fond{position:absolute;inset:0;background:radial-gradient(ellipse 75% 42% at 50% 50%,rgba(185,28,28,.3),transparent 72%);animation:ouv-fondu 440ms ease-out 120ms both}
-.ouv-nom{position:relative;display:flex;flex-direction:column;align-items:center;animation:ouv-recule 340ms cubic-bezier(.4,0,.2,1) 720ms both}
+.ouv-nom{position:relative;display:flex;flex-direction:column;align-items:center;animation:ouv-recule 200ms cubic-bezier(.4,0,.2,1) 680ms both}
 .ouv-mot{display:flex;overflow:hidden;font-size:min(15vw,4rem);font-weight:300;line-height:1.14;letter-spacing:.24em;padding-left:.24em;color:var(--craie)}
 .ouv-mot i{display:block;font-style:normal;will-change:transform;animation:ouv-lettre 380ms cubic-bezier(.23,1,.32,1) calc(var(--i) * 50ms) both}
 .ouv-filet{width:3.5rem;height:2px;margin:.75rem 0 .625rem;background:var(--or);animation:ouv-filet 420ms cubic-bezier(.23,1,.32,1) 210ms both}
 .ouv-sous{font-size:.8125rem;font-weight:500;letter-spacing:.42em;padding-left:.42em;color:var(--gris);animation:ouv-fondu 300ms ease-out 330ms both}
 .ouverture .app{will-change:transform,opacity;animation:ouv-app 400ms cubic-bezier(.23,1,.32,1) 660ms both}
-.ouverture .tabs{animation:ouv-fondu 340ms ease-out 720ms both}
 @keyframes ouv-lettre{from{transform:translateY(105%)}to{transform:none}}
 @keyframes ouv-filet{from{transform:scaleX(0)}to{transform:none}}
 @keyframes ouv-fondu{from{opacity:0}to{opacity:1}}
-@keyframes ouv-recule{to{transform:scale(1.05)}}
+@keyframes ouv-recule{to{opacity:0;transform:scale(1.05)}}
 @keyframes ouv-sortie{to{opacity:0;visibility:hidden}}
 @keyframes ouv-app{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
 /* moins d'animations : un simple fondu */
@@ -514,7 +513,6 @@ ul,ol{margin:0;padding:0}
   .ouv{animation-duration:260ms;animation-delay:420ms}
   .ouv-nom,.ouv-mot i,.ouv-filet{animation:none}
   .ouverture .app{animation:ouv-fondu 260ms ease-out 420ms both}
-  .ouverture .tabs{animation:ouv-fondu 260ms ease-out 420ms both}
 }
 </style></head><body>
 <div class="ouv" id="ouv" aria-hidden="true"><div class="ouv-fond"></div><div class="ouv-nom"><div class="ouv-mot"><i style="--i:0">C</i><i style="--i:1">A</i><i style="--i:2">M</i><i style="--i:3">P</i></div><div class="ouv-filet"></div><div class="ouv-sous">FARHAD</div></div></div>
