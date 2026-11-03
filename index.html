@@ -1530,7 +1530,7 @@ function fermerFeuille(v){const f=$('#feuille'),s=$('#voile');if(!f.classList.co
 /* Clips d'exercices, déclarés dans clips.js (généré par outils/videos.mjs) : muets, en boucle,
    joués seulement quand ils sont à l'écran. Pas de clip, ou fichier illisible : figure animée, sinon lien vers une démonstration. */
 const CLIPS=window.CLIPS||{},VIDEOS=new Set(Object.keys(CLIPS));
-const Clips={io:null,
+const Clips={io:null,attente:30000,
   monter(root){$$('video[data-clip]',root).forEach(v=>{if(v.__ok)return;v.__ok=1;v.muted=true;v.__pause=RM;
     v.addEventListener('play',()=>Clips.icone(v,false));v.addEventListener('pause',()=>Clips.icone(v,true));
     v.addEventListener('error',()=>{const sc=v.closest('.scene');if(sc.closest('.hero')){sc.remove();return;}const t=$('.tag',sc),p=sc.parentNode;sc.outerHTML=sceneRepli(v.dataset.clip,t?t.outerHTML:'');monterDemos(p);},{once:true});
@@ -1538,12 +1538,15 @@ const Clips={io:null,
     this.io.observe(v);});},
   icone(v,arret){const sc=v.closest('.scene'),b=sc&&$('.pause-b',sc);if(!b||!v.isConnected)return;b.innerHTML=arret?IC.play:IC.pause;b.setAttribute('aria-label',arret?'Lancer la démonstration':'Mettre la démonstration en pause');},
   basculer(v){if(v.paused){v.__pause=false;v.play().catch(()=>{});}else{v.__pause=true;v.pause();}},
+  /* un fichier figé est abandonné au bout de 30 s et repris au lancement suivant */
+  async telecharger(c,u){const a=new AbortController(),t=setTimeout(()=>a.abort(),this.attente);
+    try{const r=await fetch(u,{signal:a.signal});if(r.ok)await c.put(u,r);}finally{clearTimeout(t);}},
   /* tout est téléchargé au calme une fois l'appli ouverte : reprend au lancement suivant si le réseau coupe */
   async precharger(){if(!window.caches||!navigator.serviceWorker||(navigator.connection&&navigator.connection.saveData))return;
     try{const c=await caches.open('videos-1'),voulus=new Set(),manque=[];
       for(const id of VIDEOS)for(const f of['.mp4','.jpg']){const u=new URL('videos/'+CLIPS[id].f+f,location.href).href;voulus.add(u);if(!await c.match(u))manque.push(u);}
       /* 3 téléchargements à la fois ; un fichier en échec n'arrête pas les autres */
-      const ouvrier=async()=>{for(let u;u=manque.shift();)await c.add(u).catch(()=>{});};
+      const ouvrier=async()=>{for(let u;u=manque.shift();)await this.telecharger(c,u).catch(()=>{});};
       await Promise.all([ouvrier(),ouvrier(),ouvrier()]);
       /* clips remplacés ou retirés : on libère la place */
       for(const r of await c.keys())if(!voulus.has(r.url))await c.delete(r);}catch(e){}}
