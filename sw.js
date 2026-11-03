@@ -1,8 +1,8 @@
 /* Camp — service worker : tout est mis en cache au premier lancement,
    l'appli s'ouvre ensuite sans réseau. Les mises à jour se téléchargent
    en arrière-plan et s'appliquent au lancement suivant. */
-const CACHE='camp-3108b2106e';
-const FICHIERS=['./','./index.html','./manifest.webmanifest','./clips.js','./polices/outfit.woff2','./polices/fira-code.woff2','./icon-180.png','./icon-192.png','./icon-512.png','./icon-maskable-512.png','./favicon-64.png'];
+const CACHE='camp-13e00b3d46';
+const FICHIERS=['./','./index.html','./manifest.webmanifest','./clips.js','./icon-180.png','./icon-192.png','./icon-512.png','./icon-maskable-512.png','./favicon-64.png'];
 /* un réseau figé ne doit pas bloquer l'appli : au bout de 30 s, on considère le fichier indisponible */
 const ATTENTE=30000;
 const limite=(p,a)=>Promise.race([p,new Promise((_,non)=>setTimeout(()=>{if(a)a.abort();non(new Error('délai dépassé'));},ATTENTE))]);
