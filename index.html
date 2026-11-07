@@ -502,6 +502,14 @@ ul,ol{margin:0;padding:0}
 .bn{display:grid;gap:5px;height:128px}.bn>div{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;min-width:0;height:100%}.bn i{display:block;width:100%;min-height:2px;border-radius:2px 2px 0 0;background:var(--or-clair)}.bn span{font-size:.6875rem;color:var(--gris);white-space:nowrap}
 .todo{display:grid;grid-template-columns:1fr auto;align-items:center;padding-right:8px}.todo+.todo{box-shadow:inset 0 .5px 0 var(--trait)}.todo>button:first-child{min-height:58px;padding:10px 14px;text-align:left}.todo>button:first-child:active{background:var(--toile-2)}.todo b{display:block;font-size:.9375rem;font-weight:500}.todo small{display:block;font-size:var(--t-s);color:var(--gris)}
 /* ---------- saisie rapide, date, sauvegardes ---------- */
+.s-top .segment{margin:8px 0 0}
+.oa-pages{display:flex;align-items:flex-start;column-gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none;margin:0 calc(var(--gout) * -1);padding:0 var(--gout);scroll-padding:0 var(--gout)}.oa-pages::-webkit-scrollbar{display:none}
+.oa-page{flex:0 0 100%;min-width:0;scroll-snap-align:center;scroll-snap-stop:always;margin-bottom:0}
+.oa-bilan .in{padding:16px 18px}.oa-recap{list-style:none;margin:0;padding:0}.oa-recap li+li{box-shadow:inset 0 .5px 0 var(--trait)}.oa-recap button{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;width:100%;min-height:48px;text-align:left}.oa-recap i{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--toile-3);margin:0 3px}.oa-recap .ico{width:20px;height:20px;color:var(--bleu)}.oa-recap small{color:var(--gris);font-size:var(--t-s)}
+.oa-bas{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--matiere);box-shadow:0 -.5px 0 var(--trait);padding:6px max(var(--gout),env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(var(--gout),env(safe-area-inset-left,0px))}
+.oa-pts{display:flex;justify-content:center;gap:7px;height:14px;align-items:center}.oa-pts i{width:6px;height:6px;border-radius:50%;background:var(--toile-3);transition:transform .2s var(--press),background-color .2s}.oa-pts i.ok{background:var(--bleu)}.oa-pts i.on{background:var(--craie);transform:scale(1.35)}.oa-pts i.fin{border-radius:1px}
+.oa-nav{max-width:560px;margin:4px auto 0;display:grid;grid-template-columns:44px 1fr 44px;gap:10px;align-items:center}.oa-nav .btn{min-width:0}.oa-nav .rond:disabled{opacity:.3}
+.r-version{position:relative;z-index:1;display:flex;gap:2px;margin:6px auto 0;padding:2px;border-radius:999px;background:rgba(255,255,255,.08);width:max-content}.r-version button{min-height:40px;padding:0 16px;border-radius:999px;font-size:.875rem;font-weight:600;color:var(--gris)}.r-version button.on{background:rgba(255,255,255,.18);color:var(--craie)}
 .rp{position:relative;overflow:hidden}.rp+.rp .rp-av{box-shadow:inset 0 .5px 0 var(--trait)}
 .rp-suppr{position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:stretch;background:var(--suppr);color:#fff;font-size:.8125rem;font-weight:600}
 .rp-suppr span{width:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:width .2s var(--press)}.rp.loin .rp-suppr span{width:100%}.rp-suppr .ico{width:20px;height:20px}
@@ -615,6 +623,7 @@ label.lien{justify-content:center;text-align:center;cursor:pointer}
   <div class="fond-ph work"></div><div class="fond-ph rest"></div><div class="fond-ph prep"></div><div class="fond-ph fin"></div>
   <div class="r-in">
     <div class="r-haut"><span class="lbl" id="r-titre"></span><button class="rond" data-a="ring-stop" aria-label="Fermer le minuteur"><svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="r-version" id="r-version" role="group" aria-label="Version de la séance" hidden><button data-a="ring-version" data-v="0">Complète</button><button data-a="ring-version" data-v="1">Légère</button></div>
     <div class="r-centre">
       <div class="r-ph" id="r-ph">Prépare-toi</div>
       <div class="r-cadran"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="fond" cx="50" cy="50" r="46" fill="none" stroke-width="3"/><circle class="arc" id="r-arc" cx="50" cy="50" r="46" fill="none" stroke-width="3" stroke-linecap="round" stroke-dasharray="289.03" stroke-dashoffset="0"/></svg><div class="r-temps" id="r-temps"></div></div>
@@ -839,12 +848,18 @@ sam:{jour:'Samedi',titre:'Sparring',contenu:['Corde','Enchaînements','Sparring'
 };
 
 /* jour de la semaine (0 = dimanche) → contenu */
+/* rattraper une boxe ratée : le lendemain, et ce qui vient après, change selon le jour */
+const RATTRAPE={mar:{lend:'mercredi',leger:0,pk:'le vendredi reste un vrai repos'},jeu:{lend:'vendredi',leger:1,pk:'samedi, c’est sparring'},sam:{lend:'dimanche',leger:1,pk:'tu as aussi la salle ce jour-là'}};
+function quandRattraper(k,ref){const d=fromISO(k),p=PLAN[d.getDay()],R=p&&RATTRAPE[p.bid];if(!R)return'';const j=JOURS[d.getDay()],e=Math.round((fromISO(ref||auj())-d)/864e5),lg=R.leger?' en version légère ('+R.pk+')':'';
+  if(e<=0)return'Raté '+j+' : le soir même, sinon '+R.lend+lg+'.'+(R.leger?'':' '+cap(R.pk)+'.');
+  if(e===1)return'Raté '+j+' : c’est aujourd’hui qu’il faut la faire'+(R.leger?', en version légère ('+R.pk+')':'')+'.';
+  return'Raté '+j+' : le bon moment est passé. Fais-la quand tu peux, jamais deux soirs d’affilée.';}
 const PLAN={0:{type:'salle',sid:'dim'},1:{type:'salle',sid:'lun'},2:{type:'boxe',bid:'mar'},3:{type:'repos'},4:{type:'boxe',bid:'jeu'},5:{type:'repos'},6:{type:'boxe',bid:'sam'}};
 
 /* Séances de compensation à On Air (ring + sac) */
 const ONAIR={
-A:{id:'A',titre:'Technique & Puissance',remplace:'Remplace mardi',duree:'55 min',leger:'35 min',anim:'shadow',
-  quand:'Raté mardi : le soir même, sinon mercredi.',
+A:{id:'A',titre:'Technique & Puissance',remplace:'Remplace mardi ou samedi',duree:'55 min',leger:'35 min',anim:'shadow',
+  quand:'Raté mardi ou samedi : le soir même, sinon le lendemain.',
   blocs:[
    {id:'corde',nom:'Corde à sauter',anim:'corde',n:3,nl:2,w:180,r:45,
     rounds:['Rebonds pieds joints, épaules relâchées','Pas de boxeur, changements de rythme','Toutes les 30 s : 10 s de sprint']},
@@ -1264,7 +1279,7 @@ function hero(k){
       '<div><label class="etiquette" for="note-'+k+'">Notes</label><textarea class="champ-t" id="note-'+k+'" data-note="'+k+'" rows="2" placeholder="Rounds de sparring, sensations, coups reçus">'+esc(b.note||'')+'</textarea></div>'+
       '<button class="lien" data-a="boxe" data-v="" data-d="'+k+'">Modifier ma présence</button>';
     else{const oa=ONAIR[B.onair],ok=compense(k);
-      act=(ok?'<p class="note bleu" style="margin-top:0"><b>Rattrapé.</b> La séance On Air est faite, ta semaine reste complète.</p>':'<p class="note bleu" style="margin-top:0"><b>Pas grave.</b> Rattrape avec la séance On Air '+oa.id+', '+esc(oa.titre.toLowerCase())+' ('+oa.duree+'). '+esc(oa.quand)+'</p>')+
+      act=(ok?'<p class="note bleu" style="margin-top:0"><b>Rattrapé.</b> La séance On Air est faite, ta semaine reste complète.</p>':'<p class="note bleu" style="margin-top:0"><b>Pas grave.</b> Rattrape avec la séance On Air '+oa.id+', '+esc(oa.titre.toLowerCase())+' ('+oa.duree+'). '+esc(quandRattraper(k))+'</p>')+
       '<div class="actions">'+(ok?'':'<button class="btn btn-bleu" data-a="go-onair" data-id="'+oa.id+'" data-pour="'+k+'">'+IC.eclair+'Séance On Air '+oa.id+'</button>')+'<button class="btn btn-ghost" data-a="boxe" data-v="" data-d="'+k+'">Modifier</button></div>';}
     return'<article class="hero t-boxe" id="hero">'+sceneVideo('sac')+
       '<div class="hero-c"><div class="hero-t"><p class="contexte">'+quand+', boxe au club</p><h1>'+esc(B.titre)+'</h1></div><ul class="donnees">'+B.contenu.map(c=>'<li>'+esc(c)+'</li>').join('')+'</ul>'+act+'</div></article>';}
@@ -1274,8 +1289,8 @@ function hero(k){
       '<div class="actions"><button class="btn btn-bleu" data-a="go-onair" data-id="'+O.id+'" data-d="'+k+'">'+(r.onair.done?'Revoir':'Reprendre')+'</button></div></div></article>';}
   const veille=iso(addD(d,-1)),pv=PLAN[addD(d,-1).getDay()],rv=DB.days[veille]||{};
   let sugg='';
-  if(pv.type==='boxe'&&rv.boxe&&rv.boxe.st==='rate'&&!compense(veille)){const O=ONAIR[BOXE[pv.bid].onair],leger=d.getDay()===5;
-    sugg='<p class="note bleu" style="margin-top:0"><b>Boxe ratée '+JOURS[addD(d,-1).getDay()]+'.</b> Si tu peux, fais la séance On Air '+O.id+(leger?' en version légère, samedi c’est sparring':'')+'. Sinon, repos : le sommeil compte plus.</p>'+
+  if(pv.type==='boxe'&&rv.boxe&&rv.boxe.st==='rate'&&!compense(veille)){const O=ONAIR[BOXE[pv.bid].onair],RR=RATTRAPE[pv.bid]||{},leger=!!RR.leger;
+    sugg='<p class="note bleu" style="margin-top:0"><b>Boxe ratée '+JOURS[addD(d,-1).getDay()]+'.</b> Si tu peux, fais la séance On Air '+O.id+(leger?' en version légère : '+RR.pk:'')+'. Sinon, repos : le sommeil compte plus.</p>'+
       '<div class="actions"><button class="btn btn-bleu" data-a="go-onair" data-id="'+O.id+'" data-pour="'+veille+'" data-leger="'+(leger?1:0)+'">'+IC.eclair+'On Air '+O.id+(leger?', légère':'')+'</button></div>';}
   return'<article class="hero t-repos" id="hero">'+
     '<div class="hero-c hero-seul"><div class="hero-t"><p class="contexte">'+quand+', repos complet</p><h1>On récupère</h1>'+
@@ -1442,24 +1457,49 @@ function ouvrirOnAir(id,k,pour,leger,force){
   if(!r.onair||r.onair.id!==id){r.onair={id,pour:pour||null,leger:leger?1:0,blocs:{}};toucher(k);}
   else if(pour&&!r.onair.pour){r.onair.pour=pour;toucher(k);}
   UI.s={k,kind:'onair',id};renderOnAir();ouvrirCouche(true);}
+function recapOA(O,o){return O.blocs.map((b,bi)=>{const f=o.blocs&&o.blocs[b.id];return'<li class="'+(f?'ok':'')+'"><button data-a="oa-page-n" data-v="'+bi+'">'+(f?IC.ok:'<i></i>')+'<span>'+esc(b.nom)+'</span><small>'+(f?'Fait':'À faire')+'</small></button></li>';}).join('');}
 function renderOnAir(){
-  const k=UI.s.k,O=ONAIR[UI.s.id],o=jour(k).onair,d=fromISO(k),lg=!!o.leger;
-  let h='<div class="s-top"><div class="s-row"><button class="rond" data-a="fermer" aria-label="Fermer la séance">'+IC.x+'</button><div class="s-titre"><b>'+esc(O.titre)+'</b><span>'+cap(fmtJour(d))+', On Air '+O.id+'</span></div><div class="chrono-s"><b id="s-chrono">0:00</b><span>durée</span></div></div></div>'+
-    segmentH('leger',[[0,'Complète',O.duree],[1,'Légère',O.leger]],lg?1:0);
-  if(lg)h+='<p class="note bleu" style="margin:0 0 18px">Version légère : moins de rounds, pas de dernier round à fond. Pour la veille du sparring ou un jour de fatigue.</p>';
+  const k=UI.s.k,O=ONAIR[UI.s.id],o=jour(k).onair,d=fromISO(k),lg=!!o.leger,N=O.blocs.length;
+  /* on ouvre sur le premier bloc pas encore fait */
+  if(UI.s.page==null){const i=O.blocs.findIndex(b=>!(o.blocs&&o.blocs[b.id]));UI.s.page=i<0?N:i;}
+  let h='<div class="s-top"><div class="s-row"><button class="rond" data-a="fermer" aria-label="Fermer la séance">'+IC.x+'</button><div class="s-titre"><b>'+esc(O.titre)+'</b><span>'+cap(fmtJour(d))+', On Air '+O.id+'</span></div><div class="chrono-s"><b id="s-chrono">0:00</b><span>durée</span></div></div>'+
+    segmentH('leger',[[0,'Complète',O.duree],[1,'Légère',O.leger]],lg?1:0)+'</div>';
+  if(lg)h+='<p class="note bleu" style="margin:0 0 14px">Version légère : moins de rounds, pas de dernier round à fond. Ce qui est déjà fait reste fait.</p>';
+  h+='<div class="oa-pages" id="oa-pages" aria-label="Blocs de la séance, un par écran">';
   O.blocs.forEach((b,bi)=>{const fait=o.blocs&&o.blocs[b.id];let fmt,corps='';
     if(b.stations){const t=lg?b.tl:b.tours;fmt=[plur(t,'tour'),b.stations.length+' stations',b.w+' s d’effort, '+b.r+' s pour changer'];
       corps='<div class="stations">'+b.stations.map(s=>'<button class="station" data-a="geste" data-ex="'+s.anim+'" aria-label="Voir le geste : '+esc(s.nom)+'"><div class="mini">'+(clipDe(s.anim)?balise(s.anim):'')+'</div><span>'+esc(s.nom)+'</span><small>Voir</small></button>').join('')+'</div>';}
     else{const n=lg?b.nl:b.n;fmt=[plur(n,'round')+' de '+mmss(b.w),'repos '+mmss(b.r)];
       corps='<ol class="rounds">'+b.rounds.map((x,i)=>'<li class="'+(i>=n?'off':'')+'">'+esc(x)+'</li>').join('')+'</ol>';}
-    h+='<section class="bloc-oa carte'+(fait?' fini':'')+'" id="bloc-'+b.id+'">'+(b.stations?'':sceneVideo(b.id,'<span class="tag">Bloc '+(bi+1)+'</span>'+boutonPause())+listeEtapes(b.id))+'<div class="in">'+(b.stations?'':'<button class="btn btn-bleu btn-plein" data-a="geste" data-ex="'+b.id+'" aria-label="Voir le geste : '+esc(b.nom)+'">'+IC.play+'Voir le geste</button>')+
+    h+='<section class="oa-page bloc-oa carte'+(fait?' fini':'')+'" id="bloc-'+b.id+'" role="group" aria-label="Bloc '+(bi+1)+' sur '+N+' : '+esc(b.nom)+'">'+(b.stations?'':sceneVideo(b.id,'<span class="tag">Bloc '+(bi+1)+' sur '+N+'</span>'+boutonPause())+listeEtapes(b.id))+'<div class="in">'+(b.stations?'<span class="etiquette" style="margin:0">Bloc '+(bi+1)+' sur '+N+'</span>':'<button class="btn btn-bleu btn-plein" data-a="geste" data-ex="'+b.id+'" aria-label="Voir le geste : '+esc(b.nom)+'">'+IC.play+'Voir le geste</button>')+
       '<h3>'+esc(b.nom)+'</h3><ul class="cibles">'+fmt.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+(b.note?'<p class="mut" style="font-size:15px">'+esc(b.note)+'</p>':'')+corps+
-      '<div class="actions"><button class="btn btn-rouge" data-a="ring-bloc" data-b="'+bi+'">'+IC.cloche+'Lancer le minuteur</button><button class="btn btn-ghost" data-a="bloc-ok" data-b="'+b.id+'" aria-pressed="'+!!fait+'">'+(fait?IC.ok+'Fait':'Marquer fait')+'</button></div></div></section>';});
-  h+='<section class="section" style="margin-top:28px"><span class="etiquette" id="rpe-oa-l">Comment tu t’es senti, de 1 à 10 ?</span><div class="rpe" role="group" aria-labelledby="rpe-oa-l" style="margin-bottom:18px">'+[1,2,3,4,5,6,7,8,9,10].map(v=>'<button data-a="rpe-oa" data-v="'+v+'" class="'+(o.rpe===v?'on':'')+'" aria-label="'+v+' sur 10" aria-pressed="'+(o.rpe===v)+'">'+v+'</button>').join('')+'</div>'+
-    '<label class="etiquette" for="note-oa">Notes</label><textarea class="champ-t" id="note-oa" data-note-oa="1" rows="2" placeholder="Rounds, sensations">'+esc(o.note||'')+'</textarea></section>';
-  h+='<button class="btn btn-bleu btn-plein" style="margin-top:22px" data-a="fin-oa">'+IC.ok+(o.done?'Fermer':'Terminer la séance')+'</button>';
-$('#seance-in').innerHTML=h;Clips.monter($('#seance-in'));
+      '<button class="btn btn-ghost btn-plein" data-a="bloc-ok" data-b="'+b.id+'" aria-pressed="'+!!fait+'">'+(fait?IC.ok+'Fait':'Marquer fait')+'</button></div></section>';});
+  h+='<section class="oa-page oa-bilan carte" role="group" aria-label="Fin de séance"><div class="in"><h3>Fin de séance</h3><ul class="oa-recap" id="oa-recap">'+recapOA(O,o)+'</ul>'+
+    '<span class="etiquette" id="rpe-oa-l">Comment tu t’es senti, de 1 à 10 ?</span><div class="rpe" role="group" aria-labelledby="rpe-oa-l">'+[1,2,3,4,5,6,7,8,9,10].map(v=>'<button data-a="rpe-oa" data-v="'+v+'" class="'+(o.rpe===v?'on':'')+'" aria-label="'+v+' sur 10" aria-pressed="'+(o.rpe===v)+'">'+v+'</button>').join('')+'</div>'+
+    '<label class="etiquette" for="note-oa">Notes</label><textarea class="champ-t" id="note-oa" data-note-oa="1" rows="2" placeholder="Rounds, sensations">'+esc(o.note||'')+'</textarea>'+
+    '<button class="btn btn-bleu btn-plein" data-a="fin-oa">'+IC.ok+(o.done?'Fermer':'Terminer la séance')+'</button></div></section></div>';
+  h+='<div class="oa-bas"><div class="oa-pts" id="oa-pts" aria-hidden="true">'+O.blocs.map(()=>'<i></i>').join('')+'<i class="fin"></i></div>'+
+    '<div class="oa-nav"><button class="rond" data-a="oa-page" data-v="-1" aria-label="Bloc précédent">'+IC.g+'</button><button class="btn btn-rouge" id="oa-go"></button><button class="rond" data-a="oa-page" data-v="1" aria-label="Bloc suivant">'+IC.d+'</button></div></div>';
+  $('#seance-in').innerHTML=h;Clips.monter($('#seance-in'));
+  const P=$('#oa-pages');let tP=0;P.addEventListener('scroll',()=>{clearTimeout(tP);tP=setTimeout(()=>OAP.maj(OAP.ici()),70);},{passive:true});
+  OAP.aller(UI.s.page,true);
 }
+/* le carrousel des blocs : défilement natif (élan et aimantation d'iOS), boutons et points en bas */
+const OAP={
+  pas(P){const c=P.children[0];return c?c.offsetWidth+parseFloat(getComputedStyle(P).columnGap||0):1;},
+  ici(){const P=$('#oa-pages');return P?Math.round(P.scrollLeft/this.pas(P)):0;},
+  aller(i,instant){const P=$('#oa-pages');if(!P)return;i=Math.max(0,Math.min(P.children.length-1,i));
+    P.scrollTo({left:i*this.pas(P),behavior:instant||RM?'auto':'smooth'});this.maj(i);
+    if(!instant){const c=$('#seance');if(c&&c.scrollTop>60)c.scrollTo({top:0,behavior:RM?'auto':'smooth'});}},
+  maj(i){if(!UI.s||UI.s.kind!=='onair')return;const O=ONAIR[UI.s.id],o=jour(UI.s.k).onair,N=O.blocs.length;UI.s.page=i;
+    $$('#oa-pts i').forEach((x,q)=>{x.classList.toggle('on',q===i);x.classList.toggle('ok',q<N&&!!(o.blocs&&o.blocs[O.blocs[q].id]));});
+    const pr=$('[data-a="oa-page"][data-v="-1"]'),sv=$('[data-a="oa-page"][data-v="1"]');if(pr)pr.disabled=i<=0;if(sv)sv.disabled=i>=N;
+    const g=$('#oa-go');if(!g)return;
+    if(i<N){g.dataset.a='ring-bloc';g.dataset.b=i;g.innerHTML=IC.cloche+'Minuteur, bloc '+(i+1);g.setAttribute('aria-label','Lancer le minuteur : '+O.blocs[i].nom);}
+    else{g.dataset.a='fin-oa';delete g.dataset.b;g.innerHTML=IC.ok+(o.done?'Fermer':'Terminer');g.removeAttribute('aria-label');}},
+  /* un bloc vient d'être fait : la liste et les points suivent */
+  fait(){if(!UI.s||UI.s.kind!=='onair')return;const r=$('#oa-recap');if(r)r.innerHTML=recapOA(ONAIR[UI.s.id],jour(UI.s.k).onair);this.maj(UI.s.page||0);}
+};
 function segsBloc(b,lg){
   const segs=[];
   if(b.stations){const T=lg?b.tl:b.tours,st=b.stations;segs.push({k:'prep',d:10,lab:st[0].nom,round:'Tour 1, station 1',sub:''});
@@ -1493,7 +1533,7 @@ const Repos={fin:0,tot:1,iv:0,actif:false,bp:null,
 };
 const CRG=2*Math.PI*46;
 const Ring={segs:[],i:0,t0:0,iv:0,actif:false,pause:false,pAt:0,warn:false,bp:null,onFin:null,last:-1,
-  start(titre,segs,onFin){audio();this.segs=segs;this.onFin=onFin;this.actif=true;this.pause=false;
+  start(titre,segs,onFin,opt){audio();this.segs=segs;this.onFin=onFin;this.opt=opt||null;this.actif=true;this.pause=false;this.majVersion();
     $('#r-titre').textContent=titre;const r=$('#ring');r.setAttribute('aria-hidden','false');
     FX.monte(r);
     $('#r-pause').textContent='Pause';this.enter(0,true);clearInterval(this.iv);this.iv=setInterval(()=>this.tick(),100);eveil(true);Repos.stop();},
@@ -1513,10 +1553,19 @@ const Ring={segs:[],i:0,t0:0,iv:0,actif:false,pause:false,pAt:0,warn:false,bp:nu
     $('#r-arc').style.strokeDashoffset=(CRG*(1-rem/s.d)).toFixed(1);
     if(s.k==='work'&&s.d>=60&&rem<=10&&!this.warn){this.warn=true;clac();$('#ring').dataset.alerte='1';}
     if(s.k!=='work'&&rem<=3.05&&!this.bp.has(sec)){this.bp.add(sec);beep(880,.12);}},
+  majVersion(){const v=$('#r-version');if(!v)return;v.hidden=!this.opt;if(!this.opt)return;$$('button',v).forEach(x=>{const on=+x.dataset.v===(this.opt.lg?1:0);x.classList.toggle('on',on);x.setAttribute('aria-pressed',on);});},
+  /* même round, même temps écoulé ; si la nouvelle version a moins de rounds que ce qui est déjà fait, le bloc est fini */
+  version(lg){if(!this.opt||!this.actif||!!this.opt.lg===!!lg)return;this.opt.lg=!!lg;Haptique.tic();const segs=this.opt.version(!!lg);this.majVersion();
+    const cur=this.segs[this.i],ref=this.pause?this.pAt:Date.now(),el=ref-this.t0;let wi=-1;for(let q=0;q<=this.i;q++)if(this.segs[q].k==='work')wi++;
+    const nw=segs.filter(x=>x.k==='work').length;this.segs=segs;
+    if(wi>=nw||(cur.k==='rest'&&wi>=nw-1)){this.i=segs.length-1;this.fin();return;}
+    let j=0;if(cur.k!=='prep'){let c=-1;for(j=0;j<segs.length;j++)if(segs[j].k==='work'&&++c===wi)break;if(cur.k==='rest')j++;}
+    this.enter(j,true);this.t0=(this.pause?this.pAt:Date.now())-Math.min(el,segs[j].d*1000-500);this.last=-1;
+    if(this.pause){const rem=Math.ceil(segs[j].d-(this.pAt-this.t0)/1000);Odo.set($('#r-temps'),mmss(rem));}else this.tick();},
   basculer(){if(!this.actif)return;if(this.pause){this.t0+=Date.now()-this.pAt;this.pause=false;$('#r-pause').textContent='Pause';}else{this.pause=true;this.pAt=Date.now();$('#r-pause').textContent='Reprendre';}},
   passer(){if(!this.actif)return;if(this.i>=this.segs.length-1){this.fin();return;}if(this.pause)this.basculer();this.enter(this.i+1);},
   retour(){if(!this.actif)return;if(this.pause)this.basculer();const el=(Date.now()-this.t0)/1000;if(el>3||this.i===0)this.enter(this.i,true);else this.enter(this.i-1,true);},
-  fin(){clearInterval(this.iv);this.actif=false;cloche(3);vibre([200,100,200]);const r=$('#ring');r.dataset.ph='fin';r.dataset.alerte='0';
+  fin(){clearInterval(this.iv);this.actif=false;const v=$('#r-version');if(v)v.hidden=true;cloche(3);vibre([200,100,200]);const r=$('#ring');r.dataset.ph='fin';r.dataset.alerte='0';
     $('#r-ph').textContent='Terminé';Odo.set($('#r-temps'),'0:00');$('#r-arc').style.strokeDashoffset='0';$('#r-consigne').textContent='Bien joué.';$('#r-suivant').textContent='';$('#r-round').textContent='';
     $('#r-dots').querySelectorAll('i').forEach(i=>i.className='ok');$('#r-pause').textContent='Fermer';if(this.onFin)this.onFin();},
   fermer(){clearInterval(this.iv);this.actif=false;const r=$('#ring');r.setAttribute('aria-hidden','true');FX.descend(r);if(!besoinEveil())eveil(false);}
@@ -1529,6 +1578,7 @@ function vueOnAir(){
   let h='<section class="section" style="margin-top:8px"><h2>Quand tu rates la boxe</h2>'+
     '<div class="regle"><b>Mardi raté</b><span>Séance A le soir même. Sinon mercredi : le vendredi reste un vrai repos.</span></div>'+
     '<div class="regle"><b>Jeudi raté</b><span>Séance B le soir même. Sinon vendredi, en version légère : samedi, c’est sparring.</span></div>'+
+    '<div class="regle"><b>Samedi raté</b><span>Séance A le soir même. Sinon dimanche, en version légère : tu as aussi la salle ce jour-là.</span></div>'+
     '<div class="regle"><b>Les deux</b><span>A puis B légère, jamais deux soirs d’affilée.</span></div>'+
     '<div class="regle"><b>Rentré tard</b><span>Ne rattrape rien. Une nuit de huit heures vaut plus qu’une séance de plus.</span></div></section>';
   h+='<section class="section">';
@@ -2546,16 +2596,25 @@ document.addEventListener('click',e=>{
     case'leger':{const o=jour(UI.s.k).onair;if(o.leger===+b.dataset.v)return;o.leger=+b.dataset.v;toucher(UI.s.k);$$('button',b.parentNode).forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-pressed',x===b);});FX.indic($('.seg-ind',b.parentNode),b);
       requestAnimationFrame(()=>requestAnimationFrame(()=>{renderOnAir();placerIndics($('#seance'),true);}));break;}
     case'ring-bloc':{const O=ONAIR[UI.s.id],bl=O.blocs[+b.dataset.b],o=jour(UI.s.k).onair,k=UI.s.k;if(!o.debut){o.debut=Date.now();toucher(k);}
+      const bi=+b.dataset.b;
       Ring.start('On Air '+O.id+', '+bl.nom.toLowerCase(),segsBloc(bl,!!o.leger),()=>{const r=jour(k).onair;if(r){r.blocs=r.blocs||{};r.blocs[bl.id]=1;toucher(k);}
-        const sec=$('#bloc-'+bl.id);if(sec){sec.classList.add('fini');const bt=$('[data-a="bloc-ok"]',sec);if(bt){bt.innerHTML=IC.ok+'Fait';bt.setAttribute('aria-pressed','true');}}});break;}
+        const sec=$('#bloc-'+bl.id);if(sec){sec.classList.add('fini');const bt=$('[data-a="bloc-ok"]',sec);if(bt){bt.innerHTML=IC.ok+'Fait';bt.setAttribute('aria-pressed','true');}}
+        OAP.fait();if(UI.s&&UI.s.kind==='onair')OAP.aller(bi+1,true);},
+        /* Complète ou Légère, même en plein bloc : les rounds s'ajustent, ce qui est fait reste fait */
+        {lg:!!o.leger,version:lg=>{const r=jour(k).onair;r.leger=lg?1:0;toucher(k);if(UI.s&&UI.s.kind==='onair'){renderOnAir();placerIndics($('#seance'),true);}return segsBloc(bl,lg);}});break;}
     case'bloc-ok':{const o=jour(UI.s.k).onair;if(!o.debut)o.debut=Date.now();o.blocs=o.blocs||{};const id=b.dataset.b;o.blocs[id]=o.blocs[id]?0:1;toucher(UI.s.k);b.innerHTML=o.blocs[id]?IC.ok+'Fait':'Marquer fait';b.setAttribute('aria-pressed',!!o.blocs[id]);
-      const sec=$('#bloc-'+id);sec.classList.toggle('fini',!!o.blocs[id]);break;}
+      const sec=$('#bloc-'+id);sec.classList.toggle('fini',!!o.blocs[id]);OAP.fait();
+      /* fait : on passe au bloc suivant, comme on tourne une page */
+      if(o.blocs[id]){Haptique.tic();const i=ONAIR[UI.s.id].blocs.findIndex(x=>x.id===id);setTimeout(()=>{if(UI.s&&UI.s.kind==='onair'&&UI.s.page===i)OAP.aller(i+1);},380);}break;}
+    case'oa-page':OAP.aller(OAP.ici()+(+b.dataset.v));break;
+    case'oa-page-n':OAP.aller(+b.dataset.v);break;
     case'rpe-oa':{const o=jour(UI.s.k).onair;o.rpe=+b.dataset.v;toucher(UI.s.k);vagueRpe(b);break;}
     case'fin-oa':{Haptique.tic();const o=jour(UI.s.k).onair;if(!o.done&&!nbBlocs(o)){ouvrirFeuille('<div class="poignee"></div><h2>Aucun bloc marqué</h2><p class="mut" style="margin:8px 0 14px">As-tu fait toute la séance ?</p><button class="btn btn-bleu btn-plein" data-a="oa-tout">Oui, tout est fait</button><button class="btn btn-ghost btn-plein" style="margin-top:8px" data-a="fermer-feuille">Pas encore</button>');break;}if(!o.done){o.done=1;o.fin=Date.now();toucher(UI.s.k);toast('Séance On Air enregistrée, ta semaine est sauvée.',IC.eclair);}flush();fermerCouche();break;}
     case'ring-pause':if(Ring.actif)Ring.basculer();else Ring.fermer();break;
     case'ring-skip':Ring.passer();break;
     case'ring-prev':Ring.retour();break;
     case'ring-stop':Ring.fermer();break;
+    case'ring-version':Ring.version(+b.dataset.v);break;
     case'repos-plus':Repos.add(15);break;
     case'repos-moins':Repos.add(-15);break;
     case'repos-stop':Repos.stop();break;

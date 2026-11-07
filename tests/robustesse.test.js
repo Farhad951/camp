@@ -184,5 +184,11 @@ const PLAT={pas_un_plat:false,plat:'Karahi et naans',sel_eleve:false,confiance:'
  await p.reload({waitUntil:'load'});await sleep(800);
  ok('fichier illisible : mis de côté, appli ouverte, restauration proposée',await ev(()=>localStorage.getItem(LS+'.illisible')==='{abîmé'&&!!document.querySelector('#hero')&&/mises de côté/.test(document.querySelector('#toast').textContent)&&!!document.querySelector('#toast [data-a="toast-action"]')));
  await p.screenshot({path:path.join(OUT,'illisible.png')});
+
+ /* --- la vraie sauvegarde de Farhad : import complet, chaque onglet s’affiche */
+ const FIXV=path.join(__dirname,'fixtures','sauvegarde-test.json');if(require('fs').existsSync(FIXV)){const VRAIE=require('fs').readFileSync(FIXV,'utf8');
+ await ev(async x=>{await importer(x);},VRAIE);await sleep(300);
+ ok('vraie sauvegarde : tous les jours importés, macros exactes',await ev(d=>d.every(k=>!!DB.days[k])&&DB.days['2026-11-03'].repas[1].items[0].m[2]===3.3333333333333335,Object.keys(JSON.parse(VRAIE).days)));
+ for(const tab of['jour','onair','bouffe','visage','progres']){await ev(x=>aller(x),tab);await sleep(200);ok('vraie sauvegarde : '+tab+' s’affiche',await ev(()=>![...document.querySelectorAll('.vue')].some(v=>/n’a pas pu s’afficher/.test(v.textContent))));}}
  await t.fin();
 })().catch(e=>{console.error(e);process.exit(1);});

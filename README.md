@@ -32,7 +32,7 @@ Il faut Node et Chrome. L'appli elle-même ne demande aucune installation.
     npm install
     npm test
 
-`npm test` ouvre l'appli dans Chrome sans interface et rejoue les parcours : thème et contrastes, séance complète, cohérence des textes, lecture hors ligne, préchargement, Bouffe et Visage, IA, parcours critiques et cas limites : repas passés, hors ligne, import et export, données abîmées, suppression d’un repas par glissement ou corbeille, bannière d’installation (services d'IA simulés, caméra factice). Il faut du réseau pour le lecteur YouTube. Les captures vont dans `tests/sortie/`.
+`npm test` ouvre l'appli dans Chrome sans interface et rejoue les parcours : thème et contrastes, séance complète, cohérence des textes, lecture hors ligne, préchargement, Bouffe et Visage, IA, parcours critiques et cas limites : repas passés, hors ligne, import et export, données abîmées, suppression d’un repas par glissement ou corbeille, bannière d’installation, et ta vraie sauvegarde si elle est dans tests/fixtures/sauvegarde-test.json (ce dossier reste sur le PC, Git l’ignore) : import, Bouffe, rattrapage selon le jour raté, On Air bloc par bloc, bascule Complète / Légère dans le minuteur (services d'IA simulés, caméra factice). Il faut du réseau pour le lecteur YouTube. Les captures vont dans `tests/sortie/`.
 
 - `npm run test:ia` essaie le vrai Gemini avec la clé de `.env`. Il consomme un peu de quota.
 - `npm run test:youtube` vérifie que les 31 vidéos se lisent dans le lecteur.

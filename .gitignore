@@ -3,3 +3,6 @@ outils/candidats.json
 outils/candidats.html
 node_modules/
 tests/sortie/
+
+# sauvegarde réelle : reste sur ce PC, jamais dans le dépôt public
+tests/fixtures/
