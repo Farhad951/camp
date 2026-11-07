@@ -9,7 +9,7 @@ const ratio=(a,b)=>{const x=lum(a),y=lum(b);return +((Math.max(x,y)+.05)/(Math.m
  /* --- ouverture : environ 3 s, propriétés fluides seulement, un toucher la passe */
  await p.reload({waitUntil:'domcontentloaded'});
  const ouv=await ev(()=>{const l=document.getAnimations().filter(a=>a.animationName&&a.animationName.startsWith('ouv-'));const fx=new Set();l.forEach(a=>a.effect.getKeyframes().forEach(k=>Object.keys(k).forEach(x=>{if(!['offset','computedOffset','easing','composite'].includes(x))fx.add(x);})));return{n:l.length,fin:Math.max(...l.map(a=>{const t=a.effect.getTiming();return t.delay+t.duration;})),fx:[...fx],clic:getComputedStyle(document.querySelector('#ouv')).pointerEvents};});
- ok('ouverture d’environ 3 s',ouv.n>0&&ouv.fin>=2800&&ouv.fin<=3200,ouv.fin);
+ ok('ouverture d’environ 2,4 s',ouv.n>0&&ouv.fin>=2200&&ouv.fin<=2600,ouv.fin);
  ok('ouverture : opacity et transform seulement',ouv.fx.every(x=>['opacity','transform','visibility'].includes(x)),ouv.fx);
  ok('ouverture : le toucher ne touche pas l’écran caché',ouv.clic!=='none');
  for(const[n,ms]of[['a',500],['b',1200],['c',1900],['d',2650]]){await sleep(n==='a'?ms:ms-({b:500,c:1200,d:1900}[n]));await p.screenshot({path:require('path').join(OUT,'ouverture-'+n+'.png')});}

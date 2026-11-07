@@ -21,7 +21,7 @@ Les séances sont enregistrées sur le téléphone uniquement. Pense à faire Pr
 
 ## IA
 
-L'appli n'a pas de serveur : elle appelle directement Gemini avec ta clé, à coller une fois dans Bouffe → Objectif → IA. La clé ne doit jamais entrer dans ce dépôt, qui est public : elle reste dans le navigateur, hors sauvegarde et hors synchro, et dans `.env` (ignoré par Git) pour les tests. Seul Gemini est branché, aucun service payant. L'appli essaie plusieurs modèles Flash si l'un est saturé et s'arrête à 60 demandes par jour. Les photos ne partent qu'après ton accord, donné une fois pour le visage et une fois pour le corps. Sans clé ni réseau, tout le reste fonctionne.
+L'appli n'a pas de serveur : elle appelle directement Gemini avec ta clé, à coller une fois dans Bouffe → Objectif → IA. La clé ne doit jamais entrer dans ce dépôt, qui est public : elle reste dans le navigateur, hors sauvegarde et hors synchro, et dans `.env` (ignoré par Git) pour les tests. Seul Gemini est branché, aucun service payant. L'appli lit la liste des modèles que Google ouvre à ta clé (tous les 3 jours) et ne garde que les Flash et Flash-Lite stables, gratuits : jamais de Pro, payant. Chaque demande a son effort : lire un emballage ou un frigo passe d'abord par Flash-Lite, rapide, avec une réflexion légère ; un repas par le Flash le plus récent ; un bilan, une recette, la peau ou le corps par le Flash le plus récent, avec une réflexion poussée. Un modèle saturé ou à court de quota passe la main au suivant, et l'appli s'arrête à 60 demandes par jour. Le bilan de la semaine lit aussi tes 4 dernières semaines de salle, ton poids et ton ressenti, et propose jusqu'à 3 ajustements du programme, sans rien changer tout seul. Les photos ne partent qu'après ton accord, donné une fois pour le visage et une fois pour le corps. Sans clé ni réseau, tout le reste fonctionne.
 
 Open Food Facts (gratuit, sans clé) fournit les produits français.
 
@@ -32,7 +32,7 @@ Il faut Node et Chrome. L'appli elle-même ne demande aucune installation.
     npm install
     npm test
 
-`npm test` ouvre l'appli dans Chrome sans interface et rejoue les parcours : thème et contrastes, séance complète, cohérence des textes, lecture hors ligne, préchargement, Bouffe et Visage, IA, parcours critiques et cas limites : repas passés, hors ligne, import et export, données abîmées, suppression d’un repas par glissement ou corbeille, bannière d’installation, et ta vraie sauvegarde si elle est dans tests/fixtures/sauvegarde-test.json (ce dossier reste sur le PC, Git l’ignore) : import, Bouffe, rattrapage selon le jour raté, On Air bloc par bloc, bascule Complète / Légère dans le minuteur (services d'IA simulés, caméra factice). Il faut du réseau pour le lecteur YouTube. Les captures vont dans `tests/sortie/`.
+`npm test` ouvre l'appli dans Chrome sans interface et rejoue les parcours : thème et contrastes, séance complète, cohérence des textes, lecture hors ligne, préchargement, Bouffe et Visage, IA, parcours critiques et cas limites : repas passés, hors ligne, import et export, données abîmées, coupure réseau totale puis synchro au retour, import de fichiers corrompus, appli ouverte pendant minuit, clé Gemini refusée et quota épuisé, image de démarrage identique au premier frame de l’ouverture, règles de progression, suppression d’un repas par glissement ou corbeille, bannière d’installation, et ta vraie sauvegarde si elle est dans tests/fixtures/sauvegarde-test.json (ce dossier reste sur le PC, Git l’ignore) : import, Bouffe, rattrapage selon le jour raté, On Air bloc par bloc, bascule Complète / Légère dans le minuteur (services d'IA simulés, caméra factice). Il faut du réseau pour le lecteur YouTube. Les captures vont dans `tests/sortie/`.
 
 - `npm run test:ia` essaie le vrai Gemini avec la clé de `.env`. Il consomme un peu de quota.
 - `npm run test:youtube` vérifie que les 31 vidéos se lisent dans le lecteur.
@@ -42,7 +42,7 @@ Ces tests ne remplacent pas un essai sur un vrai iPhone.
 
 ## Thème
 
-Elegant Luxury, avec la police du système : rien à télécharger. `node outils/icones.js` redessine les icônes et les écrans de démarrage de l'iPhone.
+Elegant Luxury, avec la police du système : rien à télécharger. `node outils/icones.js` redessine les icônes. `node outils/demarrage.js` refait les écrans de démarrage de l'iPhone à partir du premier frame de l'ouverture : à relancer après toute retouche de l'ouverture (`npm test` vérifie qu'ils correspondent).
 
 ## Vidéos
 

@@ -26,7 +26,7 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  ok('lecture refusée : icône lecture',await ev(async()=>{const v=document.querySelector('#ex-curlInc video');const o=v.play;v.pause();v.play=()=>Promise.reject(new Error('bloqué'));document.querySelector('#seance').scrollTop=document.querySelector('#ex-curlInc').offsetTop-70;await new Promise(r=>setTimeout(r,700));v.play=o;return document.querySelector('#ex-curlInc .pause-b').getAttribute('aria-label').startsWith('Lancer');}));
  // ajout de série : même vidéo, toujours en lecture
  await viser('latDB');
- ok('ajout de série : vidéo intacte',await ev(()=>{const v=document.querySelector('#ex-latDB video'),t=v.currentTime;document.querySelector('#ex-latDB [data-a="serie+"]').click();const w=document.querySelector('#ex-latDB video');return w===v&&!w.paused&&document.querySelectorAll('#ex-latDB .serie').length===7;}));
+ ok('ajout de série : vidéo intacte',await ev(()=>{const v=document.querySelector('#ex-latDB video'),t=v.currentTime;document.querySelector('#ex-latDB [data-a="serie+"]').click();const w=document.querySelector('#ex-latDB video');return w===v&&!w.paused&&document.querySelectorAll('#ex-latDB .serie').length===6;}));
  await ev(()=>document.querySelector('#ex-latDB [data-a="serie-"]').click());
  // fin de repos : reste affichée, un toucher ferme
  ok('fin de repos : reste à l’écran',await ev(async()=>{Repos.start(1,'x');await new Promise(r=>setTimeout(r,4800));const e=document.querySelector('#repos');const reste=e.classList.contains('on')&&e.classList.contains('fin');e.querySelector('.txt').click();await new Promise(r=>setTimeout(r,700));return reste&&!e.classList.contains('on');}));
@@ -44,7 +44,7 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  ok('20 exercices ont une vidéo directe',Object.keys(liens).length===20&&Object.values(liens).every(u=>/^https:\/\/www\.youtube\.com\/watch\?v=[\w-]{11}(&t=\d+s)?$/.test(u)),Object.keys(liens).length);
  ok('chaque carte du lundi a son bouton',await ev(()=>[...document.querySelectorAll('#seance .ex')].every(e=>{const a=e.querySelector('[data-a="geste"]');return a&&a.textContent==='Voir le geste';})));
  ok('aucune recherche YouTube restante',await ev(()=>!document.documentElement.innerHTML.includes('search_query')));
- ok('programme toujours appliqué',await ev(()=>EX.latDB.series===6&&EX.trapbar.series===3&&EX.boxjump.series===3&&!!EX.sautsLat));
+ ok('programme toujours appliqué',await ev(()=>EX.latDB.series===5&&EX.trapbar.series===3&&EX.boxjump.series===3&&!!EX.sautsLat));
  // fichier illisible : étapes et bouton restent
  await p.setOfflineMode(false);
  await ev(()=>{CLIPS.medball={f:'absent-000'};VIDEOS.add('medball');});await seance('2026-11-02');await viser('medball');await sleep(800);

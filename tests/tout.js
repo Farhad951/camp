@@ -1,6 +1,6 @@
 /* Lance chaque suite l'une après l'autre : npm test */
 const {spawnSync}=require('child_process'),path=require('path');
-const suites=['theme','parcours','coherence','hors-ligne','reseau','bouffe-visage','ia','robustesse','glisse','sauvegarde'];
+const suites=['theme','parcours','coherence','hors-ligne','reseau','bouffe-visage','ia','robustesse','glisse','sauvegarde','extremes'];
 const ko=[];
 for(const s of suites){
   console.log('\n=== '+s);

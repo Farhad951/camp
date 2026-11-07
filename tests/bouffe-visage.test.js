@@ -95,7 +95,7 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  ok('un repas se rouvre',await ev(()=>UI.r.i===0&&document.querySelectorAll('.al').length===2));
  await clic('[data-a="repas-suppr"]');await sleep(400);ok('un repas se supprime',await ev(()=>repasDu(auj()).length===0));
  /* erreurs */
- for(const[m,re]of[['401',/refusée/],['vide',/pas de nourriture/]]){mode=m;await envoyer();await sleep(800);const x=await ev(()=>({s:UI.r.statut,t:document.querySelector('#feuille').textContent}));ok('erreur '+m+' : message clair',x.s==='erreur'&&re.test(x.t),x.s);await clic('[data-a="fermer-feuille"]');await sleep(350);}
+ for(const[m,re]of[['401',/reconnaît pas ta clé/],['vide',/pas de nourriture/]]){mode=m;await envoyer();await sleep(800);const x=await ev(()=>({s:UI.r.statut,t:document.querySelector('#feuille').textContent}));ok('erreur '+m+' : message clair',x.s==='erreur'&&re.test(x.t),x.s);await clic('[data-a="fermer-feuille"]');await sleep(350);}
  mode='ok';
  mode='refus';await envoyer();await sleep(800);ok('refus du service : message',await ev(()=>/refusé/.test(document.querySelector('#feuille').textContent)));mode='ok';await clic('[data-a="fermer-feuille"]');await sleep(350);
  await p.setOfflineMode(true);await ev(()=>Object.defineProperty(navigator,'onLine',{value:false,configurable:true}));await envoyer();await sleep(500);ok('hors ligne : saisie à la main',await ev(()=>UI.r.statut==='horsligne'));await clic('[data-a="fermer-feuille"]');await sleep(350);await ev(()=>delete navigator.onLine);await p.setOfflineMode(false);
