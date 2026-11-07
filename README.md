@@ -6,7 +6,7 @@ Appli d'entraînement personnelle : boxe (mardi, jeudi, samedi) et salle (dimanc
 - Séances de salle : un clip hors ligne et les étapes d'exécution pour chaque exercice, un bouton « Voir le geste » vers une vidéo YouTube détaillée, en français quand il en existe une bonne, le suivi des séries (charge et répétitions), la progression conseillée et un minuteur de repos.
 - Séances de rattrapage On Air quand une séance de boxe saute, avec un clip et une vidéo par bloc et par station.
 - Minuteur de rounds avec cloche.
-- Bouffe : un repas se note en écrivant ou en dictant une phrase (« hier soir, 2 naans et un karahi »), en un geste depuis les favoris et les repas fréquents, ou en photo, à n'importe quelle date. Recettes depuis tes ingrédients, scan de produits français (Open Food Facts), eau, idées de repas selon ce qu'il reste à manger. Sans réseau, le repas est noté et analysé au retour de la connexion.
+- Bouffe : un repas se note en écrivant ou en dictant une phrase (« hier soir, 2 naans et un karahi »), en un geste depuis les favoris et les repas fréquents, ou en photo, à n'importe quelle date. Pour retirer un repas : glisse sa ligne vers la gauche ou touche sa corbeille, avec Annuler pendant 6 s. Recettes depuis tes ingrédients, scan de produits français (Open Food Facts), eau, idées de repas selon ce qu'il reste à manger. Sans réseau, le repas est noté et analysé au retour de la connexion.
 - Visage : routine de peau (adapalène, Cutacnyl, tes produits), journal et photos analysées par l'IA, phase de sèche avec date de fin, signaux d'arrêt calculés, note du matin qui révèle ce qui fait gonfler.
 - Progrès : photos de progression comparées par l'IA, rappel toutes les 3 semaines, mensurations, tonnage, plateaux, records, bilan de la semaine.
 - Fonctionne hors ligne une fois installée.
@@ -14,7 +14,7 @@ Appli d'entraînement personnelle : boxe (mardi, jeudi, samedi) et salle (dimanc
 ## Installer sur iPhone
 
 1. Ouvre https://farhad951.github.io/camp/ dans Safari.
-2. Partager → Sur l'écran d'accueil → Ajouter.
+2. Partager → Sur l'écran d'accueil. Laisse « Ouvrir en tant qu'app web » activé, puis Ajouter. Sinon, iOS crée un simple signet qui s'ouvre avec les barres de Safari.
 3. Lance l'appli une première fois avec du réseau. Ensuite, elle marche sans réseau.
 
 Les séances sont enregistrées sur le téléphone uniquement. Pense à faire Progrès → Le plan et les réglages → Exporter de temps en temps : l'appli te le rappelle tous les 30 jours. Le bouton Photos ajoute tes photos au fichier. L'appli garde aussi 14 sauvegardes automatiques sur le téléphone (Importer → Sauvegardes automatiques), une par jour et avant chaque import ou effacement. Elles ne protègent pas contre la suppression de l'appli : seul l'export le fait.
@@ -32,7 +32,7 @@ Il faut Node et Chrome. L'appli elle-même ne demande aucune installation.
     npm install
     npm test
 
-`npm test` ouvre l'appli dans Chrome sans interface et rejoue les parcours : thème et contrastes, séance complète, cohérence des textes, lecture hors ligne, préchargement, Bouffe et Visage, IA, parcours critiques et cas limites : repas passés, hors ligne, import et export, données abîmées (services d'IA simulés, caméra factice). Il faut du réseau pour le lecteur YouTube. Les captures vont dans `tests/sortie/`.
+`npm test` ouvre l'appli dans Chrome sans interface et rejoue les parcours : thème et contrastes, séance complète, cohérence des textes, lecture hors ligne, préchargement, Bouffe et Visage, IA, parcours critiques et cas limites : repas passés, hors ligne, import et export, données abîmées, suppression d’un repas par glissement ou corbeille, bannière d’installation (services d'IA simulés, caméra factice). Il faut du réseau pour le lecteur YouTube. Les captures vont dans `tests/sortie/`.
 
 - `npm run test:ia` essaie le vrai Gemini avec la clé de `.env`. Il consomme un peu de quota.
 - `npm run test:youtube` vérifie que les 31 vidéos se lisent dans le lecteur.

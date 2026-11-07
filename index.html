@@ -15,7 +15,7 @@
   --or:#B91C1C;--or-clair:#F87171;--or-voile:rgba(185,28,28,.24);--encre-or:#FAF7F5;--grad-or:#B91C1C;
   --rouge:#B45309;--rouge-clair:#F0A24A;--rouge-voile:rgba(180,83,9,.2);
   --bleu:#F5E8D2;--bleu-clair:#F5E8D2;--bleu-voile:rgba(245,232,210,.1);
-  --alerte:#EF4444;
+  --alerte:#EF4444;--suppr:#DC2626;
   --vert:#B91C1C;
   --matiere:#1F1C1A;
   --f:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
@@ -502,6 +502,14 @@ ul,ol{margin:0;padding:0}
 .bn{display:grid;gap:5px;height:128px}.bn>div{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;min-width:0;height:100%}.bn i{display:block;width:100%;min-height:2px;border-radius:2px 2px 0 0;background:var(--or-clair)}.bn span{font-size:.6875rem;color:var(--gris);white-space:nowrap}
 .todo{display:grid;grid-template-columns:1fr auto;align-items:center;padding-right:8px}.todo+.todo{box-shadow:inset 0 .5px 0 var(--trait)}.todo>button:first-child{min-height:58px;padding:10px 14px;text-align:left}.todo>button:first-child:active{background:var(--toile-2)}.todo b{display:block;font-size:.9375rem;font-weight:500}.todo small{display:block;font-size:var(--t-s);color:var(--gris)}
 /* ---------- saisie rapide, date, sauvegardes ---------- */
+.rp{position:relative;overflow:hidden}.rp+.rp .rp-av{box-shadow:inset 0 .5px 0 var(--trait)}
+.rp-suppr{position:absolute;inset:0;display:flex;justify-content:flex-end;align-items:stretch;background:var(--suppr);color:#fff;font-size:.8125rem;font-weight:600}
+.rp-suppr span{width:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:width .2s var(--press)}.rp.loin .rp-suppr span{width:100%}.rp-suppr .ico{width:20px;height:20px}
+.rp-av{position:relative;display:flex;align-items:stretch;background:var(--toile);touch-action:pan-y;-webkit-user-select:none;user-select:none}.rp-av .repas{flex:1;min-width:0;padding-right:4px}
+.rp-poub{flex:none;width:44px;margin-right:4px;display:grid;place-items:center;color:var(--gris)}.rp-poub .ico{width:18px;height:18px}.rp-poub:active{color:var(--alerte)}
+.installe{position:fixed;left:12px;right:12px;max-width:536px;margin:0 auto;bottom:calc(var(--tabs) + env(safe-area-inset-bottom,0px) + 10px);z-index:49;display:flex;gap:12px;align-items:center;padding:10px 6px 10px 14px;border-radius:var(--r-l);background:var(--matiere);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);box-shadow:0 0 0 .5px var(--trait),0 8px 24px rgba(0,0,0,.35);font-size:var(--t-s);color:var(--gris);line-height:1.4}
+.installe p{margin:0;flex:1}.installe b{display:block;color:var(--craie);font-size:.875rem}.installe p .ico{width:15px;height:15px;vertical-align:-2px;color:var(--or-clair)}.installe .in-ico{flex:none;color:var(--or-clair)}.installe .in-ico .ico{width:22px;height:22px}.installe .rond{width:44px;height:44px;background:none;color:var(--gris)}
+.couche.on~.installe{visibility:hidden}@media (prefers-reduced-transparency:reduce){.installe{background:var(--toile-2);-webkit-backdrop-filter:none;backdrop-filter:none}}
 .fl:disabled{opacity:.3}
 .r-pied{position:sticky;bottom:calc(-1 * env(safe-area-inset-bottom,0px));z-index:2;margin:12px -16px 0;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--toile)}
 .q-bar{margin:4px 0 12px}.q-bar label{display:block;margin-bottom:6px;font-size:.9375rem;font-weight:500}.q-bar>div{display:grid;grid-template-columns:1fr 44px 44px;gap:6px;align-items:center}.q-bar input{width:100%;min-width:0;min-height:48px;border:0;border-radius:var(--r-s);background:var(--remplir);padding:0 12px;font-size:1rem}.q-bar input::placeholder{color:var(--gris)}.q-bar input:focus{outline:none;box-shadow:inset 0 0 0 2px var(--or)}.q-bar .q-go{background:var(--or);color:var(--encre-or)}#q-micro.on{background:var(--or-voile);color:var(--or-clair)}
@@ -621,7 +629,7 @@ label.lien{justify-content:center;text-align:center;cursor:pointer}
 
 <div class="voile" id="voile"></div>
 <div class="feuille" id="feuille" role="dialog" aria-modal="true" aria-label="Détails"><div id="feuille-in"></div></div>
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div><aside class="installe" id="installe" hidden></aside>
 
 <nav class="tabs" aria-label="Navigation principale"><div class="tabs-in">
   <button data-tab="jour" class="on" aria-current="page"><svg viewBox="0 0 24 24" class="ico" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h3"/></svg>Jour</button>
@@ -992,6 +1000,8 @@ function semISO(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getD
 
 const ic=p=>'<svg viewBox="0 0 24 24" class="ico" aria-hidden="true">'+p+'</svg>';
 const IC={
+ poub:ic('<path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l.9 12.5h9.2L17.5 7M10.2 10.5v5.5M13.8 10.5v5.5"/>'),
+ partage:ic('<path d="M12 14.5V3.5M8.3 7.2 12 3.5l3.7 3.7M8 10.5H6v10h12v-10h-2"/>'),
  photo:ic('<path d="M4 8.5h3.4L9 6h6l1.6 2.5H20a1 1 0 0 1 1 1V18a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.4"/>'),
  ok:ic('<path pathLength="1" d="M5 12.5l4.5 4.5L19 7.5"/>'),g:ic('<path d="M15 5l-7 7 7 7"/>'),d:ic('<path d="M9 5l7 7-7 7"/>'),x:ic('<path d="M6 6l12 12M18 6L6 18"/>'),
  pause:ic('<path d="M9 6v12M15 6v12"/>'),play:ic('<path d="M8 5.5v13l10-6.5z"/>'),up:ic('<path d="M12 19V5M6 11l6-6 6 6"/>'),
@@ -1686,6 +1696,8 @@ function raccourcis(){const F=(DB.prefs.favoris||[]).map(f=>({nom:f.nom,items:f.
   return F.concat(Object.values(compte).sort((a,b)=>b.n-a.n||a.i-b.i).map(x=>({nom:x.r.nom,items:x.r.items,sel:x.r.sel}))).slice(0,8);}
 function ajouterRepas(k,o){const j=jour(k);j.repas=j.repas||[];j.repas.push(o);trierRepas(j.repas);toucher(k);majSelLendemain(k);}
 /* un repas très salé noté après coup compte encore pour le visage du lendemain */
+function retirerRepas(k,o){const l=repasDu(k),i=l.indexOf(o);if(i<0)return;l.splice(i,1);toucher(k);Glisse.ouvert=null;rendre();
+  const n=o.nom.length>26?o.nom.slice(0,25)+'…':o.nom;toast('Supprimé : '+n,IC.poub,{txt:'Annuler',fn:()=>{ajouterRepas(k,o);rendre();}});}
 function majSelLendemain(k){const s=iso(addD(fromISO(k),1)),v=DB.days[s]&&DB.days[s].vis;if(v&&selVeille(s)&&!v.sel){v.sel=1;toucher(s);}}
 function vueBouffe(){
   const k=bJour(),a=auj(),estAuj=k===a,T=cibleDu(k),B=bilanDu(k),reste=Math.round(T.kc-B.k),rp=repasDu(k),n=nutri(),cle=IA.cle(),h=new Date().getHours(),d=fromISO(k),R=raccourcis();UI.rac=R;
@@ -1706,7 +1718,7 @@ function vueBouffe(){
   if(enRamadan()&&estAuj)html+='<p class="note calme"><b>Ramadan.</b> Ton objectif ne change pas, il se répartit : iftar avec eau et dattes, repas complet, puis souhour riche en protéines et en glucides lents. Bois surtout entre l’iftar et le souhour. Les recettes proposent ces deux moments.</p>';
   if(!cle)html+='<button class="b-cle" data-a="ia-regler">'+IC.etoile+'<span><b>Activer l’IA</b>Colle ta clé Gemini, une seule fois sur ce téléphone.</span></button>';
   html+='<section class="section"><h2>Mangé '+nomDuJour(k)+'</h2>';
-  html+=rp.length?'<div class="groupe">'+rp.map((r,i)=>{const s=somme(r.items);return'<button class="repas" data-a="repas-voir" data-i="'+i+'"><span class="nm">'+esc(r.nom)+(r.sel?'<em>salé</em>':'')+(r.att?'<em>à analyser</em>':'')+'<small>'+esc(r.h||'')+(r.h?' · ':'')+nb(s.p)+' P · '+nb(s.c)+' G · '+nb(s.l)+' L</small></span><span class="vl">'+nb(s.k)+'<small>kcal</small></span></button>';}).join('')+'</div>':'<div class="groupe"><div class="vide"><b>Rien de noté</b>'+(estAuj?'Écris ou dicte ton repas ci-dessus, ou photographie-le.':'Oublié ? Note-le ici : il comptera pour ce jour-là.')+'</div></div>';
+  html+=rp.length?'<div class="groupe">'+rp.map((r,i)=>{const s=somme(r.items);return'<div class="rp" data-i="'+i+'"><button class="rp-suppr" data-a="repas-retire" data-i="'+i+'" tabindex="-1" aria-hidden="true"><span>'+IC.poub+'Supprimer</span></button><div class="rp-av"><button class="repas" data-a="repas-voir" data-i="'+i+'"><span class="nm">'+esc(r.nom)+(r.sel?'<em>salé</em>':'')+(r.att?'<em>à analyser</em>':'')+'<small>'+esc(r.h||'')+(r.h?' · ':'')+nb(s.p)+' P · '+nb(s.c)+' G · '+nb(s.l)+' L</small></span><span class="vl">'+nb(s.k)+'<small>kcal</small></span></button><button class="rp-poub" data-a="repas-retire" data-i="'+i+'" aria-label="Supprimer '+esc(r.nom)+'">'+IC.poub+'</button></div></div>';}).join('')+'</div>':'<div class="groupe"><div class="vide"><b>Rien de noté</b>'+(estAuj?'Écris ou dicte ton repas ci-dessus, ou photographie-le.':'Oublié ? Note-le ici : il comptera pour ce jour-là.')+'</div></div>';
   html+='</section>';
   const RG=DB.prefs.recettes||[];
   if(RG.length)html+='<section class="section"><h2>Tes recettes</h2><div class="groupe">'+RG.map((r,i)=>{const s=somme(r.items);return'<div class="todo"><button data-a="rc-voir" data-i="'+i+'"><b>'+esc(r.titre)+'</b><small>'+r.temps+' min · '+nb(s.p)+' P · '+nb(s.k)+' kcal</small></button><button class="rond petit-r" data-a="rc-oublie" data-i="'+i+'" aria-label="Retirer '+esc(r.titre)+'">'+IC.x+'</button></div>';}).join('')+'</div></section>';
@@ -2305,6 +2317,7 @@ function actionsPlus(a,b){const k=auj();switch(a){
   case'r-fav':{UI.r.fav=!UI.r.fav;b.setAttribute('aria-checked',UI.r.fav?'true':'false');break;}
   case'rac-items':{const r=UI.rac&&UI.rac[+b.dataset.i];if(r&&UI.r){r.items.forEach(x=>UI.r.items.push(Object.assign({},x)));if(r.sel)UI.r.sel=1;if(!UI.r.nom)UI.r.nom=r.nom;majRepas();}break;}
   case'repas-plus-tard':{const st=UI.r;if(!st||!st.blob)break;Photos.ajouter({d:st.k,h:st.h,t:'repas-att',blob:st.blob}).then(()=>{UI.r=null;fermerFeuille();toast('Photo gardée : analyse au retour du réseau.',IC.ok);}).catch(()=>toast('La photo n’a pas pu être gardée.'));break;}
+  case'installe-non':Installe.cacher();break;
   case'toast-action':{const f=UI.toastFn;UI.toastFn=null;const el=$('#toast');clearTimeout(el._t);FX.cacher(el,{y:-24,opacity:0},SP);if(f)f();break;}
   case'recharger':flush();location.reload();break;
   case'oa-remplace':{const d=b.dataset;fermerFeuille();ouvrirOnAir(d.id,d.d,d.pour||null,d.leger==='1',true);break;}
@@ -2463,6 +2476,7 @@ document.addEventListener('click',e=>{
   const vd=e.target.closest('.scene-v video');if(vd){Clips.basculer(vd);return;}
   const rf=e.target.closest('.repos.fin');if(rf){Repos.stop();return;}
   const tb=e.target.closest('.tabs button');if(tb){aller(tb.dataset.tab==='onair'&&UI.tab==='chrono'?'chrono':tb.dataset.tab);return;}
+  if(Glisse.avale(e))return;
   const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a;
     switch(a){
     case'jour':{const k=b.dataset.d;if(k===UI.jour&&b.classList.contains('chip'))return;selJour(k);if(b.closest('.etape')||b.classList.contains('lien'))window.scrollTo({top:0,behavior:RM?'auto':'smooth'});break;}
@@ -2501,10 +2515,13 @@ document.addEventListener('click',e=>{
     case'al-retire':UI.r.items.splice(+b.dataset.i,1);UI.r.att=0;majRepas();break;
     case'al-ajoute':{const it=itemAl(b.dataset.n);if(it){UI.r.items.push(it);if(it.s)UI.r.sel=1;majRepas();}break;}
     case'repas-ok':{const st=UI.r;if(!st.items.length&&!st.att)return;const k=st.k>auj()?auj():st.k,nom=st.nom||st.items.map(x=>x.n).slice(0,3).join(', ')||st.precision||'Repas',o={nom,h:st.h||heureDefaut(k),sel:st.sel?1:0,items:st.items};if(st.att){o.att=1;o.txt=st.precision||nom;}
-      if(st.i!=null){const a=jour(st.k0);a.repas.splice(st.i,1);toucher(st.k0);}ajouterRepas(k,o);
+      let avant=null;if(st.i!=null){const a=jour(st.k0);[avant]=a.repas.splice(st.i,1);toucher(st.k0);}ajouterRepas(k,o);
+      const defaire=()=>{const l=repasDu(k),j=l.indexOf(o);if(j>=0){l.splice(j,1);toucher(k);}if(avant)ajouterRepas(st.k0,avant);rendre();};
       const F=(DB.prefs.favoris||[]).filter(f=>norm(f.nom)!==norm(nom));if(st.fav&&st.items.length)F.unshift({nom,sel:o.sel,items:st.items.map(x=>Object.assign({},x))});if(F.length||DB.prefs.favoris){DB.prefs.favoris=F.slice(0,20);prefs();}
-      UI.r=null;fermerFeuille();rendre();toast(st.att&&!st.items.length?'Noté : analyse au retour du réseau.':nb(somme(o.items).k)+' kcal notées'+(k===auj()?'.':' pour '+nomDuJour(k)+'.'),IC.ok);break;}
-    case'repas-suppr':{const st=UI.r,k=st.k0,[o]=jour(k).repas.splice(st.i,1);toucher(k);UI.r=null;fermerFeuille();rendre();toast('Repas supprimé.',null,{txt:'Annuler',fn:()=>{ajouterRepas(k,o);rendre();}});break;}
+      UI.r=null;fermerFeuille();rendre();
+      toast(avant?(k!==st.k0?'Repas déplacé à '+nomDuJour(k)+'.':'Repas modifié.'):st.att&&!st.items.length?'Noté : analyse au retour du réseau.':nb(somme(o.items).k)+' kcal notées'+(k===auj()?'.':' pour '+nomDuJour(k)+'.'),IC.ok,{txt:'Annuler',fn:defaire});break;}
+    case'repas-suppr':{const st=UI.r,k=st.k0,o=repasDu(k)[st.i];UI.r=null;fermerFeuille();if(o)retirerRepas(k,o);break;}
+    case'repas-retire':{const k=bJour(),o=repasDu(k)[+b.dataset.i];if(!o)break;Haptique.tic();retirerRepas(k,o);break;}
     case'b-ctx':nutri().ctx=b.dataset.v;prefs();rendre();break;
     case'b-obj':{const P=vP();if(P&&!P.fin&&b.dataset.v!=='seche'){ouvrirFeuille('<div class="poignee"></div><h2>Arrêter la sèche ?</h2><p class="mut" style="margin:8px 0 14px">Une phase est en cours dans l’onglet Visage. Changer d’objectif la termine aujourd’hui.</p><button class="btn btn-or btn-plein" data-a="b-obj-ok" data-v="'+b.dataset.v+'">Arrêter et changer</button><button class="btn btn-ghost btn-plein" style="margin-top:8px" data-a="fermer-feuille">Garder la sèche</button>');break;}nutri().obj=b.dataset.v;prefs();rendre();break;}
     case'b-bonus':{const n=nutri();n.bonus=Math.max(-300,Math.min(500,(n.bonus||0)+(+b.dataset.v)));prefs();rendre();break;}
@@ -2602,6 +2619,58 @@ let compact=false;window.addEventListener('scroll',()=>{const c=window.scrollY>4
   f.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')debut(e.clientY,e.target);});
   window.addEventListener('pointermove',e=>{if(e.pointerType==='mouse')suit(e.clientY);},{passive:true});
   window.addEventListener('pointerup',e=>{if(e.pointerType==='mouse')fin();});})();
+
+/* glisser une ligne de repas vers la gauche : « Supprimer » apparaît, comme dans Mail.
+   Seuil de 10 px avant de choisir le sens, suivi 1:1, élan projeté au lâcher,
+   glissement jusqu'au bout = suppression directe. Le défilement vertical reste au navigateur. */
+const Glisse={ouvert:null,t:0,W:88,
+  stop(a){if(a.__anim){try{a.__anim.stop();}catch(e){}a.__anim=null;}let x=a.__x||0;try{x=new DOMMatrixReadOnly(getComputedStyle(a).transform).m41;}catch(e){}a.style.transform=x?'translateX('+x+'px)':'';a.__x=x;return x;},
+  aller(a,x,v,cb,rep){const x0=a.__x||0;a.__x=x;if(FX.on&&x0!==x){a.__anim=FX.a(a,{x:[x0,x]},ressort(rep||.3,1,v||0));FX.fin(a.__anim,()=>{a.__anim=null;if(!x)a.style.removeProperty('transform');if(cb)cb();});}else{a.style.transform=x?'translateX('+x+'px)':'';if(cb)cb();}},
+  ouvre(a,v){if(this.ouvert&&this.ouvert!==a)this.ferme();this.ouvert=a;a.parentNode.classList.add('ouvert');a.parentNode.querySelector('.rp-suppr').removeAttribute('tabindex');this.aller(a,-this.W,v);},
+  ferme(a,v){a=a||this.ouvert;if(!a)return;if(this.ouvert===a)this.ouvert=null;const r=a.parentNode;if(r){r.classList.remove('ouvert','loin');const sb=r.querySelector('.rp-suppr');if(sb)sb.tabIndex=-1;}if(a.isConnected)this.aller(a,0,v);},
+  supprimer(a,v){const k=bJour(),o=repasDu(k)[+a.parentNode.dataset.i];if(this.ouvert===a)this.ouvert=null;if(!o){this.ferme(a,v);return;}Haptique.tic();this.aller(a,-a.offsetWidth,v,()=>retirerRepas(k,o),.2);},
+  /* le clic qui suit un glissement, ou qui referme une ligne ouverte, ne fait rien d'autre */
+  avale(e){const r=e.target.closest('.rp');if(Date.now()-this.t<400&&r){e.preventDefault();return true;}
+    if(this.ouvert&&this.ouvert.isConnected&&r===this.ouvert.parentNode&&!e.target.closest('.rp-suppr,.rp-poub')){this.ferme();e.preventDefault();return true;}return false;}};
+(function(){let av=null,id=null,x0=0,y0=0,base=0,sens=null,hist=[];
+  const elast=(o,d)=>(o*d*.55)/(d+.55*Math.abs(o));
+  document.addEventListener('pointerdown',e=>{
+    if(Glisse.ouvert&&!Glisse.ouvert.isConnected)Glisse.ouvert=null;
+    if(e.target.closest('.rp-suppr'))return;
+    const a=e.target.closest('.rp-av');
+    if(Glisse.ouvert&&Glisse.ouvert!==a){const r=e.target.closest('.rp');Glisse.ferme();if(r)Glisse.t=Date.now();}
+    if(!a||e.button>0)return;
+    av=a;id=e.pointerId;x0=e.clientX;y0=e.clientY;sens=null;hist=[];base=Glisse.stop(a);},{passive:true});
+  document.addEventListener('pointermove',e=>{if(!av||e.pointerId!==id)return;
+    if(!sens){const dx=e.clientX-x0,dy=e.clientY-y0;if(Math.abs(dx)<10&&Math.abs(dy)<10)return;
+      if(Math.abs(dx)<Math.abs(dy)*1.2){av=null;return;}
+      sens='h';x0=e.clientX;try{av.setPointerCapture(id);}catch(_){}}
+    const W=av.offsetWidth;let x=base+(e.clientX-x0);if(x>0)x=elast(x,W);else if(x<-W)x=-W;
+    av.style.transform='translateX('+x.toFixed(1)+'px)';av.__x=x;Glisse.t=Date.now();
+    hist.push([performance.now(),x]);if(hist.length>5)hist.shift();
+    av.parentNode.classList.toggle('loin',x<-W*.55);},{passive:true});
+  const fin=e=>{if(!av||e.pointerId!==id)return;const a=av;av=null;if(sens!=='h')return;Glisse.t=Date.now();
+    const p=hist[0],q=hist[hist.length-1],v=p&&q&&q[0]>p[0]?(q[1]-p[1])/(q[0]-p[0])*1000:0;
+    const x=a.__x||0,W=a.offsetWidth,proj=x+(v/1000)*.99/(1-.99);
+    if(x<-W*.55||(proj<-W*.8&&x<-Glisse.W))Glisse.supprimer(a,v);
+    else if(proj<-Glisse.W/2)Glisse.ouvre(a,v);
+    else Glisse.ferme(a,v);};
+  document.addEventListener('pointerup',fin);document.addEventListener('pointercancel',fin);})();
+
+/* installer sur l'écran d'accueil : seulement sur iPhone, dans Safari, hors app installée */
+const Installe={
+  cle:LS+'.installe',
+  ios(){const u=navigator.userAgent||'';return /iPhone|iPad|iPod/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1);},
+  installee(){return navigator.standalone===true||!!(window.matchMedia&&(matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches));},
+  vue(){try{return +localStorage.getItem(this.cle)||0;}catch(e){return 0;}},
+  montrer(force){const el=$('#installe');if(!el)return;
+    if(!force&&(this.installee()||!this.ios()||Date.now()-this.vue()<14*864e5))return;
+    const autre=/CriOS|FxiOS|EdgiOS|GSA\//.test(navigator.userAgent||'');
+    el.innerHTML='<span class="in-ico">'+IC.partage+'</span><p>'+(autre?'<b>Ouvre Camp dans Safari</b> pour l’installer : c’est là qu’elle devient une vraie app, sans barres.':'<b>Installe Camp en vraie app.</b> Touche '+IC.partage+' Partager, puis « Sur l’écran d’accueil », et laisse « Ouvrir en tant qu’app web » activé.')+'</p><button class="rond" data-a="installe-non" aria-label="Masquer">'+IC.x+'</button>';
+    el.hidden=false;FX.a(el,{y:[16,0],opacity:[0,1]},SP);},
+  cacher(){const el=$('#installe');if(!el||el.hidden)return;try{localStorage.setItem(this.cle,String(Date.now()));}catch(e){}FX.fin(FX.a(el,{y:16,opacity:0},SP),()=>{el.hidden=true;});}
+};
+setTimeout(()=>Installe.montrer(),3600);
 
 /* ---------------- démarrage ---------------- */
 charger();
