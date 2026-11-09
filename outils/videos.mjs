@@ -173,9 +173,10 @@ async function installer(id,choix,debut='0',duree='6'){
   }finally{fs.rmSync(tmp,{recursive:true,force:true});}
 }
 /* Découpe et compresse un extrait : une boucle de répétitions complètes, recadrée sur le geste. */
-function encoder(entree,dossier,{debut=0,duree=6,crop,filtre,allerRetour}){
+function encoder(entree,dossier,{debut=0,duree=6,crop,filtre,allerRetour,contenir}){
   const mp4=path.join(dossier,'c.mp4'),jpg=path.join(dossier,'c.jpg');
-  const fit=crop?'crop='+crop+',scale=544:408':'scale=544:408:force_original_aspect_ratio=increase,crop=544:408';
+  /* contenir : une vidéo en hauteur reste entière, sur le fond de l'appli */
+  const fit=crop?'crop='+crop+(contenir?',scale=544:408:force_original_aspect_ratio=decrease,pad=544:408:-1:-1:color=0x1C1917':',scale=544:408'):'scale=544:408:force_original_aspect_ratio=increase,crop=544:408';
   ffmpeg(['-ss',String(debut),'-t',String(duree),'-i',entree,'-an','-vf',fit+(filtre?','+filtre:'')+',setsar=1,fps=24'+(allerRetour?',split[a][b];[b]reverse[r];[a][r]concat=n=2:v=1':''),'-c:v','libx264','-profile:v','main','-pix_fmt','yuv420p','-crf','30','-preset','slow','-movflags','+faststart',mp4]);
   ffmpeg(['-i',mp4,'-frames:v','1','-q:v','5',jpg]);
   return{mp4,jpg};

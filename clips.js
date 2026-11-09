@@ -1,13 +1,13 @@
 /* Généré par outils/videos.mjs. Ne pas modifier à la main. */
 window.CLIPS={
  "boxjump": {
-  "f": "boxjump-7cad75ac",
-  "source": "free-exercise-db",
-  "auteur": "yuhonas",
-  "url": "https://github.com/yuhonas/free-exercise-db",
-  "licence": "Unlicense",
-  "licenceUrl": "https://unlicense.org/",
-  "variante": "mouvement reconstitué entre deux photos"
+  "f": "boxjump-6bc30e2b",
+  "source": "Pexels",
+  "auteur": "Max Bonda",
+  "url": "https://www.pexels.com/video/a-man-jumping-on-a-plyometric-box-9033213/",
+  "licence": "Licence Pexels",
+  "licenceUrl": "https://www.pexels.com/license/",
+  "variante": "il redescend vite d’un saut, toi redescends en marchant"
  },
  "burpee": {
   "f": "burpee-f980ddf1",

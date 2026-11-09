@@ -350,6 +350,7 @@ ul,ol{margin:0;padding:0}
 .preset .go svg{width:15px;height:15px}
 .reglage{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;min-height:56px;padding:6px 0}
 .reglage+.reglage{box-shadow:inset 0 .5px 0 var(--trait)}
+.reglage.pile{grid-template-columns:minmax(0,1fr);padding:10px 0}.reglage.pile .pas{flex-wrap:wrap}.reglage.pile .pas .btn{flex:1 1 0;min-width:0;padding-left:8px;padding-right:8px}
 .reglage small{display:block;font-size:var(--t-s);color:var(--gris)}
 .pas{display:flex;align-items:center;gap:6px}
 .pas button:not(.btn){width:44px;height:44px;border-radius:50%;background:var(--remplir);font-size:1.25rem;display:grid;place-items:center;transition:transform .22s var(--press),opacity .22s var(--press)}
@@ -1786,7 +1787,7 @@ function vuePlan(){
   '<section class="section"><h2>Réglages</h2><div class="groupe carte-reglages">'+
    '<div class="reglage"><span>Sons de la cloche et des bips</span><button class="interrupteur" role="switch" aria-checked="'+(DB.prefs.son?'true':'false')+'" data-a="son" aria-label="Sons"></button></div>'+
    '<div class="reglage"><span>Minuteur écran verrouillé<small>Un son muet garde le minuteur actif quand l’écran s’éteint. Il coupe ta musique pendant la séance.</small></span><button class="interrupteur" role="switch" aria-checked="'+(DB.prefs.verrou?'true':'false')+'" data-a="son-verrou" aria-label="Minuteur écran verrouillé"></button></div>'+
-   '<div class="reglage"><span>Sauvegarde<small>Exporte tes données de temps en temps. « Photos » ajoute tes photos : fichier plus lourd et sensible, à garder pour toi.</small></span><span class="pas"><button class="btn btn-ghost btn-sm" data-a="export">Exporter</button><button class="btn btn-ghost btn-sm" data-a="export-photos">Photos</button><button class="btn btn-ghost btn-sm" data-a="copier">Copier</button></span></div>'+
+   '<div class="reglage pile"><span>Sauvegarde<small>Exporte tes données de temps en temps. « Photos » ajoute tes photos : fichier plus lourd et sensible, à garder pour toi.</small></span><span class="pas"><button class="btn btn-ghost btn-sm" data-a="export">Exporter</button><button class="btn btn-ghost btn-sm" data-a="export-photos">Photos</button><button class="btn btn-ghost btn-sm" data-a="copier">Copier</button></span></div>'+
    '<div class="reglage"><span>Restaurer une sauvegarde</span><button class="btn btn-ghost btn-sm" data-a="import">Importer</button></div>'+
    '<div class="reglage"><span>Tout effacer</span><button class="btn btn-ghost btn-sm" style="color:var(--or-clair)" data-a="reset">Effacer</button></div></div></section>'+blocInstall();
 }

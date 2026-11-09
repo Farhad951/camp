@@ -132,19 +132,17 @@
   "pause": 0.3
  },
  "boxjump": {
-  "photos": [
-   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Box_Jump/0.jpg",
-   "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/Front_Box_Jump/1.jpg"
-  ],
-  "url": "https://github.com/yuhonas/free-exercise-db",
-  "source": "free-exercise-db",
-  "auteur": "yuhonas",
-  "licence": "Unlicense",
-  "licenceUrl": "https://unlicense.org/",
-  "variante": "mouvement reconstitué entre deux photos",
-  "aller": 0.6,
-  "retour": 0.8,
-  "pause": 0.3
+  "fichier": "https://videos.pexels.com/video-files/9033213/9033213-hd_1080_1920_25fps.mp4",
+  "debut": 0.2,
+  "duree": 3.2,
+  "crop": "1080:1500:0:100",
+  "contenir": 1,
+  "source": "Pexels",
+  "auteur": "Max Bonda",
+  "url": "https://www.pexels.com/video/a-man-jumping-on-a-plyometric-box-9033213/",
+  "licence": "Licence Pexels",
+  "licenceUrl": "https://www.pexels.com/license/",
+  "variante": "il redescend vite d’un saut, toi redescends en marchant"
  },
  "sautsLat": {
   "photos": [

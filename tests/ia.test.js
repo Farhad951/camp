@@ -202,7 +202,7 @@ const COACH={titre:'Une semaine solide',constats:['2 séances de salle sur 2.'],
  ok('texte de l’IA échappé',await ev(()=>{const h=carteBilan('corps',{d:auj(),r:{resume:'<img src=x onerror=alert(1)>',changements:[{zone:'<b>x',constat:'y',sens:'??'}],conseils:['<i>']}});return !/<img/.test(h)&&!/<b>x/.test(h)&&/&lt;img/.test(h);}));
  /* 320 px : rien ne déborde */
  await p.setViewport({width:320,height:640,deviceScaleFactor:2,isMobile:true,hasTouch:true});
- for(const[nom,f]of[['Jour',()=>aller('jour')],['Bouffe',()=>aller('bouffe')],['Visage',()=>{UI.visVue='peau';aller('visage');}],['Progrès',()=>{UI.prVue='corps';aller('progres');}],['Force',()=>{UI.prVue='force';rendre();}]]){await ev(f);await sleep(300);ok('320 px, '+nom+' : pas de défilement horizontal',await ev(()=>document.documentElement.scrollWidth<=innerWidth));}
+ for(const[nom,f]of[['Jour',()=>aller('jour')],['Bouffe',()=>aller('bouffe')],['Visage',()=>{UI.visVue='peau';aller('visage');}],['Progrès',()=>{UI.prVue='corps';aller('progres');}],['Force',()=>{UI.prVue='force';rendre();}]]){await ev(f);await sleep(300);ok('320 px, '+nom+' : pas de défilement horizontal',await ev(()=>document.documentElement.scrollWidth<=320));}
  await p.setViewport({width:390,height:844,deviceScaleFactor:2,isMobile:true,hasTouch:true});
  ok('aucun appel vers un autre service',hors.filter(u=>!/youtube|ytimg/.test(u)).length===0,hors.slice(0,3));
  /* tout effacer */

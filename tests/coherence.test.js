@@ -37,7 +37,7 @@ const path=require('path');const {preparer,sleep}=require('./commun');
  // --- dernière série : pas de repos
  await seance(LUN);
  await ev(()=>{document.querySelector('[data-a="express"][data-v="1"]').click();});await sleep(500);
- const fini=await ev(async()=>{const g=jour(UI.s.k).gym;const lignes=[...document.querySelectorAll('.serie')];for(const r of lignes){const k=r.querySelector('input[data-f="kg"]');if(k)k.value='20';r.querySelector('input[data-f="r"]').value='5';valider(r);if(r!==lignes[lignes.length-1])Repos.stop();}await new Promise(z=>setTimeout(z,500));return{repos:Repos.actif,cl:document.querySelector('#repos').classList.contains('on')&&!document.querySelector('#repos').classList.contains('fin'),toast:document.querySelector('#toast').textContent};});
+ const fini=await ev(async()=>{const g=jour(UI.s.k).gym;const lignes=[...document.querySelectorAll('.serie')];for(const r of lignes){const k=r.querySelector('input[data-f="kg"]');if(k)k.value='20';r.querySelector('input[data-f="r"]').value='5';valider(r);if(r!==lignes[lignes.length-1])Repos.stop();}/* le panneau finit son animation de sortie : plus lente quand la machine est chargée */const t0=performance.now();while(performance.now()-t0<4000&&document.querySelector('#repos').classList.contains('on'))await new Promise(z=>setTimeout(z,50));return{repos:Repos.actif,cl:document.querySelector('#repos').classList.contains('on')&&!document.querySelector('#repos').classList.contains('fin'),toast:document.querySelector('#toast').textContent};});
  ok('après la toute dernière série : aucun repos',!fini.repos&&!fini.cl,fini);
  await ev(k=>{delete DB.days[k];},LUN);await ferme();
  // --- « reste à faire » compte toutes les séries
