@@ -10,6 +10,7 @@
    node outils/videos.mjs appliquer [exo…]                   produit les clips décrits dans outils/selection.json
 
    Clés API dans .env à la racine (jamais commité) : PEXELS_API_KEY=…  PIXABAY_API_KEY=…
+   Clips faits de deux photos : RIFE_BIN=chemin de rife-ncnn-vulkan.exe pour une interpolation nette (github.com/nihui/rife-ncnn-vulkan, MIT).
    Nécessite ffmpeg dans le PATH. */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -172,21 +173,47 @@ async function installer(id,choix,debut='0',duree='6'){
   }finally{fs.rmSync(tmp,{recursive:true,force:true});}
 }
 /* Découpe et compresse un extrait : une boucle de répétitions complètes, recadrée sur le geste. */
-function encoder(entree,dossier,{debut=0,duree=6,crop,filtre}){
+function encoder(entree,dossier,{debut=0,duree=6,crop,filtre,allerRetour}){
   const mp4=path.join(dossier,'c.mp4'),jpg=path.join(dossier,'c.jpg');
   const fit=crop?'crop='+crop+',scale=544:408':'scale=544:408:force_original_aspect_ratio=increase,crop=544:408';
-  ffmpeg(['-ss',String(debut),'-t',String(duree),'-i',entree,'-an','-vf',fit+(filtre?','+filtre:'')+',setsar=1,fps=24','-c:v','libx264','-profile:v','main','-pix_fmt','yuv420p','-crf','30','-preset','slow','-movflags','+faststart',mp4]);
+  ffmpeg(['-ss',String(debut),'-t',String(duree),'-i',entree,'-an','-vf',fit+(filtre?','+filtre:'')+',setsar=1,fps=24'+(allerRetour?',split[a][b];[b]reverse[r];[a][r]concat=n=2:v=1':''),'-c:v','libx264','-profile:v','main','-pix_fmt','yuv420p','-crf','30','-preset','slow','-movflags','+faststart',mp4]);
   ffmpeg(['-i',mp4,'-frames:v','1','-q:v','5',jpg]);
   return{mp4,jpg};
 }
-/* Faute de vidéo libre : deux photos des positions du geste, en fondu et en boucle. */
-function encoderPhotos(a,b,dossier){
+/* RIFE (rife-ncnn-vulkan, licence MIT, gratuit, local) dessine chaque image du passage d'une position à l'autre.
+   Le mouvement accélère puis freine, comme un vrai geste. Aller, pause, retour, pause : la boucle retombe sur A. */
+function encoderRife(rife,a,b,dossier,cadre,{aller=.8,retour=.8,pause=.35}={}){
+  const seq=path.join(dossier,'seq');fs.mkdirSync(seq);
+  const A=path.join(dossier,'a.png'),B=path.join(dossier,'b.png'),IPS=24,dir=path.dirname(rife),vf=cadre+',setsar=1';
+  ffmpeg(['-i',a,'-vf',vf,'-frames:v','1',A]);ffmpeg(['-i',b,'-vf',vf,'-frames:v','1',B]);
+  /* -s ne marche pas dans cette version Windows. Mode dossier : avec deux images et -n 2N, les N premières vont de A à B par pas de 1/N. */
+  const entree=path.join(dossier,'e'),sortie=path.join(dossier,'s'),N=48;fs.mkdirSync(entree);fs.mkdirSync(sortie);
+  fs.copyFileSync(A,path.join(entree,'0.png'));fs.copyFileSync(B,path.join(entree,'1.png'));
+  const r=spawnSync(rife,['-i',entree,'-o',sortie,'-n',String(2*N),'-m',path.join(dir,'rife-v4.6')],{cwd:dir,encoding:'utf8'});
+  if(r.status!==0)stop('RIFE a échoué : '+(r.stderr||r.error));
+  const img=t=>path.join(sortie,String(Math.round(t*N)+1).padStart(8,'0')+'.png'),doux=x=>x*x*(3-2*x),fr=[];
+  const tenir=(f,s)=>{for(let i=0;i<Math.round(s*IPS);i++)fr.push(f);};
+  const passe=(de,vers,s)=>{const n=Math.round(s*IPS);for(let i=1;i<n;i++)fr.push(img(de+(vers-de)*doux(i/n)));};
+  tenir(A,pause);passe(0,1,aller);tenir(B,pause);passe(1,0,retour);
+  fr.forEach((f,i)=>fs.copyFileSync(f,path.join(seq,String(i).padStart(4,'0')+'.png')));
+  const mp4=path.join(dossier,'c.mp4'),jpg=path.join(dossier,'c.jpg');
+  ffmpeg(['-framerate',String(IPS),'-i',path.join(seq,'%04d.png'),'-an','-c:v','libx264','-profile:v','main','-pix_fmt','yuv420p','-crf','30','-preset','slow','-movflags','+faststart',mp4]);
+  ffmpeg(['-i',mp4,'-frames:v','1','-q:v','5',jpg]);
+  return{mp4,jpg};
+}
+/* Faute de vidéo libre : deux photos des positions du geste, et le mouvement reconstitué entre les deux.
+   Avec RIFE_BIN (chemin de rife-ncnn-vulkan.exe, dans .env ou l'environnement), bien plus net. Sinon, ffmpeg. */
+function encoderPhotos(a,b,dossier,opt={}){
   const mp4=path.join(dossier,'c.mp4'),jpg=path.join(dossier,'c.jpg'),dim=spawnSync('ffprobe',['-v','error','-select_streams','v','-show_entries','stream=width,height','-of','csv=p=0',a],{encoding:'utf8'}).stdout.trim().split(',').map(Number),
     /* paysage : plein cadre. Portrait : la personne reste entière, sur le fond de l'appli. */
     cadre=dim[0]>dim[1]?'scale=544:408:force_original_aspect_ratio=increase,crop=544:408':'scale=544:408:force_original_aspect_ratio=decrease,pad=544:408:-1:-1:color=0x1C1917',
     fit=i=>'['+i+':v]'+cadre+',setsar=1,fps=24[v'+i+']';
-  const flt=[0,1,2].map(fit).join(';')+';[v0][v1]xfade=transition=fade:duration=0.4:offset=0.9[x];[x][v2]xfade=transition=fade:duration=0.4:offset=2.2[s]';
-  ffmpeg(['-loop','1','-t','1.3','-i',a,'-loop','1','-t','1.7','-i',b,'-loop','1','-t','1.3','-i',a,'-filter_complex',flt,'-map','[s]','-an','-c:v','libx264','-profile:v','main','-pix_fmt','yuv420p','-crf','30','-preset','slow','-movflags','+faststart',mp4]);
+  const rife=process.env.RIFE_BIN;
+  if(rife&&fs.existsSync(rife))return encoderRife(rife,a,b,dossier,cadre,opt);
+  /* 2 images par seconde, A A B B B A : ffmpeg (minterpolate) dessine le passage d'une position à l'autre. La boucle retombe sur A. */
+  const fit2=i=>'['+i+':v]'+cadre+',setsar=1,fps=2[v'+i+']';
+  const flt=[0,1,2].map(fit2).join(';')+';[v0][v1][v2]concat=n=3:v=1,minterpolate=fps=24:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1:scd=none[s]';
+  ffmpeg(['-loop','1','-t','1','-i',a,'-loop','1','-t','1.5','-i',b,'-loop','1','-t','0.5','-i',a,'-filter_complex',flt,'-map','[s]','-t','3','-an','-c:v','libx264','-profile:v','main','-pix_fmt','yuv420p','-crf','30','-preset','slow','-movflags','+faststart',mp4]);
   ffmpeg(['-i',mp4,'-frames:v','1','-q:v','5',jpg]);
   return{mp4,jpg};
 }
@@ -202,6 +229,7 @@ function publier(id,{mp4,jpg},meta){
   console.log(id+' installé : videos/'+nom+'.mp4 ('+Math.round(fs.statSync(mp4).size/1024)+' Ko)');
 }
 async function appliquer(ids){
+  chargerEnv();
   const sel=lireJson(ICI('outils/selection.json'),null);if(!sel)stop('outils/selection.json illisible.');
   for(const id of ids)if(!sel[id])stop(id+' n’est pas dans la sélection.');
   /* sources volumineuses : gardées hors du dépôt entre deux lancements */
@@ -217,7 +245,7 @@ async function appliquer(ids){
       }
     }
     const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'camp-video-'));
-    try{publier(id,s.photos?encoderPhotos(srcs[0],srcs[1],tmp):encoder(srcs[0],tmp,s),{source:s.source,auteur:s.auteur,url:s.url,licence:s.licence,licenceUrl:s.licenceUrl,...(s.variante?{variante:s.variante}:{})});}
+    try{publier(id,s.photos?encoderPhotos(srcs[0],srcs[1],tmp,s):encoder(srcs[0],tmp,s),{source:s.source,auteur:s.auteur,url:s.url,licence:s.licence,licenceUrl:s.licenceUrl,...(s.variante?{variante:s.variante}:{})});}
     finally{fs.rmSync(tmp,{recursive:true,force:true});}
   }
 }

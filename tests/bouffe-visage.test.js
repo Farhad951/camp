@@ -27,7 +27,8 @@ const PLAT={pas_un_plat:false,plat:'Poulet karahi et riz',sel_eleve:false,confia
  ok('chaque exercice et bloc a un clip et des étapes',manque.length===0,manque);
  await ev(()=>{UI.jour='2026-11-02';rendre();document.querySelector('[data-a="go-salle"]').click();});await sleep(1200);
  ok('carte : vidéo, étapes dessous, puis Voir le geste',await ev(()=>[...document.querySelectorAll('#seance .ex')].every(e=>{const v=e.querySelector('.scene video'),l=e.querySelector('.scene + .etapes'),b=e.querySelector('[data-a="geste"]');return v&&l&&l.children.length>0&&b&&(l.compareDocumentPosition(b)&Node.DOCUMENT_POSITION_FOLLOWING);})));
- ok('variante signalée sur un clip en photos',await ev(()=>/deux positions/.test(document.querySelector('#ex-trapbar .variante').textContent)));
+ ok('variante signalée sur un clip en photos',await ev(()=>/deux photos/.test(document.querySelector('#ex-boxjump .variante').textContent)));
+ ok('variante signalée sur une vidéo proche',await ev(()=>/trap bar/.test(document.querySelector('#ex-trapbar .variante').textContent)));
  await ev(()=>{document.querySelector('#seance').scrollTop=document.querySelector('#ex-boxjump').offsetTop-70;});await sleep(900);await p.screenshot({path:path.join(OUT,'carte-video.png')});
  await ev(()=>document.querySelector('[data-a="fermer"]').click());await sleep(500);
  await ev(()=>{UI.s=null;document.querySelector('#seance').classList.remove('on');});

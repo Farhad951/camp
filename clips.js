@@ -1,13 +1,13 @@
 /* Généré par outils/videos.mjs. Ne pas modifier à la main. */
 window.CLIPS={
  "boxjump": {
-  "f": "boxjump-8dbb7d4e",
+  "f": "boxjump-7cad75ac",
   "source": "free-exercise-db",
   "auteur": "yuhonas",
   "url": "https://github.com/yuhonas/free-exercise-db",
   "licence": "Unlicense",
   "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo"
+  "variante": "mouvement reconstitué entre deux photos"
  },
  "burpee": {
   "f": "burpee-f980ddf1",
@@ -18,49 +18,49 @@ window.CLIPS={
   "licenceUrl": "https://creativecommons.org/licenses/by-sa/3.0"
  },
  "climbers": {
-  "f": "climbers-b32e6041",
+  "f": "climbers-a5993d49",
   "source": "free-exercise-db",
   "auteur": "yuhonas",
   "url": "https://github.com/yuhonas/free-exercise-db",
   "licence": "Unlicense",
   "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo"
+  "variante": "mouvement reconstitué entre deux photos"
  },
  "copenhague": {
-  "f": "copenhague-7c0e1835",
-  "source": "free-exercise-db",
-  "auteur": "yuhonas",
-  "url": "https://github.com/yuhonas/free-exercise-db",
-  "licence": "Unlicense",
-  "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo, planche latérale simple, ta version a la jambe du dessus posée sur un banc"
+  "f": "copenhague-e1383e24",
+  "source": "Pixabay",
+  "auteur": "tixonov_valentin",
+  "url": "https://pixabay.com/videos/id-66374/",
+  "licence": "Licence Pixabay",
+  "licenceUrl": "https://pixabay.com/service/license-summary/",
+  "variante": "planche latérale au sol ; ta version a la jambe du dessus posée sur un banc"
  },
  "corde": {
-  "f": "corde-402e2081",
-  "source": "free-exercise-db",
-  "auteur": "yuhonas",
-  "url": "https://github.com/yuhonas/free-exercise-db",
-  "licence": "Unlicense",
-  "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo"
+  "f": "corde-4296bb9c",
+  "source": "Pixabay",
+  "auteur": "Engin_Akyurt",
+  "url": "https://pixabay.com/videos/id-122440/",
+  "licence": "Licence Pixabay",
+  "licenceUrl": "https://pixabay.com/service/license-summary/",
+  "variante": "gros plan sur les appuis, au ralenti"
  },
  "cou": {
-  "f": "cou-2b3a3f0e",
+  "f": "cou-53ada136",
   "source": "free-exercise-db",
   "auteur": "yuhonas",
   "url": "https://github.com/yuhonas/free-exercise-db",
   "licence": "Unlicense",
   "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo"
+  "variante": "mouvement reconstitué entre deux photos"
  },
  "crunchPoulie": {
-  "f": "crunchPoulie-cd3a683a",
-  "source": "free-exercise-db",
-  "auteur": "yuhonas",
-  "url": "https://github.com/yuhonas/free-exercise-db",
-  "licence": "Unlicense",
-  "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo"
+  "f": "crunchPoulie-5c8bcb30",
+  "source": "Pixabay",
+  "auteur": "tixonov_valentin",
+  "url": "https://pixabay.com/videos/id-66997/",
+  "licence": "Licence Pixabay",
+  "licenceUrl": "https://pixabay.com/service/license-summary/",
+  "variante": "lesté au sol ; ta version se fait à genoux, à la poulie"
  },
  "curlInc": {
   "f": "curlInc-d876a1b0",
@@ -80,13 +80,13 @@ window.CLIPS={
   "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr"
  },
  "gainage": {
-  "f": "gainage-742223e9",
-  "source": "free-exercise-db",
-  "auteur": "yuhonas",
-  "url": "https://github.com/yuhonas/free-exercise-db",
-  "licence": "Unlicense",
-  "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo, planche classique, un des gainages du bloc"
+  "f": "gainage-a05de493",
+  "source": "Pixabay",
+  "auteur": "tixonov_valentin",
+  "url": "https://pixabay.com/videos/id-66374/",
+  "licence": "Licence Pixabay",
+  "licenceUrl": "https://pixabay.com/service/license-summary/",
+  "variante": "planche latérale, un des gainages du bloc"
  },
  "incline": {
   "f": "incline-6a6c4e50",
@@ -97,13 +97,13 @@ window.CLIPS={
   "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr"
  },
  "landmine": {
-  "f": "landmine-20146bdb",
+  "f": "landmine-e2848c8e",
   "source": "free-exercise-db",
   "auteur": "yuhonas",
   "url": "https://github.com/yuhonas/free-exercise-db",
   "licence": "Unlicense",
   "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo, à deux mains, ta version se fait à un bras"
+  "variante": "mouvement reconstitué entre deux photos, à deux mains, ta version se fait à un bras"
  },
  "latCable": {
   "f": "latCable-31777d94",
@@ -122,22 +122,21 @@ window.CLIPS={
   "licenceUrl": "https://creativecommons.org/licenses/by-sa/4.0/deed.fr"
  },
  "medball": {
-  "f": "medball-ab86a7b2",
-  "source": "free-exercise-db",
-  "auteur": "yuhonas",
-  "url": "https://github.com/yuhonas/free-exercise-db",
-  "licence": "Unlicense",
-  "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo, rotation en passe à un partenaire, ta version se lance contre un mur"
+  "f": "medball-89c80180",
+  "source": "Pexels",
+  "auteur": "RDNE Stock project",
+  "url": "https://www.pexels.com/video/man-working-out-at-the-gym-7187420/",
+  "licence": "Licence Pexels",
+  "licenceUrl": "https://www.pexels.com/license/"
  },
  "nordic": {
-  "f": "nordic-df76d42e",
+  "f": "nordic-0854968c",
   "source": "free-exercise-db",
   "auteur": "yuhonas",
   "url": "https://github.com/yuhonas/free-exercise-db",
   "licence": "Unlicense",
   "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo"
+  "variante": "mouvement reconstitué entre deux photos"
  },
  "oiseau": {
   "f": "oiseau-a703315b",
@@ -149,13 +148,13 @@ window.CLIPS={
   "variante": "assis aux haltères, ta version se fait aux câbles"
  },
  "pallof": {
-  "f": "pallof-7a5bdfe2",
+  "f": "pallof-c274caaa",
   "source": "free-exercise-db",
   "auteur": "yuhonas",
   "url": "https://github.com/yuhonas/free-exercise-db",
   "licence": "Unlicense",
   "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo"
+  "variante": "mouvement reconstitué entre deux photos"
  },
  "pompes": {
   "f": "pompes-c9ca4564",
@@ -166,13 +165,13 @@ window.CLIPS={
   "licenceUrl": "https://pixabay.com/service/license-summary/"
  },
  "rowAppuye": {
-  "f": "rowAppuye-87786889",
-  "source": "free-exercise-db",
-  "auteur": "yuhonas",
-  "url": "https://github.com/yuhonas/free-exercise-db",
-  "licence": "Unlicense",
-  "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo"
+  "f": "rowAppuye-367d7e7b",
+  "source": "Pixabay",
+  "auteur": "tixonov_valentin",
+  "url": "https://pixabay.com/videos/id-67000/",
+  "licence": "Licence Pixabay",
+  "licenceUrl": "https://pixabay.com/service/license-summary/",
+  "variante": "debout à la barre en T ; ta version se fait poitrine sur un banc"
  },
  "rowPoulie": {
   "f": "rowPoulie-205220b0",
@@ -191,13 +190,13 @@ window.CLIPS={
   "licenceUrl": "https://creativecommons.org/licenses/by/4.0"
  },
  "sautsLat": {
-  "f": "sautsLat-ea11ffd5",
+  "f": "sautsLat-c8427cb0",
   "source": "free-exercise-db",
   "auteur": "yuhonas",
   "url": "https://github.com/yuhonas/free-exercise-db",
   "licence": "Unlicense",
   "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo"
+  "variante": "mouvement reconstitué entre deux photos"
  },
  "shadow": {
   "f": "shadow-17f3c64d",
@@ -208,13 +207,13 @@ window.CLIPS={
   "licenceUrl": "https://pixabay.com/service/license-summary/"
  },
  "slam": {
-  "f": "slam-ffd73672",
-  "source": "free-exercise-db",
-  "auteur": "yuhonas",
-  "url": "https://github.com/yuhonas/free-exercise-db",
-  "licence": "Unlicense",
-  "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo"
+  "f": "slam-bf39c526",
+  "source": "Pixabay",
+  "auteur": "tixonov_valentin",
+  "url": "https://pixabay.com/videos/id-65653/",
+  "licence": "Licence Pixabay",
+  "licenceUrl": "https://pixabay.com/service/license-summary/",
+  "variante": "à la masse sur un pneu, même frappe ; ta version se fait au slam ball"
  },
  "swing": {
   "f": "swing-eacca366",
@@ -234,13 +233,13 @@ window.CLIPS={
   "variante": "sans lest, même geste"
  },
  "trapbar": {
-  "f": "trapbar-3e2c91a7",
-  "source": "free-exercise-db",
-  "auteur": "yuhonas",
-  "url": "https://github.com/yuhonas/free-exercise-db",
-  "licence": "Unlicense",
-  "licenceUrl": "https://unlicense.org/",
-  "variante": "les deux positions en photo"
+  "f": "trapbar-7062e764",
+  "source": "Pixabay",
+  "auteur": "tixonov_valentin",
+  "url": "https://pixabay.com/videos/id-30417/",
+  "licence": "Licence Pixabay",
+  "licenceUrl": "https://pixabay.com/service/license-summary/",
+  "variante": "barre ancrée au sol, même poussée des jambes ; ta version se fait à la trap bar"
  },
  "tricepsOH": {
   "f": "tricepsOH-4007ec77",

@@ -66,7 +66,7 @@ const DEBUT='2026-11-01T23:58:20';/* dimanche soir : minuit arrive pendant la su
  /* photo de repas gardée pour plus tard */
  await ev(async()=>{IA.poser('AQ.cle-de-test-pour-les-extremes');const c=document.createElement('canvas');c.width=c.height=64;c.getContext('2d').fillRect(0,0,64,64);const bl=await new Promise(r=>c.toBlob(r,'image/jpeg'));await Photos.ajouter({d:'2026-11-01',h:'20:30',t:'repas-att',blob:bl});});
  await ev(()=>{__sim.reponse={pas_un_plat:false,plat:'Karahi de poulet',sel_eleve:false,confiance:'moyenne',note:'',conseil:'',halal_doute:'',aliments:[{nom:'Poulet karahi',type:'viande',grammes:250,proteines:50,glucides:10,lipides:28}]};__garde();});
- await ev(()=>{UI.s=null;document.querySelector('#seance').classList.remove('on');});
+ await ev(()=>{Repos.stop();UI.s=null;document.querySelector('#seance').classList.remove('on');});
  await p.reload({waitUntil:'load'});await sleep(1500);
  ok('hors ligne, après relance : les séries sont toujours là',await ev(()=>(DB.days['2026-11-01'].gym.ex.traction||[]).filter(s=>s&&s.ok).length===2));
  ok('hors ligne : aucun appel à Gemini tenté',await ev(()=>!__sim.appels.some(a=>a.m!=='liste')));
